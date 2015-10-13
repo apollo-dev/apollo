@@ -33,20 +33,12 @@ body {
 	display: none;
 }
 
-/* DIALOGS */
-#new-experiment-dialog {
-	position: relative;
-	top: 0px;
-	height: 100%;
-	width: calc(20% + 400px);
-	min-width: 600px;
-	border-right: 1px solid #CCC;
-	border-bottom: 1px solid #CCC;
-	left: -1000px;
-}
-
 /* TOP LEVEL ELEMENTS - SIDEBARS */
 #experiment-sidebar {
+
+}
+
+#experiment-sidebar-mini {
 
 }
 
