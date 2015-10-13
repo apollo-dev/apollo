@@ -1,0 +1,66 @@
+@font-face {
+  font-family: "Raleway";
+  src: url("../fonts/raleway/raleway_thin-webfont.ttf");
+}
+
+html {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select:none;
+  user-select:none;
+  -o-user-select:none;
+	overflow: hidden;
+  height: 100%;
+}
+
+body {
+  font-family: "Raleway";
+  position: fixed;
+	height: 100%;
+	width: 100%;
+}
+
+/* TOP LEVEL ELEMENTS - PANELS */
+#splash-panel {
+	display: none;
+}
+
+#main-panel {
+	display: none;
+}
+
+#settings-panel {
+	display: none;
+}
+
+/* DIALOGS */
+#new-experiment-dialog {
+	position: relative;
+	top: 0px;
+	height: 100%;
+	width: calc(20% + 400px);
+	min-width: 600px;
+	border-right: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+	left: -1000px;
+}
+
+/* TOP LEVEL ELEMENTS - SIDEBARS */
+#experiment-sidebar {
+
+}
+
+/* TOP LEVEL ELEMENTS - TITLES */
+#title {
+  position: fixed;
+  top: 0px;
+  right: 20px;
+	cursor: default;
+}
+
+#subtitle {
+  position: fixed;
+  top: 45px;
+  right: 20px;
+	cursor: default;
+}

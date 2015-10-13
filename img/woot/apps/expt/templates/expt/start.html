@@ -1,0 +1,11 @@
+{% if experiments %}
+	{% for experiment in experiments %}
+		{% if forloop.last %}
+			<div class="menu-button experiment-button" experiment="{{experiment.name}}" style="display: none;">Experiment: {{experiment.name}}</div>
+		{% else %}
+			<div class="menu-button experiment-button bottom" experiment="{{experiment.name}}" style="display: none;">Experiment: {{experiment.name}}</div>
+		{% endif %}
+	{% endfor %}
+{% else %}
+	<div class="menu-button experiment-button bottom" experiment="none" style="display: none;">No experiments</div>
+{% endif %}

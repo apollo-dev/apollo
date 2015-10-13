@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+		<link rel="stylesheet" href="./assets/css/bootstrap.icon-large.min.css">
+		<link rel="stylesheet" href="./assets/css/main.css">
+		<link rel="stylesheet" href="./assets/css/ui.css">
+	</head>
+	<body>
+		<!-- Panels -->
+		<div id="splash-panel" class="panel"></div>
+		<div id="main-panel" class="panel"></div>
+		<div id="settings-panel" class="panel"></div>
+
+		<!-- New experiment dialog -->
+		<div id="new-experiment-dialog">
+		</div>
+
+		<!-- Experiment -->
+		<div id="experiment-sidebar" class="sidebar">
+			<div class="spacer top"></div>
+			<div id="experiment-collapse-menu-button" class="menu-button group pair"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></div>
+			<div id="experiment-home-menu-button" class="menu-button group pair last"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></div>
+			<div id="settings-menu-button" class="menu-button">Settings</div>
+			<div id="new-experiment-menu-button" class="menu-button">New experiment</div>
+			<div class="spacer"></div>
+			<div id="experiment-container">
+				<div class="spacer tray bottom">
+					<img class="spinner" src="./assets/img/colour-loader.gif" />
+				</div>
+			</div>
+		</div>
+
+		<!-- Titles -->
+		<h2 id="title">Apollo</h2>
+		<h4 id="subtitle">Segmentation</h4>
+	</body>
+
+	<!-- load jQuery and main content into "#main" -->
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script> -->
+	<script src="./assets/js/jquery-1.11.3.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+	<script src="./assets/js/jquery-ui.min.js"></script>
+	<script type="text/javascript">
+		var settings = require("./settings.json");
+		// (function ($) {
+		jQuery(document).ready(function () {
+			function attemptToLoadMainContent () {
+				$.ajax({
+					type: "get",
+					timeout: 1000,
+					url:"http://localhost:" + settings["port"] + '/expt/',
+					success: function (data, textStatus, XMLHttpRequest) {
+						// the stuff in this section only happens once when the program loads or is refreshed.
+
+						// 1. fade spinners
+						// 2. set trays to 0 height
+						// 3. insert data
+						// 4. fade in experiment-buttons
+						$("#experiment-container .tray .spinner").fadeOut(1000, function () {
+							$("#experiment-container .tray").fadeOut(100, function () {
+								$("#experiment-container .tray").after(data);
+								$("#experiment-container .experiment-button").fadeIn(1000);
+							});
+						});
+					},
+					error:function (xhr, ajaxOptions, thrownError) {
+						if (xhr.status === 404 || xhr.status === 0) {
+							attemptToLoadMainContent();
+						}
+					}
+				});
+			}
+			attemptToLoadMainContent();
+		});
+	</script>
+	<script src="./assets/js/mousetrap.js"></script> <!-- keyboard shortcuts -->
+	<script src="./assets/js/shortcuts.js"></script>
+	<script src="./assets/js/main.js"></script>
+	<script src="./assets/js/vendor/bootstrap.min.js"></script>
+</html>
