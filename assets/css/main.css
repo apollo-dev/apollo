@@ -80,3 +80,7 @@ body {
 #name-file-menu-button {
 	padding-top: 15px;
 }
+
+#choose-inf-file-menu-button {
+	display: none;
+}

@@ -14,16 +14,32 @@ $(document).ready(function() {
 	$('#choose-file-menu-button').click(function () {
 		dialog.showOpenDialog({properties:['openFile', 'openDirectory']}, function (filenames) {
 			if (filenames.length === 1) {
-				var filename = filenames[0].replace(/.*(\/|\\)/, '');
+				var path = filenames[0];
+				var filename = path.replace(/.*(\/|\\)/, '');
 				if (filename.indexOf(".") === -1) { // is directory
 					$('#choose-file-menu-button').html("Directory: " + filename + "/");
+					$('#choose-inf-file-menu-button').fadeIn(1000);
 				} else {
 					$('#choose-file-menu-button').html("File: " + filename);
+					$('#choose-inf-file-menu-button').fadeOut(1000);
 				}
+				$('#choose-file-menu-button').attr('path', path);
 			}
 		});
 	});
 
+	$('#choose-inf-file-menu-button').click(function () {
+		dialog.showOpenDialog({properties:['openFile']}, function (filenames) {
+			if (filenames.length === 1) {
+				var path = filenames[0];
+				var filename = path.replace(/.*(\/|\\)/, '');
+				$('#choose-inf-file-menu-button').html("File: " + filename);
+				$('#choose-inf-file-menu-button').attr('path', path);
+			}
+		});
+	});
+
+	// The text iput field relies on an out of view input field that can be copied. It's quite a hack.
 	$('#name-file-menu-button').click(function () {
 		$('#new-experiment-name-input').focus();
 		$('#name-file-menu-button img').fadeIn(100);
