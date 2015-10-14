@@ -16,13 +16,28 @@ $(document).ready(function() {
 			if (filenames.length === 1) {
 				var path = filenames[0];
 				var filename = path.replace(/.*(\/|\\)/, '');
+				
 				if (filename.indexOf(".") === -1) { // is directory
+					//set display and filetype
 					$('#choose-file-menu-button').html("Directory: " + filename + "/");
-					$('#choose-inf-file-menu-button').fadeIn(1000);
+					$('#choose-file-menu-button').attr('filetype', 'D');
+
+					// bring in inf file button
+					betterFadeIn($('#choose-inf-file-menu-button'), 1000);
+
 				} else {
+					//set display and filetype
 					$('#choose-file-menu-button').html("File: " + filename);
-					$('#choose-inf-file-menu-button').fadeOut(1000);
+					$('#choose-file-menu-button').attr('filetype', 'F');
+
+					// inf file button not needed
+					betterFadeOut($('#choose-inf-file-menu-button'), 1000);
+
+					// bring in extraction-menu-button
+					$('#extraction-menu-button').fadeIn(1000);
 				}
+
+				// set path to be sent to server whether file or directory
 				$('#choose-file-menu-button').attr('path', path);
 			}
 		});
@@ -33,8 +48,13 @@ $(document).ready(function() {
 			if (filenames.length === 1) {
 				var path = filenames[0];
 				var filename = path.replace(/.*(\/|\\)/, '');
+
+				// set display and path
 				$('#choose-inf-file-menu-button').html("File: " + filename);
 				$('#choose-inf-file-menu-button').attr('path', path);
+
+				// bring in extraction-menu-button
+				$('#extraction-menu-button').fadeIn(1000);
 			}
 		});
 	});
@@ -59,6 +79,24 @@ $(document).ready(function() {
 			$('#name-file-menu-button span').html($(this).attr('defaultValue'));
 		}
 		$('#name-file-menu-button').css({'padding-top':'15px', 'padding-left':'0px'});
+	});
+
+	// Extraction
+	// gather values from three buttons and send them to the server
+	$('#extraction-menu-button').click(function () {
+		var experimentPath = $('#choose-file-menu-button').attr('path');
+		var experimentFileType = $('#choose-file-menu-button').attr('filetype');
+		var experimentInfPath = '';
+		if (experimentFileType === 'D') {
+			experimentInfPath = $('#choose-inf-file-menu-button').attr('path');
+		}
+		var experimentName = $('#name-file-menu-button span').html();
+
+		// handle errors
+
+		// ajax command to unpack lif and read inf to display series
+
+		// slide out series sidebar
 	});
 
 });

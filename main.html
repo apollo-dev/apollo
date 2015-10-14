@@ -19,16 +19,17 @@
 		<input id="new-experiment-name-input" defaultvalue="Name experiment" type="text" />
 		<div id="new-sidebar" class="sidebar maxi">
 			<div class="spacer top"></div>
-			<div id="choose-file-menu-button" class="menu-button">Choose file...</div>
-			<div id="name-file-menu-button" class="menu-button bottom"><span>Name experiment</span><img id="name-file-cursor" src="./assets/img/cursor.gif" /></div>
+			<div id="choose-file-menu-button" class="menu-button top">Choose file...</div>
+			<div id="name-file-menu-button" class="menu-button"><span>Name experiment</span><img id="name-file-cursor" src="./assets/img/cursor.gif" /></div>
+			<div id="choose-inf-file-menu-button" class="menu-button">Choose info file...</div>
 			<div class="spacer top"></div>
-			<div id="choose-inf-file-menu-button" class="menu-button bottom">Choose info file...</div>
+			<div id="extraction-menu-button" class="menu-button top green">Run extraction</div>
 		</div>
 
 		<!-- Experiment -->
 		<div id="experiment-sidebar" class="sidebar">
 			<div class="spacer top"></div>
-			<div id="in-progress-menu-button" class="menu-button">In progress</div>
+			<div id="in-progress-menu-button top" class="menu-button">In progress</div>
 			<div id="settings-menu-button" class="menu-button">Settings</div>
 			<div id="new-experiment-menu-button" class="menu-button">New experiment</div>
 			<div class="spacer"></div>
@@ -41,7 +42,7 @@
 
 		<div id="mini-sidebar" class="sidebar mini">
 			<div class="spacer top"></div>
-			<div id="home-menu-button-mini" class="menu-button"><span class="glyphicon glyphicon-home"></span></div>
+			<div id="home-menu-button-mini" class="menu-button top"><span class="glyphicon glyphicon-home"></span></div>
 			<div id="in-progress-menu-button-mini" class="menu-button"><span class="glyphicon glyphicon-refresh"></span></div>
 			<div id="settings-menu-button-mini" class="menu-button"><span class="glyphicon glyphicon-cog"></span></div>
 			<div id="new-experiment-menu-button-mini" class="menu-button bottom"><span class="glyphicon glyphicon-plus"></span></div>
@@ -55,7 +56,6 @@
 	<!-- load jQuery and main content into "#main" -->
 	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script> -->
 	<script src="./assets/js/jquery-1.11.3.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
-	<script src="./assets/js/jquery-ui.min.js"></script>
 	<script type="text/javascript">
 		var settings = require("./settings.json");
 		// (function ($) {
@@ -89,6 +89,7 @@
 			attemptToLoadMainContent();
 		});
 	</script>
+	<script src="./assets/js/util.js"></script>
 	<script src="./assets/js/mousetrap.js"></script> <!-- keyboard shortcuts -->
 	<script src="./assets/js/shortcuts.js"></script>
 	<script src="./assets/js/main.js"></script>
