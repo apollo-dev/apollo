@@ -34,6 +34,16 @@ To facilitate smooth animation, there will be no transition between these. Both 
 	border-right: 1px solid #CCC;
 }
 
+.sidebar.mini {
+	min-width: 51px;
+	width: 51px;
+	border-right: 0px solid #CCC;
+}
+
+.sidebar.maxi {
+	min-width: 250px;
+}
+
 /*
 
 The sidebars contain menu items. These come in the form of buttons, which can take the form of a single button
@@ -55,6 +65,20 @@ spanning the sidebar or in groups of two, three, or four.
 	transition: background .1s ease-in-out;
 	-moz-transition: background .1s ease-in-out;
 	-webkit-transition: background .1s ease-in-out;
+}
+
+.sidebar.mini .menu-button {
+	min-width: 51px;
+	width: 51px;
+	border-right: 1px solid #CCC;
+}
+
+.sidebar.maxi .menu-button {
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	position: relative;
+	width: calc(100% - 50px);
+	left: 25px;
 }
 
 .menu-button:hover {
@@ -87,6 +111,7 @@ spanning the sidebar or in groups of two, three, or four.
 }
 
 .menu-button.bottom {
+	height: 51px;
 	border-bottom: 1px solid #CCC;
 }
 
@@ -115,6 +140,20 @@ Sometimes space is needed without button functionality. Spacers are based on the
 .spacer.tray.bottom {
 	border-right: 0px solid #CCC;
 	border-bottom: 1px solid #CCC;
+}
+
+.spacer.title {
+	padding-top: 25px;
+	padding-left: 10px;
+	height: 50px;
+	text-align: left;
+}
+
+.sidebar.maxi .spacer.title {
+	padding-top: 25px;
+	padding-left: 35px;
+	height: 50px;
+	text-align: left;
 }
 
 /*

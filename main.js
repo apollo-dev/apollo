@@ -4,6 +4,7 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 var globalShortcut = require('global-shortcut'); // https://github.com/atom/electron/blob/master/docs/api/global-shortcut.md
 var http = require('http'); // Make web requests to the server process: https://docs.nodejitsu.com/articles/HTTP/clients/how-to-create-a-HTTP-request
 var spawn = require('child_process').spawn; // used to make server process
+app.commandLine.appendSwitch('disable-web-security'); // remove browser security
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -90,7 +91,7 @@ app.on('ready', function() {
 	// frameless: https://github.com/atom/electron/blob/master/docs/api/frameless-window.md
 
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1024, height: 768, 'title-bar-style': 'hidden'});
+  mainWindow = new BrowserWindow({width: 1024, height: 768, 'title-bar-style': 'hidden', 'web-preferences': {'web-security': false}});
 
   // POINT AT THE SERVER PROCESS URL HERE
 	// still need to find a way to pass the port number to the startup.html page.

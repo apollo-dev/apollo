@@ -34,12 +34,18 @@ body {
 }
 
 /* TOP LEVEL ELEMENTS - SIDEBARS */
-#experiment-sidebar {
-
+#new-sidebar {
+	left: 51px;
+	/*display: none;*/
 }
 
-#experiment-sidebar-mini {
+#experiment-sidebar {
+	display: none;
+}
 
+#mini-sidebar {
+ /*display: none;*/
+ /*left: -500px;*/
 }
 
 /* TOP LEVEL ELEMENTS - TITLES */
@@ -55,4 +61,22 @@ body {
   top: 45px;
   right: 20px;
 	cursor: default;
+}
+
+/* BUTTONS AND OTHER ELEMENTS */
+
+#new-experiment-name-input {
+	position: relative;
+	top: -50px;
+}
+
+#name-file-cursor {
+	position: relative;
+	top: -1px;
+	height: 24px;
+	display: none;
+}
+
+#name-file-menu-button {
+	padding-top: 15px;
 }

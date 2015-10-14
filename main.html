@@ -15,6 +15,14 @@
 		<div id="main-panel" class="panel"></div>
 		<div id="settings-panel" class="panel"></div>
 
+		<!-- New -->
+		<input id="new-experiment-name-input" defaultvalue="Name experiment" type="text" />
+		<div id="new-sidebar" class="sidebar maxi">
+			<div class="spacer top"></div>
+			<div id="choose-file-menu-button" class="menu-button">Choose file...</div>
+			<div id="name-file-menu-button" class="menu-button bottom"><span>Name experiment</span><img id="name-file-cursor" src="./assets/img/cursor.gif" /></div>
+		</div>
+
 		<!-- Experiment -->
 		<div id="experiment-sidebar" class="sidebar">
 			<div class="spacer top"></div>
@@ -29,11 +37,12 @@
 			</div>
 		</div>
 
-		<div id="experiment-sidebar-mini" class="sidebar mini">
+		<div id="mini-sidebar" class="sidebar mini">
 			<div class="spacer top"></div>
-			<div id="in-progress-menu-button-mini" class="menu-button"></div>
-			<div id="settings-menu-button-mini" class="menu-button"></div>
-			<div id="new-experiment-menu-button-mini" class="menu-button"></div>
+			<div id="home-menu-button-mini" class="menu-button"><span class="glyphicon glyphicon-home"></span></div>
+			<div id="in-progress-menu-button-mini" class="menu-button"><span class="glyphicon glyphicon-refresh"></span></div>
+			<div id="settings-menu-button-mini" class="menu-button"><span class="glyphicon glyphicon-cog"></span></div>
+			<div id="new-experiment-menu-button-mini" class="menu-button bottom"><span class="glyphicon glyphicon-plus"></span></div>
 		</div>
 
 		<!-- Titles -->
