@@ -94,3 +94,7 @@ body {
 #experiment-created-menu-button {
 	display: none;
 }
+
+#experiment-created-menu-button-title {
+	display: none;
+}

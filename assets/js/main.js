@@ -145,14 +145,30 @@ $(document).ready(function() {
 			$('#name-file-menu-button').removeClass('red');
 
 			// send details to server
-			createExperiment(experimentName, experimentPath, experimentFileType, experimentInfPath);
+			createExperiment(experimentName, experimentPath, experimentFileType, experimentInfPath, function (data) {
+				// slide out series sidebar
+				var newSidebarLeft = $('#new-sidebar').css('left');
+				var newSidebarWidth = $('#new-sidebar').css('width');
+				var seriesSidebarLeft = parseInt(newSidebarLeft) + parseInt(newSidebarWidth) + 'px'
+				$('#series-sidebar').animate({'left':seriesSidebarLeft}, 300);
 
-			// slide out series sidebar
-			var newSidebarLeft = $('#new-sidebar').css('left');
-			var newSidebarWidth = $('#new-sidebar').css('width');
-			var calc = parseInt(newSidebarLeft) + parseInt(newSidebarWidth) + 'px'
-			$('#series-sidebar').animate({'left':calc}, 300);
+				// add new experiment button to list
+				addNewExperimentButton(experimentName);
 
+				// make experiment-created-menu-button visible
+				if (data === 'exists') {
+					$('#experiment-created-menu-button').html('Experiment exists:');
+				} else {
+					$('#experiment-created-menu-button').html('Experiment created:');
+				}
+
+				$('#experiment-created-menu-button-title').html(experimentName);
+				$('#experiment-created-menu-button').fadeIn(1000);
+				$('#experiment-created-menu-button-title').fadeIn(1000);
+
+				// run extraction
+				runPreview(experimentName, data);
+			});
 		}
 	});
 });
@@ -165,9 +181,13 @@ var resetFileInput = function () {
 	$('#choose-inf-file-menu-button').fadeOut(100);
 	$('#extraction-menu-button').fadeOut(100);
 	$('#new-experiment-name-input').val('');
+	$('#experiment-created-menu-button-title').html('');
+	$('#experiment-created-menu-button-title').fadeOut(100);
+	$('#experiment-created-menu-button').html('');
+	$('#experiment-created-menu-button').fadeOut(100);
 }
 
-var createExperiment = function (experimentName, experimentPath, experimentFileType, experimentInfPath) {
+var createExperiment = function (experimentName, experimentPath, experimentFileType, experimentInfPath, success_function) {
 	var experiment_data = {
 		'experiment_name':experimentName,
 		'experiment_path':experimentPath,
@@ -181,7 +201,7 @@ var createExperiment = function (experimentName, experimentPath, experimentFileT
 		url:"http://localhost:" + settings["port"] + '/expt/commands/create_experiment/',
 		data:experiment_data,
 		success: function (data, textStatus, XMLHttpRequest) {
-			alert(data);
+			success_function(data);
 		},
 		error:function (xhr, ajaxOptions, thrownError) {
 			if (xhr.status === 404 || xhr.status === 0) {
@@ -189,4 +209,22 @@ var createExperiment = function (experimentName, experimentPath, experimentFileT
 			}
 		}
 	});
+}
+
+var runPreview = function (experimentName, data) {
+
+}
+
+var addNewExperimentButton = function (experimentName) {
+	var template = function (experimentName) {
+		return '<div class="menu-button experiment-button" experiment="' + experimentName + '">Experiment: ' + experimentName + '</div>';
+	}
+
+	var nullExperimentButton = $('#experiment-container').find('[experiment="none"]')
+	if (nullExperimentButton) {
+		nullExperimentButton.remove();
+		$('#experiment-container .tray').after(template(experimentName));
+	} else {
+		$('#experiment-container').children().last().after(template(experimentName));
+	}
 }

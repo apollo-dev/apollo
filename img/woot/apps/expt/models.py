@@ -22,6 +22,7 @@ class Experiment(models.Model):
 	name = models.CharField(max_length=255)
 
 	# 1. location
+	lif_path = models.CharField(max_length=255)
 	storage_path = models.CharField(max_length=255)
 	composite_path = models.CharField(max_length=255)
 	inf_path = models.CharField(max_length=255)

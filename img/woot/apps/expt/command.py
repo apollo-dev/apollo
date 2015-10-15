@@ -10,6 +10,7 @@ from django.template import Template
 from django.views.decorators.csrf import csrf_exempt
 
 # local
+from apps.expt.models import Experiment
 
 # util
 import json
@@ -27,4 +28,18 @@ def create_experiment(request):
 		experiment_file_type = request.POST.get('experiment_file_type')
 		experiment_inf_path = request.POST.get('experiment_inf_path')
 
-		return HttpResponse('success')
+		experiment, experiment_created = Experiment.objects.get_or_create(name=experiment_name)
+
+		if experiment_created:
+			if experiment_file_type == 'D':
+				experiment.storage_path = experiment_path
+				experiment.inf_path = experiment_inf_path
+			else:
+				experiment.lif_path = experiment_path
+
+			experiment.get_templates()
+
+			return HttpResponse('created')
+
+		else:
+			return HttpResponse('exists')
