@@ -34,18 +34,20 @@ body {
 }
 
 /* TOP LEVEL ELEMENTS - SIDEBARS */
+#series-sidebar {
+	left: -500px;
+}
+
 #new-sidebar {
-	left: 51px;
-	/*display: none;*/
+	left: -500px;
 }
 
 #experiment-sidebar {
-	display: none;
+
 }
 
 #mini-sidebar {
- /*display: none;*/
- /*left: -500px;*/
+ left: -500px;
 }
 
 /* TOP LEVEL ELEMENTS - TITLES */
@@ -86,5 +88,9 @@ body {
 }
 
 #extraction-menu-button {
+	display: none;
+}
+
+#experiment-created-menu-button {
 	display: none;
 }

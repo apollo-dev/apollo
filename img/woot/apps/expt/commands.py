@@ -1,19 +1,12 @@
 # woot.apps.expt.commands
 
 # django
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.core.cache import cache
-from django.views.generic import View
-from django.conf import settings
+from django.conf.urls import patterns, include, url
+from django.views.generic import TemplateView, RedirectView
 
 # local
+from apps.expt.command import create_experiment
 
-# util
-
-### Views
-
-# methods
-def test_command(request):
-	if request.method == 'GET':
-		return HttpResponse('test_command')
+urlpatterns = [
+	url(r'^create_experiment/', create_experiment),
+]

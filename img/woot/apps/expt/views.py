@@ -22,3 +22,9 @@ class StartupView(View):
 		experiments = Experiment.objects.all()
 
 		return render(request, 'expt/start.html', {'experiments':experiments})
+
+class SeriesPreviewView(View):
+	def get(self):
+
+		#
+		pass

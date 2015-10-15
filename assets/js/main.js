@@ -2,12 +2,58 @@ $(document).ready(function() {
 
 	var remote = require('remote'); // access the main node process
 	var dialog = remote.require('dialog'); // access open file dialog
+	var settings = require("./settings.json"); // external settings
 
 	// Need to store application context so it can be recreated.
 
 	///////////////////////////////////
 	///////////////	BUTTON BINDINGS
 	///////////////
+
+	// Experiment sidebar
+	$('#new-experiment-menu-button').click(function () {
+		// slide out experiment sidebar
+		$('#experiment-sidebar').animate({'left':'-500px'}, 200);
+
+		// slide in mini sidebar
+		$('#mini-sidebar').animate({'left':'0px'}, 300);
+
+		// slide in new experiment sidebar with a delay
+		$('#new-sidebar').delay(0).animate({'left':'51px'}, 300);
+
+	});
+
+	// Mini sidebar
+	$('#home-menu-button-mini').click(function () {
+		// slide out new experiment sidebar
+		$('#new-sidebar').delay(0).animate({'left':'-500px'}, 200);
+
+		// clear new experiment fields
+		resetFileInput();
+
+		// slide out mini sidebar
+		$('#mini-sidebar').animate({'left':'-500px'}, 200);
+
+		// slide in experiment sidebar
+		$('#experiment-sidebar').animate({'left':'0px'}, 300);
+
+		// slide out series sidebar
+		$('#series-sidebar').animate({'left':'-500px'}, 300);
+	});
+
+	$('#new-experiment-menu-button-mini').click(function () {
+		// slide out series sidebar
+		$('#series-sidebar').animate({'left':'-500px'}, 300);
+
+		// slide out new experiment sidebar
+		$('#new-sidebar').delay(0).animate({'left':'-500px'}, 200, function () {
+			// slide in new experiment sidebar
+			$('#new-sidebar').delay(0).animate({'left':'51px'}, 300);
+
+			// clear new experiment fields
+			resetFileInput();
+		});
+	});
 
 	// the choose file dialog uses the remote connection to the node host to
 	// open the window and select the file. This distinguishes between files and folders.
@@ -16,10 +62,10 @@ $(document).ready(function() {
 			if (filenames.length === 1) {
 				var path = filenames[0];
 				var filename = path.replace(/.*(\/|\\)/, '');
-				
+
 				if (filename.indexOf(".") === -1) { // is directory
 					//set display and filetype
-					$('#choose-file-menu-button').html("Directory: " + filename + "/");
+					$('#choose-file-menu-button').html('Directory: ' + filename + '/');
 					$('#choose-file-menu-button').attr('filetype', 'D');
 
 					// bring in inf file button
@@ -27,7 +73,7 @@ $(document).ready(function() {
 
 				} else {
 					//set display and filetype
-					$('#choose-file-menu-button').html("File: " + filename);
+					$('#choose-file-menu-button').html('File: ' + filename);
 					$('#choose-file-menu-button').attr('filetype', 'F');
 
 					// inf file button not needed
@@ -50,7 +96,7 @@ $(document).ready(function() {
 				var filename = path.replace(/.*(\/|\\)/, '');
 
 				// set display and path
-				$('#choose-inf-file-menu-button').html("File: " + filename);
+				$('#choose-inf-file-menu-button').html('File: ' + filename);
 				$('#choose-inf-file-menu-button').attr('path', path);
 
 				// bring in extraction-menu-button
@@ -59,7 +105,7 @@ $(document).ready(function() {
 		});
 	});
 
-	// The text iput field relies on an out of view input field that can be copied. It's quite a hack.
+	// The text input field relies on an out of view input field that can be copied. It's quite a hack.
 	$('#name-file-menu-button').click(function () {
 		$('#new-experiment-name-input').focus();
 		$('#name-file-menu-button img').fadeIn(100);
@@ -93,10 +139,54 @@ $(document).ready(function() {
 		var experimentName = $('#name-file-menu-button span').html();
 
 		// handle errors
+		if (experimentName === $('#new-experiment-name-input').attr('defaultValue')) {
+			$('#name-file-menu-button').addClass('red');
+		} else {
+			$('#name-file-menu-button').removeClass('red');
 
-		// ajax command to unpack lif and read inf to display series
+			// send details to server
+			createExperiment(experimentName, experimentPath, experimentFileType, experimentInfPath);
 
-		// slide out series sidebar
+			// slide out series sidebar
+			var newSidebarLeft = $('#new-sidebar').css('left');
+			var newSidebarWidth = $('#new-sidebar').css('width');
+			var calc = parseInt(newSidebarLeft) + parseInt(newSidebarWidth) + 'px'
+			$('#series-sidebar').animate({'left':calc}, 300);
+
+		}
 	});
-
 });
+
+var resetFileInput = function () {
+	$('#choose-file-menu-button').html('Choose file...');
+	$('#name-file-menu-button span').html('Name experiment');
+	$('#name-file-menu-button').removeClass('red');
+	$('#choose-inf-file-menu-button').html('Choose inf file...');
+	$('#choose-inf-file-menu-button').fadeOut(100);
+	$('#extraction-menu-button').fadeOut(100);
+	$('#new-experiment-name-input').val('');
+}
+
+var createExperiment = function (experimentName, experimentPath, experimentFileType, experimentInfPath) {
+	var experiment_data = {
+		'experiment_name':experimentName,
+		'experiment_path':experimentPath,
+		'experiment_file_type':experimentFileType,
+		'experiment_inf_path':experimentInfPath,
+	}
+
+	$.ajax({
+		type: "post",
+		timeout: 1000,
+		url:"http://localhost:" + settings["port"] + '/expt/commands/create_experiment/',
+		data:experiment_data,
+		success: function (data, textStatus, XMLHttpRequest) {
+			alert(data);
+		},
+		error:function (xhr, ajaxOptions, thrownError) {
+			if (xhr.status === 404 || xhr.status === 0) {
+				createExperiment(experimentName, experimentPath, experimentFileType, experimentInfPath);
+			}
+		}
+	});
+}

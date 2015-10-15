@@ -22,44 +22,12 @@ class Experiment(models.Model):
 	name = models.CharField(max_length=255)
 
 	# 1. location
-	base_path = models.CharField(max_length=255)
 	storage_path = models.CharField(max_length=255)
 	composite_path = models.CharField(max_length=255)
-	cp_path = models.CharField(max_length=255)
-	ij_path = models.CharField(max_length=255)
-	regions_path = models.CharField(max_length=255)
-
-	plot_path = models.CharField(max_length=255)
-	track_path = models.CharField(max_length=255)
-	data_path = models.CharField(max_length=255)
-	pipeline_path = models.CharField(max_length=255)
-	video_path = models.CharField(max_length=255)
 	inf_path = models.CharField(max_length=255)
 
 	def __str__(self):
 		return self.name
-
-	def make_paths(self, base_path):
-		# fetch default paths from settings
-		self.base_path = base_path
-		self.storage_path = os.path.join(self.base_path, default_paths['storage'])
-		self.composite_path = os.path.join(self.base_path, default_paths['composite'])
-		self.cp_path = os.path.join(self.base_path, default_paths['cp'])
-		self.ij_path = os.path.join(self.base_path, default_paths['ij'])
-		self.regions_path = os.path.join(self.base_path, default_paths['regions'])
-
-		self.plot_path = os.path.join(self.base_path, default_paths['plot'])
-		self.track_path = os.path.join(self.base_path, default_paths['track'])
-		self.data_path = os.path.join(self.base_path, default_paths['data'])
-		self.pipeline_path = os.path.join(self.base_path, default_paths['pipeline'])
-		self.video_path = os.path.join(self.base_path, default_paths['video'])
-		self.inf_path = os.path.join(self.base_path, default_paths['inf'])
-
-		self.save()
-
-		for path in [self.storage_path, self.composite_path, self.cp_path, self.ij_path, self.regions_path, self.plot_path, self.track_path, self.data_path, self.pipeline_path, self.video_path, self.inf_path]:
-			if not os.path.exists(path):
-				os.makedirs(path)
 
 	def get_templates(self):
 		# templates
@@ -67,9 +35,6 @@ class Experiment(models.Model):
 			self.templates.get_or_create(name=name, rx=template['rx'], rv=template['rv'])
 
 		self.save()
-
-	def img_roots(self):
-		return [self.storage_path, self.composite_path]
 
 	def path_matches_series(self, path, series_name):
 
@@ -120,43 +85,6 @@ class Experiment(models.Model):
 
 		else:
 			return None, False, 'does not match template.'
-
-	def save_marker_pipeline(self, series_name=None, primary_channel_name=None, secondary_channel_name=None, threshold_correction_factor=1.2, background=True, unique='', unique_key=''):
-
-		# format and save file
-		pipeline_text = marker_pipeline('{}_s{}_{}_'.format(self.name, series_name, unique), unique_key, 's{}_ch{}'.format(series_name, primary_channel_name), 's{}_ch{}'.format(series_name, secondary_channel_name),	threshold_correction_factor=threshold_correction_factor, background=background)
-		with open(os.path.join(self.pipeline_path, 'markers.cppipe'), 'w+') as open_pipeline_file:
-			open_pipeline_file.write(pipeline_text)
-
-	def save_region_pipeline(self, series_name=None, primary_channel_name=None, secondary_channel_name=None, threshold_correction_factor=1.2, background=True, unique='', unique_key=''):
-
-		# format and save file
-		pipeline_text = region_pipeline('{}_s{}_{}_'.format(self.name, series_name, unique), unique_key, 's{}_ch{}'.format(series_name, primary_channel_name), 's{}_ch{}'.format(series_name, secondary_channel_name),	threshold_correction_factor=threshold_correction_factor, background=background)
-		with open(os.path.join(self.pipeline_path, 'regions.cppipe'), 'w+') as open_pipeline_file:
-			open_pipeline_file.write(pipeline_text)
-
-	def run_pipeline(self, series_ts=0, key='marker'):
-		pipeline = os.path.join(self.pipeline_path, 'markers.cppipe')
-		if key!='marker':
-			pipeline = os.path.join(self.pipeline_path, 'regions.cppipe')
-		cmd = '/Applications/CellProfiler.app/Contents/MacOS/CellProfiler -c -r -i {} -o {} -p {}'.format(self.composite_path, self.cp_path, pipeline)
-		print('segmenting...')
-		# process = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, universal_newlines=True) as process:
-			for line in process.stderr:
-				debug = True
-				if not debug:
-					if 'Version:' in line:
-						print('setting up...')
-					elif 'Load' in line:
-						line_template = r'.+Image \# (?P<index>[0-9]+), module LoadImages.+'
-						line_match = re.match(line_template, line)
-						index = int(line_match.group('index'))
-						print('segmenting... {}/{} cycles completed.'.format(index, series_ts), end='\r' if index<series_ts else '\n')
-				else:
-					print(line.rstrip())
-
-		print('segmentation complete.')
 
 class Series(models.Model):
 	# connections
