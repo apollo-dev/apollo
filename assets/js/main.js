@@ -223,8 +223,9 @@ var addNewExperimentButton = function (experimentName) {
 	var nullExperimentButton = $('#experiment-container').find('[experiment="none"]')
 	if (nullExperimentButton) {
 		nullExperimentButton.remove();
-		$('#experiment-container .tray').after(template(experimentName));
-	} else {
+	}
+
+	if ($('#experiment-container').find('[experiment="' + experimentName + '"]').length == 0) {
 		$('#experiment-container').children().last().after(template(experimentName));
 	}
 }
