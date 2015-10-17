@@ -1,10 +1,13 @@
-
 // Templates
 var PANEL_TEMPLATE = '<div id="{id}" class="panel"></div>';
-// var SIDEBAR_TEMPLATE = '<div id="{id}" class="sidebar"><div id={id}-first-child></div></div>';
 var SIDEBAR_TEMPLATE = '<div id="{id}" class="sidebar"></div>';
-var BUTTON_TEMPLATE = '<div id="{id}" class="button"></div>';
+var BUTTON_TEMPLATE = '<button id="{id}" class="btn btn-default">{html}</button>';
 var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
+
+// global
+var body = $('body');
+var elements = [];
+var defaultState = {'display':'none', 'left':'-500px'};
 
 // Element
 function Element (id, template) {
@@ -14,6 +17,8 @@ function Element (id, template) {
 	this.classes = [];
 	this.specificStyle = {}; // contains any other styling that is specific to an object
 	this.properties = {}; // contains non-style element properties
+	this.html = '';
+	this.states = {};
 	this.template = template.format(this); // a text version of the html
 	this.model; // contains a link to the DOM element
 
@@ -22,7 +27,9 @@ function Element (id, template) {
 	this.postRenderFunction = function () {};
 
 	// states
-	this.homeState = function () {};
+	var changeState = function () {
+		
+	}
 
 	// render to a chosen parent element
 	this.render = function (parent) {
@@ -31,12 +38,11 @@ function Element (id, template) {
 
 		// 1. add element to the DOM
 		if (parent.children().length > 0) {
-			parent.children().first().before(this.template); // place as first child
+			parent.children().last().after(this.template); // place as last child
 		} else {
 			parent.html(this.template); // simply place inside
 		}
 		this.model = this.getModel(parent);
-		console.log(this.model);
 
 		// 2. set specific css
 		this.model.css(this.specificStyle);
@@ -50,6 +56,9 @@ function Element (id, template) {
 		for (property in this.properties) {
 			this.model.attr(property, this.properties[property]);
 		}
+
+		// 5. set inner html
+		this.model.html(this.html);
 
 		// post render function
 		this.postRenderFunction(this.model);
@@ -65,6 +74,10 @@ function Element (id, template) {
 	}
 
 	/////// INTERFACE METHODS
+	this.click = function (fn) {
+		this.model.click(fn);
+	}
 
-
+	// add to array
+	elements.push(this);
 }

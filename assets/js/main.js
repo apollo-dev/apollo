@@ -7,26 +7,28 @@ $(document).ready(function() {
 	///////////////////////////////////
 	///////////////	UI ELEMENTS
 	///////////////
-	var body = $('body');
 
 	// SIDEBARS
 	var experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
-	// var experimentSidebar = body.find('#experiment-sidebar');
 	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
+	var ESHomeButton = new Element('es-home-button', BUTTON_TEMPLATE);
+	ESHomeButton.html = 'Home';
 	var ESNewExperimentButton = new Element('es-new-experiment-button', BUTTON_TEMPLATE);
+	ESNewExperimentButton.html = 'New experiment';
 
 	experimentSidebar.render(body);
-	// experimentSidebar.renderChild(ESTopSpacer);
-	// experimentSidebar.renderChild(ESNewExperimentButton);
+	experimentSidebar.renderChild(ESTopSpacer);
+	experimentSidebar.renderChild(ESHomeButton);
+	experimentSidebar.renderChild(ESNewExperimentButton);
 
-	ESTopSpacer.render(experimentSidebar.model);
-	ESNewExperimentButton.render(experimentSidebar.model);
+	ESNewExperimentButton.click(newExperimentState);
 
 	// Need to store application context so it can be recreated.
 
 	///////////////////////////////////
 	///////////////	BUTTON BINDINGS
 	///////////////
+
 	// Experiment sidebar
 	$('#new-experiment-menu-button').click(function () {
 		// slide out experiment sidebar
@@ -187,6 +189,12 @@ $(document).ready(function() {
 				runPreview(experimentName, data);
 			});
 		}
+	});
+
+
+	// helper functions
+	$(".btn").mouseup(function () {
+	  $(this).blur();
 	});
 });
 

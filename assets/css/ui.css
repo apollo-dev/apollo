@@ -51,8 +51,17 @@ spanning the sidebar or in groups of two, three, or four.
 
 */
 
-.button {
-	
+.btn {
+	width: 100%;
+	border-radius: 0px;
+	border-top: 0px;
+	border-left: 0px;
+	border-right: 0px;
+	height: 50px;
+}
+
+button:focus {
+	outline:0px !important;
 }
 
 .menu-button {
