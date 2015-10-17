@@ -1,8 +1,10 @@
 
 // Templates
 var PANEL_TEMPLATE = '<div id="{id}" class="panel"></div>';
+// var SIDEBAR_TEMPLATE = '<div id="{id}" class="sidebar"><div id={id}-first-child></div></div>';
 var SIDEBAR_TEMPLATE = '<div id="{id}" class="sidebar"></div>';
-var MENU_BUTTON_TEMPLATE = '<div id="{id}" class="button"></div>';
+var BUTTON_TEMPLATE = '<div id="{id}" class="button"></div>';
+var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
 
 // Element
 function Element (id, template) {
@@ -10,29 +12,34 @@ function Element (id, template) {
 	// basic properties
 	this.id = id;
 	this.classes = [];
-	this.specific_style = {}; // contains any other styling that is specific to an object
+	this.specificStyle = {}; // contains any other styling that is specific to an object
 	this.properties = {}; // contains non-style element properties
 	this.template = template.format(this); // a text version of the html
 	this.model; // contains a link to the DOM element
 
 	// render functions
-	this.pre_render_function = function () {};
-	this.post_render_function = function () {};
+	this.preRenderFunction = function () {};
+	this.postRenderFunction = function () {};
 
 	// states
-	this.home_state = function () {};
+	this.homeState = function () {};
 
 	// render to a chosen parent element
 	this.render = function (parent) {
 		// pre-render
-		this.pre_render_function(parent);
+		this.preRenderFunction(parent);
 
 		// 1. add element to the DOM
-		parent.children().first().before(this.template); // place as first child
-		this.model = parent.find('#' + this.id);
+		if (parent.children().length > 0) {
+			parent.children().first().before(this.template); // place as first child
+		} else {
+			parent.html(this.template); // simply place inside
+		}
+		this.model = this.getModel(parent);
+		console.log(this.model);
 
 		// 2. set specific css
-		this.model.css(this.specific_style);
+		this.model.css(this.specificStyle);
 
 		// 3. set classes
 		for (c in this.classes) {
@@ -45,12 +52,16 @@ function Element (id, template) {
 		}
 
 		// post render function
-		this.post_render_function(this.model);
+		this.postRenderFunction(this.model);
 	}
 
 	// add child to this model
-	this.render_child = function (child) {
+	this.renderChild = function (child) {
 		child.render(this.model);
+	}
+
+	this.getModel = function (parent) {
+		return $(parent.selector + ' #' + this.id);
 	}
 
 	/////// INTERFACE METHODS

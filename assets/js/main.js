@@ -11,7 +11,16 @@ $(document).ready(function() {
 
 	// SIDEBARS
 	var experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
+	// var experimentSidebar = body.find('#experiment-sidebar');
+	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
+	var ESNewExperimentButton = new Element('es-new-experiment-button', BUTTON_TEMPLATE);
+
 	experimentSidebar.render(body);
+	// experimentSidebar.renderChild(ESTopSpacer);
+	// experimentSidebar.renderChild(ESNewExperimentButton);
+
+	ESTopSpacer.render(experimentSidebar.model);
+	ESNewExperimentButton.render(experimentSidebar.model);
 
 	// Need to store application context so it can be recreated.
 
