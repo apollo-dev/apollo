@@ -4,12 +4,20 @@ $(document).ready(function() {
 	var dialog = remote.require('dialog'); // access open file dialog
 	var settings = require("./settings.json"); // external settings
 
+	///////////////////////////////////
+	///////////////	UI ELEMENTS
+	///////////////
+	// define body element to add elements to
+	var body = $('body');
+
+	// PANELS
+	var panel = new Panel('main-panel', ['hello']);
+
 	// Need to store application context so it can be recreated.
 
 	///////////////////////////////////
 	///////////////	BUTTON BINDINGS
 	///////////////
-
 	// Experiment sidebar
 	$('#new-experiment-menu-button').click(function () {
 		// slide out experiment sidebar
