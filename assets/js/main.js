@@ -7,11 +7,11 @@ $(document).ready(function() {
 	///////////////////////////////////
 	///////////////	UI ELEMENTS
 	///////////////
-	// define body element to add elements to
 	var body = $('body');
 
-	// PANELS
-	var panel = new Panel('main-panel', ['hello']);
+	// SIDEBARS
+	var experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
+	experimentSidebar.render(body);
 
 	// Need to store application context so it can be recreated.
 

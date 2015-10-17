@@ -20,36 +20,6 @@ body {
 	width: 100%;
 }
 
-/* TOP LEVEL ELEMENTS - PANELS */
-#splash-panel {
-	display: none;
-}
-
-#main-panel {
-	display: none;
-}
-
-#settings-panel {
-	display: none;
-}
-
-/* TOP LEVEL ELEMENTS - SIDEBARS */
-#series-sidebar {
-	left: -500px;
-}
-
-#new-sidebar {
-	left: -500px;
-}
-
-#experiment-sidebar {
-
-}
-
-#mini-sidebar {
- left: -500px;
-}
-
 /* TOP LEVEL ELEMENTS - TITLES */
 #title {
   position: fixed;
@@ -63,38 +33,4 @@ body {
   top: 45px;
   right: 20px;
 	cursor: default;
-}
-
-/* BUTTONS AND OTHER ELEMENTS */
-
-#new-experiment-name-input {
-	position: relative;
-	top: -50px;
-}
-
-#name-file-cursor {
-	position: relative;
-	top: -1px;
-	height: 24px;
-	display: none;
-}
-
-#name-file-menu-button {
-	padding-top: 15px;
-}
-
-#choose-inf-file-menu-button {
-	display: none;
-}
-
-#extraction-menu-button {
-	display: none;
-}
-
-#experiment-created-menu-button {
-	display: none;
-}
-
-#experiment-created-menu-button-title {
-	display: none;
 }
