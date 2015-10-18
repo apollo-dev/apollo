@@ -64,100 +64,18 @@ button:focus {
 	outline:0px !important;
 }
 
-.menu-button {
-	cursor: pointer;
-	text-align: center;
-	width: 100%;
-	height: 50px;
-	padding-top: 18px;
-	min-width: 200px;
-	background-color: white;
-	border-bottom: 1px solid #CCC;
-	float: left;
-
-	transition: background .1s ease-in-out;
-	-moz-transition: background .1s ease-in-out;
-	-webkit-transition: background .1s ease-in-out;
+.sidebar.maxi .btn {
+	width: calc(100% - 50px);
+	position: relative;
+	left: 25px;
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
 }
 
-.sidebar.mini .menu-button {
+.sidebar.mini .btn {
 	min-width: 51px;
 	width: 51px;
 	border-right: 1px solid #CCC;
-}
-
-.sidebar.maxi .menu-button {
-	border-right: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-	position: relative;
-	width: calc(100% - 50px);
-	left: 25px;
-}
-
-.menu-button:hover {
-	background-color: #EEE;
-}
-
-.menu-button:active {
-	background-color: #DDD;
-}
-
-.menu-button.notouch {
-	cursor: default;
-}
-
-.menu-button.notouch:hover {
-	background-color: #FFF;
-}
-
-.menu-button.notouch:active {
-	background-color: #FFF;
-}
-
-.menu-button.group {
-	border-right: 1px solid #CCC;
-}
-
-.menu-button.pair {
-	width: 50%;
-	min-width: 100px;
-}
-
-.menu-button.trio {
-
-}
-
-.menu-button.quad {
-
-}
-
-.menu-button.last {
-	border-right: 0px solid #CCC;
-}
-
-.menu-button.top {
-	height: 51px;
-	border-top: 1px solid #CCC;
-}
-
-.menu-button.green:hover {
-	background-color: #00FF00;
-}
-
-.menu-button.green:active {
-	background-color: #00F900;
-}
-
-.menu-button.red {
-	background-color: rgba(255, 0, 0, 0.5);
-}
-
-.menu-button.red:hover {
-	background-color: rgba(255, 0, 0, 0.7);
-}
-
-.button.red:active {
-	background-color: rgba(255, 0, 0, 0.9);
 }
 
 /*
@@ -174,9 +92,7 @@ Sometimes space is needed without button functionality. Spacers are based on the
 	border-bottom: 1px solid #CCC;
 }
 
-.sidebar.maxi .spacer.tray {
-	border-right: 1px solid #CCC;
-	border-left: 1px solid #CCC;
+.sidebar.maxi .spacer {
 	position: relative;
 	width: calc(100% - 50px);
 	left: 25px;
@@ -184,34 +100,6 @@ Sometimes space is needed without button functionality. Spacers are based on the
 
 .spacer.top {
 	border-top: 1px solid #CCC;
-}
-
-.spacer.ninja {
-	border-bottom: 0px solid #CCC;
-	border-top: 0px solid #CCC;
-}
-
-.spacer.tray {
-	min-height: 201px;
-}
-
-.spacer.tray.bottom {
-	border-right: 0px solid #CCC;
-	border-top: 1px solid #CCC;
-}
-
-.spacer.title {
-	padding-top: 25px;
-	padding-left: 10px;
-	height: 50px;
-	text-align: left;
-}
-
-.sidebar.maxi .spacer.title {
-	padding-top: 25px;
-	padding-left: 35px;
-	height: 50px;
-	text-align: left;
 }
 
 /*

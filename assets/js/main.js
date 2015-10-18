@@ -6,147 +6,79 @@ $(document).ready(function() {
 
 	///////////////////////////////////
 	///////////////	UI ELEMENTS
-	///////////////
+	/////////////// classes, specificStyle, properties, html, states, stateChanger, preRenderFunction, postRenderFunction
 
 	// SIDEBARS
 	// experiment sidebar
 	var experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
-	experimentSidebar.states[HOME_STATE] = {'left':'0px'};
-	experimentSidebar.states[NEW_EXPERIMENT_STATE] = {'left':'100px'};
+	experimentSidebar.states[HOME_STATE] = {'css':{'left':'0px'}, 'time':300};
+	experimentSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
+
+	// new experiment sidebar
+	var newExperimentSidebar = new Element('new-experiment-sidebar', SIDEBAR_TEMPLATE);
+	newExperimentSidebar.classes = ['maxi'];
+	newExperimentSidebar.specificStyle = defaultState['css'];
+	newExperimentSidebar.states[HOME_STATE] = defaultState;
+	newExperimentSidebar.states[NEW_EXPERIMENT_STATE] = {'css':{'left':'51px'}, 'time':300};
 
 	// BUTTONS
 	// ES Home Button
-	var ESHomeButton = new Element('es-home-button', BUTTON_TEMPLATE);
-	ESHomeButton.html = 'Home';
-	ESHomeButton.stateChanger[HOME_STATE] = NEW_EXPERIMENT_STATE;
-	ESHomeButton.stateChanger[NEW_EXPERIMENT_STATE] = HOME_STATE;
-	ESHomeButton.defaultState = {};
+	var ESInProgressButton = new Element('es-in-progress-button', BUTTON_TEMPLATE);
+	ESInProgressButton.html = 'In progress';
+	ESInProgressButton.stateChanger[HOME_STATE] = IN_PROGRESS_STATE;
 
 	// ES New Experiment Button
 	var ESNewExperimentButton = new Element('es-new-experiment-button', BUTTON_TEMPLATE);
-	ESNewExperimentButton.classes = [];
-	ESNewExperimentButton.specificStyle = {};
-	ESNewExperimentButton.properties = {};
 	ESNewExperimentButton.html = 'New experiment';
 	ESNewExperimentButton.stateChanger[HOME_STATE] = NEW_EXPERIMENT_STATE;
-	ESNewExperimentButton.stateChanger[NEW_EXPERIMENT_STATE] = HOME_STATE;
-	ESNewExperimentButton.defaultState = {};
+
+	// NES Choose Path Button
+	var NESChoosePathButton = new Element('nes-choose-path-button', BUTTON_TEMPLATE);
+	NESChoosePathButton.html = 'Choose file...';
 
 	// SPACERS
 	// ES Top Spacer
 	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
 
+	// ES Middle Spacer
+	var ESMiddleSpacer = new Element('es-ms', SPACER_TEMPLATE);
+
+	// ES Tray Spacer
+	var ESTraySpacer = new Element('es-tray', SPACER_TEMPLATE);
+	ESTraySpacer.specificStyle = {'height':'200px'};
+
+	// NES Top Spacer
+	var NESTopSpacer = new Element('nes-ts', SPACER_TEMPLATE);
+	NESTopSpacer.classes = ['ninja'];
+
+	// OTHER ELEMENTS
+	var ESTrayContainer = new Element('es-tray-container', '<div id={id}></div>')
+	var ESTraySpinner = new Element('es-tray-spinner', '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />')
+
 	// RENDER
 	// experiment sidebar
-	experimentSidebar.render(body);
+	experimentSidebar.render(body); // order is top to bottom
 	experimentSidebar.renderChild(ESTopSpacer);
-	experimentSidebar.renderChild(ESHomeButton);
+	experimentSidebar.renderChild(ESInProgressButton);
 	experimentSidebar.renderChild(ESNewExperimentButton);
+	experimentSidebar.renderChild(ESMiddleSpacer);
+	experimentSidebar.renderChild(ESTrayContainer);
+	ESTrayContainer.renderChild(ESTraySpacer);
+	ESTraySpacer.renderChild(ESTraySpinner);
 
-	// BIND - must be done after render
-	ESNewExperimentButton.click(function () {});
-	ESHomeButton.click(function () {});
+	// new experiment sidebar
+	newExperimentSidebar.render(body);
+	newExperimentSidebar.renderChild(NESTopSpacer);
+	newExperimentSidebar.renderChild(NESChoosePathButton);
 
 	// Need to store application context so it can be recreated.
 
 	///////////////////////////////////
 	///////////////	BUTTON BINDINGS
-	///////////////
+	/////////////// must be done after render
 
-	// Experiment sidebar
-	$('#new-experiment-menu-button').click(function () {
-		// slide out experiment sidebar
-		$('#experiment-sidebar').animate({'left':'-500px'}, 200);
-
-		// slide in mini sidebar
-		$('#mini-sidebar').animate({'left':'0px'}, 300);
-
-		// slide in new experiment sidebar with a delay
-		$('#new-sidebar').delay(0).animate({'left':'51px'}, 300);
-
-	});
-
-	// Mini sidebar
-	$('#home-menu-button-mini').click(function () {
-		// slide out new experiment sidebar
-		$('#new-sidebar').delay(0).animate({'left':'-500px'}, 200);
-
-		// clear new experiment fields
-		resetFileInput();
-
-		// slide out mini sidebar
-		$('#mini-sidebar').animate({'left':'-500px'}, 200);
-
-		// slide in experiment sidebar
-		$('#experiment-sidebar').animate({'left':'0px'}, 300);
-
-		// slide out series sidebar
-		$('#series-sidebar').animate({'left':'-500px'}, 300);
-	});
-
-	$('#new-experiment-menu-button-mini').click(function () {
-		// slide out series sidebar
-		$('#series-sidebar').animate({'left':'-500px'}, 300);
-
-		// slide out new experiment sidebar
-		$('#new-sidebar').delay(0).animate({'left':'-500px'}, 200, function () {
-			// slide in new experiment sidebar
-			$('#new-sidebar').delay(0).animate({'left':'51px'}, 300);
-
-			// clear new experiment fields
-			resetFileInput();
-		});
-	});
-
-	// the choose file dialog uses the remote connection to the node host to
-	// open the window and select the file. This distinguishes between files and folders.
-	$('#choose-file-menu-button').click(function () {
-		dialog.showOpenDialog({properties:['openFile', 'openDirectory']}, function (filenames) {
-			if (filenames.length === 1) {
-				var path = filenames[0];
-				var filename = path.replace(/.*(\/|\\)/, '');
-
-				if (filename.indexOf(".") === -1) { // is directory
-					//set display and filetype
-					$('#choose-file-menu-button').html('Directory: ' + filename + '/');
-					$('#choose-file-menu-button').attr('filetype', 'D');
-
-					// bring in inf file button
-					betterFadeIn($('#choose-inf-file-menu-button'), 1000);
-
-				} else {
-					//set display and filetype
-					$('#choose-file-menu-button').html('File: ' + filename);
-					$('#choose-file-menu-button').attr('filetype', 'F');
-
-					// inf file button not needed
-					betterFadeOut($('#choose-inf-file-menu-button'), 1000);
-
-					// bring in extraction-menu-button
-					$('#extraction-menu-button').fadeIn(1000);
-				}
-
-				// set path to be sent to server whether file or directory
-				$('#choose-file-menu-button').attr('path', path);
-			}
-		});
-	});
-
-	$('#choose-inf-file-menu-button').click(function () {
-		dialog.showOpenDialog({properties:['openFile']}, function (filenames) {
-			if (filenames.length === 1) {
-				var path = filenames[0];
-				var filename = path.replace(/.*(\/|\\)/, '');
-
-				// set display and path
-				$('#choose-inf-file-menu-button').html('File: ' + filename);
-				$('#choose-inf-file-menu-button').attr('path', path);
-
-				// bring in extraction-menu-button
-				$('#extraction-menu-button').fadeIn(1000);
-			}
-		});
-	});
+	ESInProgressButton.click(function (model) {});
+	ESNewExperimentButton.click(function (model) {});
 
 	// The text input field relies on an out of view input field that can be copied. It's quite a hack.
 	$('#name-file-menu-button').click(function () {
@@ -170,111 +102,43 @@ $(document).ready(function() {
 		$('#name-file-menu-button').css({'padding-top':'15px', 'padding-left':'0px'});
 	});
 
-	// Extraction
-	// gather values from three buttons and send them to the server
-	$('#extraction-menu-button').click(function () {
-		var experimentPath = $('#choose-file-menu-button').attr('path');
-		var experimentFileType = $('#choose-file-menu-button').attr('filetype');
-		var experimentInfPath = '';
-		if (experimentFileType === 'D') {
-			experimentInfPath = $('#choose-inf-file-menu-button').attr('path');
-		}
-		var experimentName = $('#name-file-menu-button span').html();
+	///////////////////////////////////
+	///////////////	MAIN METHOD
+	///////////////
 
-		// handle errors
-		if (experimentName === $('#new-experiment-name-input').attr('defaultValue')) {
-			$('#name-file-menu-button').addClass('red');
-		} else {
-			$('#name-file-menu-button').removeClass('red');
+	function attemptToLoadMainContent () {
+		ajax('get', 'list_experiments', function (data) {
+			// fade ESTraySpacer
+			ESTraySpacer.model().fadeOut(1000);
 
-			// send details to server
-			createExperiment(experimentName, experimentPath, experimentFileType, experimentInfPath, function (data) {
-				// slide out series sidebar
-				var newSidebarLeft = $('#new-sidebar').css('left');
-				var newSidebarWidth = $('#new-sidebar').css('width');
-				var seriesSidebarLeft = parseInt(newSidebarLeft) + parseInt(newSidebarWidth) + 'px'
-				$('#series-sidebar').animate({'left':seriesSidebarLeft}, 300);
-
-				// add new experiment button to list
-				addNewExperimentButton(experimentName);
-
-				// make experiment-created-menu-button visible
-				if (data === 'exists') {
-					$('#experiment-created-menu-button').html('Experiment exists:');
-				} else {
-					$('#experiment-created-menu-button').html('Experiment created:');
+			// for every experiment in data, make a new button
+			for (i in data) {
+				var experimentName = data[i];
+				var experimentButton = new Element('es-experiment-button-{0}'.format(experimentName), BUTTON_TEMPLATE);
+				experimentButton.classes = ['btn-experiment'];
+				experimentButton.properties['experiment'] = experimentName;
+				experimentButton.html = 'Experiment: {0}'.format(experimentName)
+				experimentButton.postRenderFunction = function (model) {
+					model.css({'opacity':'0'});
+					model.delay(1000).animate({'opacity':'1'}, 1000);
 				}
-
-				$('#experiment-created-menu-button-title').html(experimentName);
-				$('#experiment-created-menu-button').fadeIn(1000);
-				$('#experiment-created-menu-button-title').fadeIn(1000);
-
-				// run extraction
-				runPreview(experimentName, data);
-			});
-		}
-	});
-
-
-	// helper functions
-	$(".btn").mouseup(function () {
-	  $(this).blur();
-	});
-});
-
-var resetFileInput = function () {
-	$('#choose-file-menu-button').html('Choose file...');
-	$('#name-file-menu-button span').html('Name experiment');
-	$('#name-file-menu-button').removeClass('red');
-	$('#choose-inf-file-menu-button').html('Choose inf file...');
-	$('#choose-inf-file-menu-button').fadeOut(100);
-	$('#extraction-menu-button').fadeOut(100);
-	$('#new-experiment-name-input').val('');
-	$('#experiment-created-menu-button-title').html('');
-	$('#experiment-created-menu-button-title').fadeOut(100);
-	$('#experiment-created-menu-button').html('');
-	$('#experiment-created-menu-button').fadeOut(100);
-}
-
-var createExperiment = function (experimentName, experimentPath, experimentFileType, experimentInfPath, success_function) {
-	var experiment_data = {
-		'experiment_name':experimentName,
-		'experiment_path':experimentPath,
-		'experiment_file_type':experimentFileType,
-		'experiment_inf_path':experimentInfPath,
-	}
-
-	$.ajax({
-		type: "post",
-		timeout: 1000,
-		url:"http://localhost:" + settings["port"] + '/expt/commands/create_experiment/',
-		data:experiment_data,
-		success: function (data, textStatus, XMLHttpRequest) {
-			success_function(data);
-		},
-		error:function (xhr, ajaxOptions, thrownError) {
-			if (xhr.status === 404 || xhr.status === 0) {
-				createExperiment(experimentName, experimentPath, experimentFileType, experimentInfPath);
+				ESTrayContainer.renderChild(experimentButton);
 			}
-		}
+		});
+	};
+
+	// run main method
+	attemptToLoadMainContent();
+
+	///////////////////////////////////
+	///////////////	HELPER METHODS ONLOAD
+	///////////////
+
+	// for the on-click, this need to be wired to the body, not the buttons themselves.
+	// This means that buttons added dynamically can still respond even though they haven't been explicitly bound
+	// to this method.
+	body.on('mouseup', '.btn', function () {
+		$(this).blur();
 	});
-}
 
-var runPreview = function (experimentName, data) {
-
-}
-
-var addNewExperimentButton = function (experimentName) {
-	var template = function (experimentName) {
-		return '<div class="menu-button experiment-button" experiment="' + experimentName + '">Experiment: ' + experimentName + '</div>';
-	}
-
-	var nullExperimentButton = $('#experiment-container').find('[experiment="none"]')
-	if (nullExperimentButton) {
-		nullExperimentButton.remove();
-	}
-
-	if ($('#experiment-container').find('[experiment="' + experimentName + '"]').length == 0) {
-		$('#experiment-container').children().last().after(template(experimentName));
-	}
-}
+});

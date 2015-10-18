@@ -69,39 +69,6 @@
 	<script src="./assets/js/string-format.js" onload="window.format = module.exports; format.extend(String.prototype);"></script>
 	<script src="./assets/js/ui.js"></script>
 	<script src="./assets/js/main.js"></script>
-	<script type="text/javascript">
-		var settings = require("./settings.json");
-		// (function ($) {
-		jQuery(document).ready(function () {
-			function attemptToLoadMainContent () {
-				$.ajax({
-					type: "get",
-					timeout: 1000,
-					url:"http://localhost:" + settings["port"] + '/expt/',
-					success: function (data, textStatus, XMLHttpRequest) {
-						// the stuff in this section only happens once when the program loads or is refreshed.
-
-						// 1. fade spinners
-						// 2. set trays to 0 height
-						// 3. insert data
-						// 4. fade in experiment-buttons
-						$("#experiment-container .tray .spinner").fadeOut(1000, function () {
-							$("#experiment-container .tray").fadeOut(100, function () {
-								$("#experiment-container .tray").after(data);
-								$("#experiment-container .experiment-button").fadeIn(1000);
-							});
-						});
-					},
-					error:function (xhr, ajaxOptions, thrownError) {
-						if (xhr.status === 404 || xhr.status === 0) {
-							attemptToLoadMainContent();
-						}
-					}
-				});
-			}
-			// attemptToLoadMainContent();
-		});
-	</script>
 	<script src="./assets/js/mousetrap.js"></script> <!-- keyboard shortcuts -->
 	<script src="./assets/js/shortcuts.js"></script>
 	<script src="./assets/js/vendor/bootstrap.min.js"></script>

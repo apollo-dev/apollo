@@ -19,6 +19,13 @@ import json
 
 # methods
 @csrf_exempt
+def list_experiments(request):
+	if request.method == 'GET':
+		# safe=False allows non-dict obejcts to be serialised
+		# https://docs.djangoproject.com/en/1.8/ref/request-response/#jsonresponse-objects
+		return JsonResponse([experiment.name for experiment in Experiment.objects.all()], safe=False)
+
+@csrf_exempt
 def create_experiment(request):
 	if request.method == 'POST':
 

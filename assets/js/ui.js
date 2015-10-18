@@ -7,11 +7,12 @@ var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
 // States
 var HOME_STATE = 'HS';
 var NEW_EXPERIMENT_STATE = 'NES';
+var IN_PROGRESS_STATE = 'IPS';
 
 // global
 var body = $('body');
 var elements = [];
-var defaultState = {'display':'none', 'left':'-500px'};
+var defaultState = {'css': {'left':'-500px'}, 'time':300};
 
 // Definitions
 // var Button = new Element('button-id', BUTTON_TEMPLATE);
@@ -22,7 +23,8 @@ var defaultState = {'display':'none', 'left':'-500px'};
 // Button.states[HOME_STATE] = {animatable css};
 // Button.stateChanger[HOME_STATE] = NEW_EXPERIMENT_STATE;
 // Button.stateChanger[NEW_EXPERIMENT_STATE] = HOME_STATE;
-// Button.defaultState = {animatable css};
+// Button.preRenderFunction = function () {};
+// Button.postRenderFunction = function () {};
 
 // Element
 function Element (id, template) {
@@ -39,7 +41,6 @@ function Element (id, template) {
 	this.state = HOME_STATE;
 	this.states = {};
 	this.stateChanger = {};
-	this.defaultState = {};
 
 	// link to DOM
 	this.model = function () {
@@ -47,13 +48,17 @@ function Element (id, template) {
 	}
 
 	// render functions
-	this.preRenderFunction = function () {};
-	this.postRenderFunction = function () {};
+	this.preRenderFunction = function (parent) {};
+	this.postRenderFunction = function (model) {};
 
 	// states
 	this.changeState = function (stateName) {
 		this.state = stateName;
-		this.model().animate(this.states[this.state], 300);
+		var newState = this.states[this.state];
+		if (!($.isEmptyObject(newState))) {
+			this.model().animate(newState['css'], newState['time']);
+		}
+
 	}
 
 	// render to a chosen parent element
@@ -73,7 +78,7 @@ function Element (id, template) {
 
 		// 3. set classes
 		for (c in this.classes) {
-			this.model().addClass(c);
+			this.model().addClass(this.classes[c]);
 		}
 
 		// 4. set properties
@@ -97,12 +102,12 @@ function Element (id, template) {
 	this.click = function (fn) {
 		var element = this;
 
-		this.model().click(function () {
+		this.model().on('click', function () {
 			// impose global changes
 			changeState(element.stateChanger[element.state]);
 
 			// more specific actions
-			fn();
+			fn(element.model());
 		});
 	}
 
