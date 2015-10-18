@@ -21,11 +21,22 @@ $(document).ready(function() {
 	newExperimentSidebar.states[HOME_STATE] = defaultState;
 	newExperimentSidebar.states[NEW_EXPERIMENT_STATE] = {'css':{'left':'51px'}, 'time':300};
 
+	// mini sidebar
+	var miniSidebar = new Element('mini-sidebar', SIDEBAR_TEMPLATE);
+	miniSidebar.classes = ['mini'];
+	miniSidebar.specificStyle = defaultState['css'];
+	miniSidebar.states[HOME_STATE] = defaultState;
+	miniSidebar.states[NEW_EXPERIMENT_STATE] = {'css':{'left':'0px'}, 'time':300};
+
 	// BUTTONS
-	// ES Home Button
+	// ES In Progress Button
 	var ESInProgressButton = new Element('es-in-progress-button', BUTTON_TEMPLATE);
 	ESInProgressButton.html = 'In progress';
 	ESInProgressButton.stateChanger[HOME_STATE] = IN_PROGRESS_STATE;
+
+	// ES Settings Button
+	var ESSettingsButton = new Element('es-settings-button', BUTTON_TEMPLATE);
+	ESSettingsButton.html = 'Settings';
 
 	// ES New Experiment Button
 	var ESNewExperimentButton = new Element('es-new-experiment-button', BUTTON_TEMPLATE);
@@ -36,30 +47,39 @@ $(document).ready(function() {
 	var NESChoosePathButton = new Element('nes-choose-path-button', BUTTON_TEMPLATE);
 	NESChoosePathButton.html = 'Choose file...';
 
-	// SPACERS
-	// ES Top Spacer
-	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
+	// MS Home Button
+	var MSHomeButton = new Element('ms-home-button', BUTTON_TEMPLATE);
+	MSHomeButton.html = '<span class="glyphicon glyphicon-home"></span>';
+	MSHomeButton.stateChanger[NEW_EXPERIMENT_STATE] = HOME_STATE;
 
-	// ES Middle Spacer
-	var ESMiddleSpacer = new Element('es-ms', SPACER_TEMPLATE);
+	// MS In Progress Button
+	var MSInProgressButton = new Element('ms-in-progress-button', BUTTON_TEMPLATE);
+	MSInProgressButton.html = '<span class="glyphicon glyphicon-refresh"></span>';
 
-	// ES Tray Spacer
-	var ESTraySpacer = new Element('es-tray', SPACER_TEMPLATE);
-	ESTraySpacer.specificStyle = {'height':'200px'};
+	// MS Settings Button
+	var MSSettingsButton = new Element('ms-settings-button', BUTTON_TEMPLATE);
+	MSSettingsButton.html = '<span class="glyphicon glyphicon-cog"></span>';
 
-	// NES Top Spacer
-	var NESTopSpacer = new Element('nes-ts', SPACER_TEMPLATE);
-	NESTopSpacer.classes = ['ninja'];
+	// MS New Experiment Button
+	var MSNewExperimentButton = new Element('ms-new-experiment-button', BUTTON_TEMPLATE);
+	MSNewExperimentButton.html = '<span class="glyphicon glyphicon-plus"></span>';
 
 	// OTHER ELEMENTS
+	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
+	var ESMiddleSpacer = new Element('es-ms', SPACER_TEMPLATE);
+	var ESTraySpacer = new Element('es-tray', SPACER_TEMPLATE);
+	ESTraySpacer.specificStyle = {'height':'200px'};
 	var ESTrayContainer = new Element('es-tray-container', '<div id={id}></div>')
 	var ESTraySpinner = new Element('es-tray-spinner', '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />')
+	var NESTopSpacer = new Element('nes-ts', SPACER_TEMPLATE);
+	var MSTopSpacer = new Element('ms-ts', SPACER_TEMPLATE);
 
 	// RENDER
 	// experiment sidebar
 	experimentSidebar.render(body); // order is top to bottom
 	experimentSidebar.renderChild(ESTopSpacer);
 	experimentSidebar.renderChild(ESInProgressButton);
+	experimentSidebar.renderChild(ESSettingsButton);
 	experimentSidebar.renderChild(ESNewExperimentButton);
 	experimentSidebar.renderChild(ESMiddleSpacer);
 	experimentSidebar.renderChild(ESTrayContainer);
@@ -71,6 +91,14 @@ $(document).ready(function() {
 	newExperimentSidebar.renderChild(NESTopSpacer);
 	newExperimentSidebar.renderChild(NESChoosePathButton);
 
+	// mini sidebar
+	miniSidebar.render(body);
+	miniSidebar.renderChild(MSTopSpacer);
+	miniSidebar.renderChild(MSHomeButton);
+	miniSidebar.renderChild(MSInProgressButton);
+	miniSidebar.renderChild(MSSettingsButton);
+	miniSidebar.renderChild(MSNewExperimentButton);
+
 	// Need to store application context so it can be recreated.
 
 	///////////////////////////////////
@@ -79,6 +107,7 @@ $(document).ready(function() {
 
 	ESInProgressButton.click(function (model) {});
 	ESNewExperimentButton.click(function (model) {});
+	MSHomeButton.click(function (model) {});
 
 	// The text input field relies on an out of view input field that can be copied. It's quite a hack.
 	$('#name-file-menu-button').click(function () {
