@@ -9,19 +9,43 @@ $(document).ready(function() {
 	///////////////
 
 	// SIDEBARS
+	// experiment sidebar
 	var experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
-	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
+	experimentSidebar.states[HOME_STATE] = {'left':'0px'};
+	experimentSidebar.states[NEW_EXPERIMENT_STATE] = {'left':'100px'};
+
+	// BUTTONS
+	// ES Home Button
 	var ESHomeButton = new Element('es-home-button', BUTTON_TEMPLATE);
 	ESHomeButton.html = 'Home';
-	var ESNewExperimentButton = new Element('es-new-experiment-button', BUTTON_TEMPLATE);
-	ESNewExperimentButton.html = 'New experiment';
+	ESHomeButton.stateChanger[HOME_STATE] = NEW_EXPERIMENT_STATE;
+	ESHomeButton.stateChanger[NEW_EXPERIMENT_STATE] = HOME_STATE;
+	ESHomeButton.defaultState = {};
 
+	// ES New Experiment Button
+	var ESNewExperimentButton = new Element('es-new-experiment-button', BUTTON_TEMPLATE);
+	ESNewExperimentButton.classes = [];
+	ESNewExperimentButton.specificStyle = {};
+	ESNewExperimentButton.properties = {};
+	ESNewExperimentButton.html = 'New experiment';
+	ESNewExperimentButton.stateChanger[HOME_STATE] = NEW_EXPERIMENT_STATE;
+	ESNewExperimentButton.stateChanger[NEW_EXPERIMENT_STATE] = HOME_STATE;
+	ESNewExperimentButton.defaultState = {};
+
+	// SPACERS
+	// ES Top Spacer
+	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
+
+	// RENDER
+	// experiment sidebar
 	experimentSidebar.render(body);
 	experimentSidebar.renderChild(ESTopSpacer);
 	experimentSidebar.renderChild(ESHomeButton);
 	experimentSidebar.renderChild(ESNewExperimentButton);
 
-	ESNewExperimentButton.click(newExperimentState);
+	// BIND - must be done after render
+	ESNewExperimentButton.click(function () {});
+	ESHomeButton.click(function () {});
 
 	// Need to store application context so it can be recreated.
 
