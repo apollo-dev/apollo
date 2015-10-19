@@ -78,6 +78,13 @@ button:focus {
 	border-right: 1px solid #CCC;
 }
 
+.btn.notouch {
+	cursor: default;
+	border-bottom: 1px solid #CCC;
+	background-color: white;
+	box-shadow: none;
+}
+
 /*
 
 Sometimes space is needed without button functionality. Spacers are based on the height of the x+- buttons.

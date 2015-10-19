@@ -7,12 +7,17 @@ var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
 // States
 var HOME_STATE = 'HS';
 var NEW_EXPERIMENT_STATE = 'NES';
+var NEW_EXPERIMENT_STATE_INFO = 'NES-I';
+var NEW_EXPERIMENT_STATE_NORMAL = 'NES-N';
+var NEW_EXPERIMENT_STATE_PREVIEW = 'NES-P';
+var NEW_EXPERIMENT_STATE_CREATED = 'NES-C';
 var IN_PROGRESS_STATE = 'IPS';
 
 // global
 var body = $('body');
 var elements = [];
-var defaultState = {'css': {'left':'-500px'}, 'time':300};
+var defaultAnimationTime = 300;
+var defaultState = {'css': {'left':'-500px'}};
 
 // Definitions
 // var Button = new Element('button-id', BUTTON_TEMPLATE);
@@ -21,8 +26,8 @@ var defaultState = {'css': {'left':'-500px'}, 'time':300};
 // Button.properties = {none-style properties};
 // Button.html = 'Home';
 // Button.states[HOME_STATE] = {animatable css};
-// Button.stateChanger[HOME_STATE] = NEW_EXPERIMENT_STATE;
-// Button.stateChanger[NEW_EXPERIMENT_STATE] = HOME_STATE;
+// Button.stateSwitch[HOME_STATE] = NEW_EXPERIMENT_STATE;
+// Button.stateSwitch[NEW_EXPERIMENT_STATE] = HOME_STATE;
 // Button.preRenderFunction = function () {};
 // Button.postRenderFunction = function () {};
 
@@ -40,7 +45,7 @@ function Element (id, template) {
 	// state properties
 	this.state = HOME_STATE;
 	this.states = {};
-	this.stateChanger = {};
+	this.stateSwitch = {};
 
 	// link to DOM
 	this.model = function () {
@@ -56,7 +61,21 @@ function Element (id, template) {
 		this.state = stateName;
 		var newState = this.states[this.state];
 		if (!($.isEmptyObject(newState))) {
-			this.model().animate(newState['css'], newState['time']);
+			var time, fn;
+			if (newState.hasOwnProperty('css')) {
+				if (newState.hasOwnProperty('time')) {
+					time = newState['time'];
+				} else {
+					time = defaultAnimationTime;
+				}
+
+				this.model().animate(newState['css'], time);
+			}
+
+			if (newState.hasOwnProperty('fn')) {
+				fn = newState['fn'];
+				fn(this.model());
+			}
 		}
 
 	}
@@ -102,22 +121,28 @@ function Element (id, template) {
 	this.click = function (fn) {
 		var element = this;
 
-		this.model().on('click', function () {
+		this.model().on('click', function (e) {
 			// impose global changes
-			changeState(element.stateChanger[element.state]);
+			changeState(element.stateSwitch[element.state]);
 
 			// more specific actions
 			fn(element.model());
 		});
-	}
+	};
+
+	this.once = function (fn) {
+		fn(this.model());
+	};
 
 	// add to array
 	elements.push(this);
 }
 
 function changeState (stateName) {
-	for (lm in elements) {
-		var element = elements[lm];
-		element.changeState(stateName);
+	if (typeof stateName !== 'undefined') { // not-stateless thing is clicked
+		for (lm in elements) {
+			var element = elements[lm];
+			element.changeState(stateName);
+		}
 	}
 }

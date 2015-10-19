@@ -34,3 +34,20 @@ body {
   right: 20px;
 	cursor: default;
 }
+
+/* MISC */
+#nes-name-experiment-button span {
+
+}
+
+#nes-name-experiment-input {
+	position: fixed;
+	left: -500px;
+}
+
+#nes-name-experiment-cursor {
+	position: relative;
+	top: -1px;
+	height: 20px;
+	display: none;
+}

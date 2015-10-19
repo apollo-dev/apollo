@@ -46,7 +46,7 @@ def create_experiment(request):
 
 			experiment.get_templates()
 
-			return HttpResponse('created')
+			return JsonResponse({'name': experiment.name, 'status':'created'})
 
 		else:
-			return HttpResponse('exists')
+			return JsonResponse({'name': experiment.name, 'status':'exists'})
