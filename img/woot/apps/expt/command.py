@@ -50,3 +50,19 @@ def create_experiment(request):
 
 		else:
 			return JsonResponse({'name': experiment.name, 'status':'exists'})
+
+@csrf_exempt
+def extract_experiment_details(request, experiment_name):
+	if request.method == 'GET':
+		# get experiment dimensions in Ch and T
+		# get list of series names
+
+		return JsonResponse()
+
+@csrf_exempt
+def generate_series_preview(request, experiment_name, series_name):
+	if request.method == 'GET':
+		# get experiment dimensions in Ch and T
+		# get list of series names
+
+		return JsonResponse()

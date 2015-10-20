@@ -36,10 +36,6 @@ body {
 }
 
 /* MISC */
-#nes-name-experiment-button span {
-
-}
-
 #nes-name-experiment-input {
 	position: fixed;
 	left: -500px;

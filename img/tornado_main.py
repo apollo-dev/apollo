@@ -11,13 +11,21 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 import tornado.wsgi
+import json
 if django.VERSION[1] > 5:
   django.setup()
 
-define('port', type=int, default=8090)
-
 def main():
   parse_command_line()
+
+  # open json settings file
+  port = 8090
+  with open('./settings.json') as json_file:
+    json_data = json.load(json_file)
+    port = int(json_data['port'])
+
+  define('port', type=int, default=port)
+
   wsgi_app = tornado.wsgi.WSGIContainer(django.core.handlers.wsgi.WSGIHandler())
   tornado_app = tornado.web.Application([
     ('.*', tornado.web.FallbackHandler, dict(fallback=wsgi_app)),

@@ -16,8 +16,8 @@ var IN_PROGRESS_STATE = 'IPS';
 // global
 var body = $('body');
 var elements = [];
-var defaultAnimationTime = 300;
-var defaultState = {'css': {'left':'-500px'}};
+var defaultAnimationTime = 400;
+var defaultState = {'css': {'left':'-1000px'}};
 
 // Definitions
 // var Button = new Element('button-id', BUTTON_TEMPLATE);

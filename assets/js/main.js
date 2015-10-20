@@ -9,6 +9,7 @@ $(document).ready(function() {
 	/////////////// classes, specificStyle, properties, html, states, stateSwitch, preRenderFunction, postRenderFunction
 
 	// SIDEBARS
+
 	// experiment sidebar
 	var experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
 	experimentSidebar.states[HOME_STATE] = {'css':{'left':'0px'}};
@@ -27,6 +28,16 @@ $(document).ready(function() {
 	miniSidebar.specificStyle = defaultState['css'];
 	miniSidebar.states[HOME_STATE] = defaultState;
 	miniSidebar.states[NEW_EXPERIMENT_STATE] = {'css':{'left':'0px'}};
+
+	// series sidebar
+	var seriesSidebar = new Element('series-sidebar', SIDEBAR_TEMPLATE);
+	seriesSidebar.classes = ['maxi'];
+	seriesSidebar.specificStyle = {'left':'-500px','z-index':'-1'};
+	seriesSidebar.states[HOME_STATE] = defaultState;
+	seriesSidebar.states[NEW_EXPERIMENT_STATE_CREATED] = {'css':{'left':'301px'}, 'fn':function () {
+		// as soon as the series sidebar appears (which can only happen if ou make a new experiment),
+		// 
+	}};
 
 	// BUTTONS
 	// ES In Progress Button
@@ -129,6 +140,10 @@ $(document).ready(function() {
 	var MSNewExperimentButton = new Element('ms-new-experiment-button', BUTTON_TEMPLATE);
 	MSNewExperimentButton.html = '<span class="glyphicon glyphicon-plus"></span>';
 
+	// SS Preview Loading Button
+	var SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
+	SSPreviewLoadingButton.classes = ['notouch'];
+
 	// OTHER ELEMENTS
 	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
 	var ESMiddleSpacer = new Element('es-ms', SPACER_TEMPLATE);
@@ -137,6 +152,7 @@ $(document).ready(function() {
 	var ESTrayContainer = new Element('es-tray-container', '<div id={id}></div>')
 	var ESTraySpinner = new Element('es-tray-spinner', '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />')
 	var NESTopSpacer = new Element('nes-ts', SPACER_TEMPLATE);
+	NESTopSpacer.classes = ['top'];
 	var NESMiddleSpacer = new Element('nes-ms', SPACER_TEMPLATE);
 	NESMiddleSpacer.specificStyle = {'display':'none'};
 	NESMiddleSpacer.states[NEW_EXPERIMENT_STATE_PREVIEW] = {'fn':function (model) {
@@ -156,6 +172,12 @@ $(document).ready(function() {
 	}}
 
 	var MSTopSpacer = new Element('ms-ts', SPACER_TEMPLATE);
+	var SSTopSpacer = new Element('ss-ts', SPACER_TEMPLATE);
+	SSTopSpacer.classes = ['top'];
+	var SSTraySpacer = new Element('ss-tray', SPACER_TEMPLATE);
+	SSTraySpacer.specificStyle = {'height':'200px'};
+	var SSTrayContainer = new Element('ss-tray-container', '<div id={id}></div>')
+	var SSTraySpinner = new Element('ss-tray-spinner', '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />')
 
 	// RENDER
 	// experiment sidebar
@@ -188,6 +210,13 @@ $(document).ready(function() {
 	miniSidebar.renderChild(MSInProgressButton);
 	miniSidebar.renderChild(MSSettingsButton);
 	miniSidebar.renderChild(MSNewExperimentButton);
+
+	// series sidebar
+	seriesSidebar.render(body);
+	seriesSidebar.renderChild(SSTopSpacer);
+	seriesSidebar.renderChild(SSTrayContainer);
+	SSTrayContainer.renderChild(SSTraySpacer);
+	SSTraySpacer.renderChild(SSTraySpinner);
 
 	// Need to store application context so it can be recreated.
 
