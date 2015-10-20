@@ -36,7 +36,7 @@ $(document).ready(function() {
 	seriesSidebar.states[HOME_STATE] = defaultState;
 	seriesSidebar.states[NEW_EXPERIMENT_STATE_CREATED] = {'css':{'left':'301px'}, 'fn':function () {
 		// as soon as the series sidebar appears (which can only happen if ou make a new experiment),
-		// 
+		//
 	}};
 
 	// BUTTONS
@@ -143,6 +143,7 @@ $(document).ready(function() {
 	// SS Preview Loading Button
 	var SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
 	SSPreviewLoadingButton.classes = ['notouch'];
+	SSPreviewLoadingButton.html = 'Generating series previews..';
 
 	// OTHER ELEMENTS
 	var ESTopSpacer = new Element('es-ts', SPACER_TEMPLATE);
@@ -175,6 +176,7 @@ $(document).ready(function() {
 	var SSTopSpacer = new Element('ss-ts', SPACER_TEMPLATE);
 	SSTopSpacer.classes = ['top'];
 	var SSTraySpacer = new Element('ss-tray', SPACER_TEMPLATE);
+	SSTraySpacer.classes = ['tray'];
 	SSTraySpacer.specificStyle = {'height':'200px'};
 	var SSTrayContainer = new Element('ss-tray-container', '<div id={id}></div>')
 	var SSTraySpinner = new Element('ss-tray-spinner', '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />')
@@ -217,6 +219,7 @@ $(document).ready(function() {
 	seriesSidebar.renderChild(SSTrayContainer);
 	SSTrayContainer.renderChild(SSTraySpacer);
 	SSTraySpacer.renderChild(SSTraySpinner);
+	seriesSidebar.renderChild(SSPreviewLoadingButton);
 
 	// Need to store application context so it can be recreated.
 
@@ -352,17 +355,28 @@ $(document).ready(function() {
 			ESTraySpacer.model().fadeOut(1000);
 
 			// for every experiment in data, make a new button
-			for (i in data) {
-				var experimentName = data[i];
-				var experimentButton = new Element('es-experiment-button-{0}'.format(experimentName), BUTTON_TEMPLATE);
-				experimentButton.classes = ['btn-experiment'];
-				experimentButton.properties['experiment'] = experimentName;
-				experimentButton.html = 'Experiment: {0}'.format(experimentName)
-				experimentButton.postRenderFunction = function (model) {
+			if (data.length !== 0) {
+				for (i in data) {
+					var experimentName = data[i];
+					var experimentButton = new Element('es-experiment-button-{0}'.format(experimentName), BUTTON_TEMPLATE);
+					experimentButton.classes = ['btn-experiment'];
+					experimentButton.properties['experiment'] = experimentName;
+					experimentButton.html = 'Experiment: {0}'.format(experimentName)
+					experimentButton.postRenderFunction = function (model) {
+						model.css({'opacity':'0'});
+						model.delay(1000).animate({'opacity':'1'}, 1000);
+					}
+					ESTrayContainer.renderChild(experimentButton);
+				}
+			} else {
+				var nonExperimentButton = new Element('es-non-experiment-button', BUTTON_TEMPLATE);
+				nonExperimentButton.classes = ['notouch']
+				nonExperimentButton.html = 'No experiments';
+				nonExperimentButton.postRenderFunction = function (model) {
 					model.css({'opacity':'0'});
 					model.delay(1000).animate({'opacity':'1'}, 1000);
 				}
-				ESTrayContainer.renderChild(experimentButton);
+				ESTrayContainer.renderChild(nonExperimentButton);
 			}
 		});
 	};

@@ -101,17 +101,11 @@ Sometimes space is needed without button functionality. Spacers are based on the
 	position: relative;
 	width: 200px;
 	left: 25px;
+}
+
+.sidebar.maxi .spacer.tray {
 	border-right: 1px solid #CCC;
 	border-left: 1px solid #CCC;
-}
-
-.spacer.top {
-	border-top: 1px solid #CCC;
-}
-
-.sidebar.maxi .spacer.top {
-	border-right: 0px;
-	border-left: 0px;
 }
 
 /*
