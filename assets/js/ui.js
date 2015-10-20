@@ -6,12 +6,6 @@ var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
 
 // States
 var HOME_STATE = 'HS';
-var NEW_EXPERIMENT_STATE = 'NES';
-var NEW_EXPERIMENT_STATE_INFO = 'NES-I';
-var NEW_EXPERIMENT_STATE_NORMAL = 'NES-N';
-var NEW_EXPERIMENT_STATE_PREVIEW = 'NES-P';
-var NEW_EXPERIMENT_STATE_CREATED = 'NES-C';
-var IN_PROGRESS_STATE = 'IPS';
 
 // global
 var body = $('body');

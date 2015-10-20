@@ -54,10 +54,12 @@ def create_experiment(request):
 @csrf_exempt
 def extract_experiment_details(request, experiment_name):
 	if request.method == 'GET':
-		# get experiment dimensions in Ch and T
+		# get experiment image size, total duration
+		
+
 		# get list of series names
 
-		return JsonResponse()
+		return JsonResponse({'total_time':'15.7', 'number_of_series':'10', 'image_size':['512', '512']})
 
 @csrf_exempt
 def generate_series_preview(request, experiment_name, series_name):

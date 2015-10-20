@@ -97,6 +97,12 @@ Sometimes space is needed without button functionality. Spacers are based on the
 	border-bottom: 1px solid #CCC;
 }
 
+.spacer.content {
+	padding-left: 10px;
+	padding-top: 10px;
+
+}
+
 .sidebar.maxi .spacer {
 	position: relative;
 	width: 200px;

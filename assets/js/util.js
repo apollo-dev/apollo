@@ -1,7 +1,7 @@
 function ajax (type, url, data, callback) {
 	var ajax_params = {
 		type: type,
-		url:'http://localhost:' + settings['port'] + '/expt/commands/' + url + '',
+		url:'http://localhost:{0}/expt/commands/{1}/'.format(settings['port'], url),
 		success: function (data, textStatus, XMLHttpRequest) {
 			callback(data);
 		},
@@ -15,6 +15,6 @@ function ajax (type, url, data, callback) {
 	if (!($.isEmptyObject(data))) { // allow for no data to be sent with a GET request for example.
 		ajax_params['data'] = data;
 	}
-	
+
 	$.ajax(ajax_params);
 };
