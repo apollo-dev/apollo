@@ -254,7 +254,7 @@ $(document).ready(function() {
 		});
 
 	}};
-	
+
 	NESTraySpinner = new Element('nes-tray-spinner', '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />')
 
 	// NES RENDER
@@ -356,7 +356,12 @@ $(document).ready(function() {
 	seriesSidebar.states[HOME_STATE] = defaultState;
 	seriesSidebar.states[NEW_EXPERIMENT_STATE_PREVIEW_START] = {'css':{'left':'301px'}, 'fn':function () {
 		// as soon as the series sidebar appears (which can only happen if you make a new experiment),
-		//
+		// a request needs to be sent for the list of series
+		ajax('get', 'list_series/{0}'.format(experiment_name), {}, function (data) {
+			// Make a series preview loader for each series in the list
+			// data is list of series names
+			
+		});
 	}};
 
 	// SS Preview Loading Button

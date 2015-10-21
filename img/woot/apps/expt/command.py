@@ -54,17 +54,25 @@ def create_experiment(request):
 @csrf_exempt
 def extract_experiment_details(request, experiment_name):
 	if request.method == 'GET':
-		# get experiment image size, total duration
-		
+		# get experiment image size, total duration, number of series
 
-		# get list of series names
+		# for each series make a series object
 
 		return JsonResponse({'total_time':'15.7', 'number_of_series':'10', 'image_size':['512', '512']})
 
 @csrf_exempt
+def list_series(request, experiment_name):
+	if request.method == 'GET':
+		experiment = Experiment.obejcts.get(name=experiment_name)
+		return JsonResponse([series.name for series in experiment.series.all()], safe=False)
+
+@csrf_exempt
 def generate_series_preview(request, experiment_name, series_name):
 	if request.method == 'GET':
-		# get experiment dimensions in Ch and T
-		# get list of series names
+
 
 		return JsonResponse()
+
+@csrf_exempt
+def get_series_details(request, experiment_name, series_name):
+	if request.method == 'GET':
