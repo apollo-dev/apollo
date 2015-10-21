@@ -74,6 +74,7 @@ class Template(models.Model):
 	def dict(self, string):
 		return self.match(string).groupdict()
 
+class Path(models.Model):
 	# connections
 	experiment = models.ForeignKey(Experiment, related_name='paths')
 	series = models.ForeignKey(Series, related_name='paths')
