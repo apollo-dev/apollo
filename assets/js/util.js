@@ -16,5 +16,5 @@ function ajax (type, url, data, callback) {
 		ajax_params['data'] = data;
 	}
 
-	$.ajax(ajax_params);
+	return $.ajax(ajax_params);
 };

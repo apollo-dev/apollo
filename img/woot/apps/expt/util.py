@@ -34,3 +34,9 @@ def str_value(v, vs):
 
 	diff = vs_str_len - v_str_len
 	return '{}{}'.format('0'*diff, v)
+
+def block(whole, start, end):
+	start_block = whole[whole.index(start):]
+	block = start_block[:start_block.index(end)]
+
+	return block

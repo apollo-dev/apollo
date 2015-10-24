@@ -31,6 +31,9 @@ DJANGO_ROOT = dirname(abspath(__file__))
 # Absolute filesystem path to the top-level project folder:
 SITE_ROOT = dirname(DJANGO_ROOT)
 
+# Location of BIN directory
+BIN_ROOT = join(dirname(SITE_ROOT), 'bin')
+
 # Site name:
 SITE_NAME = basename(dirname(DJANGO_ROOT))
 

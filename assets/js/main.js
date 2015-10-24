@@ -40,6 +40,7 @@ $(document).ready(function() {
 	var ESTraySpacer;
 	var ESTrayContainer;
 	var ESTraySpinner;
+	var ESExperimentButtonDictionary = {}; // stores experiment buttons with experiment name as key
 
 	experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
 	experimentSidebar.classes = ['maxi'];
@@ -98,7 +99,6 @@ $(document).ready(function() {
 	var newExperimentSidebar;
 	var NESChoosePathButton;
 	var NESNameExperimentButton;
-	var NESChooseInfoPathButton;
 	var NESPreviewButton;
 	var NESExperimentCreatedButton;
 	var NESExperimentNameButton;
@@ -132,19 +132,6 @@ $(document).ready(function() {
 		var input = model.find('input');
 		var content = model.find('span');
 		content.html(input.attr('defaultvalue'));
-	}};
-
-	// NES Choose Lif Path Button
-	NESChooseInfoPathButton = new Element('nes-choose-lif-path-button', BUTTON_TEMPLATE);
-	NESChooseInfoPathButton.specificStyle = {'display':'none'};
-	NESChooseInfoPathButton.html = 'Choose info file...';
-	NESChooseInfoPathButton.states[NEW_EXPERIMENT_STATE_INFO] = {'fn':function (model) {
-		model.fadeIn(defaultAnimationTime);
-	}};
-	NESChooseInfoPathButton.states[NEW_EXPERIMENT_STATE_NORMAL] = {'fn':function (model) {
-		model.fadeOut(defaultAnimationTime);
-		model.html('Choose info file...');
-		model.attr('path', '');
 	}};
 
 	// NES Preview Button
@@ -226,6 +213,15 @@ $(document).ready(function() {
 	NESDetailSpacer = new Element('nes-detail-spacer', SPACER_TEMPLATE);
 	NESDetailSpacer.classes = ['content', 'tray'];
 	NESDetailSpacer.specificStyle = {'display':'none'};
+	NESDetailSpacer.states[NEW_EXPERIMENT_STATE_CREATED] = {'fn':function (model) {
+		model.fadeOut(defaultAnimationTime);
+	}};
+	NESDetailSpacer.states[NEW_EXPERIMENT_STATE] = {'fn':function (model) {
+		model.fadeOut(defaultAnimationTime);
+	}};
+	NESDetailSpacer.states[NEW_EXPERIMENT_STATE_PREVIEW] = {'fn':function (model) {
+		model.fadeOut(defaultAnimationTime);
+	}};
 
 	// NES Other elements
 	NESTrayContainer = new Element('nes-tray-container', '<div id={id}></div>');
@@ -236,12 +232,10 @@ $(document).ready(function() {
 
 		ajax('get', 'extract_experiment_details/{0}'.format(experimentName), {}, function (data) {
 			// expecting back: total_time (float), number_of_series (int), image_size ([])
-			var total_time = data['total_time'];
 			var number_of_series = data['number_of_series'];
-			var image_size = data['image_size'];
 
 			// set html of detail spacer using data
-			NESDetailSpacer.model().html('<p>Total time: {0} hours</p><p>{1} Series</p><p>Image size: {2}x{3}</p>'.format(total_time, number_of_series, image_size[0], image_size[1]));
+			NESDetailSpacer.model().html('<p>{0} Series</p>'.format(number_of_series));
 
 			// remove loading icon and notouch button
 			NESExtractingExperimentDetailsButton.model().fadeOut(1000);
@@ -262,7 +256,6 @@ $(document).ready(function() {
 	newExperimentSidebar.renderChild(NESTopSpacer);
 	newExperimentSidebar.renderChild(NESChoosePathButton);
 	newExperimentSidebar.renderChild(NESNameExperimentButton);
-	newExperimentSidebar.renderChild(NESChooseInfoPathButton);
 	newExperimentSidebar.renderChild(NESMiddleSpacer);
 	newExperimentSidebar.renderChild(NESPreviewButton);
 	newExperimentSidebar.renderChild(NESBottomSpacer);
@@ -344,23 +337,98 @@ $(document).ready(function() {
 
 	// vars
 	var seriesSidebar;
-	var SSPreviewLoadingButton;
 	var SSTopSpacer;
-	var SSTraySpacer;
 	var SSTrayContainer;
+	var SSTraySpacer;
 	var SSTraySpinner;
+	var SSPreviewLoadingButton;
+	var SSSeriesPreviewTrayDictionary = {}; // stores elements with series names as keys
+	var SSSeriesPreviewContentTrayDictionary = {};
+	var SSSeriesPreviewButtonDictionary = {};
 
 	seriesSidebar = new Element('series-sidebar', SIDEBAR_TEMPLATE);
 	seriesSidebar.classes = ['maxi'];
 	seriesSidebar.specificStyle = {'left':'-500px','z-index':'-1'};
 	seriesSidebar.states[HOME_STATE] = defaultState;
-	seriesSidebar.states[NEW_EXPERIMENT_STATE_PREVIEW_START] = {'css':{'left':'301px'}, 'fn':function () {
+	seriesSidebar.states[NEW_EXPERIMENT_STATE_PREVIEW_START] = {'css':{'left':'301px'}, 'fn':function (model) {
 		// as soon as the series sidebar appears (which can only happen if you make a new experiment),
 		// a request needs to be sent for the list of series
-		ajax('get', 'list_series/{0}'.format(experiment_name), {}, function (data) {
+		var experimentName = NESNameExperimentButton.model().find('span').html();
+
+		ajax('get', 'list_series/{0}'.format(experimentName), {}, function (data) {
+			// remove placeholding interface elements
+			SSTraySpacer.model().fadeOut(defaultAnimationTime);
+			SSPreviewLoadingButton.model().fadeOut(defaultAnimationTime);
+
+			// replace interface elements with temporary placeholders
+			for (s in data) {
+				var seriesName = data[s];
+				// define trays and spinners and be sure to add the states for fading out when the previews have loaded.
+				// post render should fade them in
+				var seriesPreviewTray = new Element('ss-preview-tray-{0}'.format(seriesName), SPACER_TEMPLATE);
+				seriesPreviewTray.classes = ['tray']
+				seriesPreviewTray.specificStyle = {'height':'200px'};
+				seriesPreviewTray.postRenderFunction = function (model) {
+					model.css({'opacity':'0'});
+					model.delay(1000).animate({'opacity':'1'}, 1000);
+				}
+				SSSeriesPreviewTrayDictionary[seriesName] = seriesPreviewTray;
+				seriesSidebar.renderChild(seriesPreviewTray);
+
+				var seriesPreviewSpinner = new Element('ss-preview-spinner-{0}'.format(seriesName), '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />');
+				seriesPreviewTray.renderChild(seriesPreviewSpinner);
+
+				var seriesPreviewButton = new Element('ss-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
+				seriesPreviewButton.html = 'Series {0}'.format(seriesName);
+				seriesPreviewButton.postRenderFunction = function (model) {
+					model.css({'opacity':'0'});
+					model.delay(1000).animate({'opacity':'1'}, 1000);
+				}
+
+				seriesSidebar.renderChild(seriesPreviewButton);
+
+				if (s !== data.length-1) {
+					// insert spacer as well
+					var seriesPreviewSpacer = new Element('ss-preview-spacer-{0}'.format(seriesName), SPACER_TEMPLATE);
+					seriesPreviewSpacer.postRenderFunction = function (model) {
+						model.css({'opacity':'0'});
+						model.delay(1000).animate({'opacity':'1'}, 1000);
+					}
+					seriesSidebar.renderChild(seriesPreviewSpacer);
+				}
+			}
+
 			// Make a series preview loader for each series in the list
 			// data is list of series names
-			
+			var firstSeriesName = data[0];
+			var insertPreview = function (data) {
+				var imgPath = data['img_path'];
+				var experimentName = data['experiment_name'];
+				var seriesName = data['series_name'];
+
+				// fade spinner
+				var tray = SSSeriesPreviewTrayDictionary[seriesName];
+				tray.model().find('.spinner').fadeOut(defaultAnimationTime, function () {
+					var previewImage = new Element('ss-preview-image-{0}'.format(seriesName), '<img id={id} style="width:100%;" />');
+					previewImage.properties['src'] = imgPath;
+					previewImage.postRenderFunction = function (model) {
+						model.css({'opacity':'0'});
+						model.delay(1000).animate({'opacity':'1'}, 1000);
+					};
+
+					tray.renderChild(previewImage);
+					tray.model().animate({'height': 'auto'}, defaultAnimationTime);
+				});
+			};
+
+			ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, firstSeriesName), {}, insertPreview).then(function () {
+				for (s in data) {
+					if (s !== 0) {
+						seriesName = data[s];
+						ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, seriesName), insertPreview);
+					}
+				}
+			});
 		});
 	}};
 
@@ -396,21 +464,14 @@ $(document).ready(function() {
 	ESNewExperimentButton.click(function (model) {});
 
 	NESChoosePathButton.click(function (model) {
-		dialog.showOpenDialog({properties:['openFile','openDirectory']}, function (filenames) {
+		dialog.showOpenDialog({properties:['openFile']}, function (filenames) {
 			if (typeof filenames !== 'undefined') {
 				if (filenames.length === 1) {
 					var path = filenames[0];
 					var filename = path.replace(/.*(\/|\\)/, '');
-					if (filename.indexOf(".") === -1) { // is directory
-						model.html("Directory: " + filename + "/");
-						model.attr('filetype','D');
-						changeState(NEW_EXPERIMENT_STATE_INFO);
-					} else {
-						model.html("File: " + filename);
-						model.attr('filetype','F');
-						changeState(NEW_EXPERIMENT_STATE_NORMAL);
-						changeState(NEW_EXPERIMENT_STATE_PREVIEW);
-					}
+					model.html("File: " + filename);
+					model.attr('filetype','F');
+					changeState(NEW_EXPERIMENT_STATE_PREVIEW);
 					model.attr('path', path);
 				}
 			}
@@ -452,20 +513,6 @@ $(document).ready(function() {
 		});
 	});
 
-	NESChooseInfoPathButton.click(function (model) {
-		dialog.showOpenDialog({properties:['openFile']}, function (filenames) {
-			if (typeof filenames !== 'undefined') {
-				if (filenames.length === 1) {
-					var path = filenames[0];
-					var filename = path.replace(/.*(\/|\\)/, '');
-					model.html("File: " + filename);
-					model.attr('path', path);
-					changeState(NEW_EXPERIMENT_STATE_PREVIEW);
-				}
-			}
-		});
-	});
-
 	NESPreviewButton.click(function (model) {
 		var data = {};
 		var error = false;
@@ -480,14 +527,7 @@ $(document).ready(function() {
 			NESNameExperimentButton.model().removeClass('btn-danger');
 			error = false;
 
-			data['experiment_path'] = NESChoosePathButton.model().attr('path');
-			data['experiment_file_type'] = NESChoosePathButton.model().attr('filetype');
-
-			if (NESChoosePathButton.model().attr('filetype') === 'D') {
-				data['experiment_inf_path'] = NESChooseInfoPathButton.model().attr('path');
-			} else {
-				data['experiment_inf_path'] = '';
-			}
+			data['lif_path'] = NESChoosePathButton.model().attr('path');
 		}
 
 		if (!(error)) {
@@ -495,7 +535,6 @@ $(document).ready(function() {
 			ajax('post', 'create_experiment', data, function (data) {
 				var experimentName = data['name'];
 				var status = data['status'];
-				console.log(data);
 
 				// update html of buttons
 				NESExperimentCreatedButton.model().html('Experiment {0}'.format(status));
@@ -532,6 +571,7 @@ $(document).ready(function() {
 						model.css({'opacity':'0'});
 						model.delay(1000).animate({'opacity':'1'}, 1000);
 					}
+					ESExperimentButtonDictionary[experimentName] = experimentButton;
 					ESTrayContainer.renderChild(experimentButton);
 				}
 			} else {
@@ -542,6 +582,7 @@ $(document).ready(function() {
 					model.css({'opacity':'0'});
 					model.delay(1000).animate({'opacity':'1'}, 1000);
 				}
+				ESExperimentButtonDictionary[experimentName] = experimentButton;
 				ESTrayContainer.renderChild(nonExperimentButton);
 			}
 

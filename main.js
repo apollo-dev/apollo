@@ -55,7 +55,13 @@ console.log('tornado process id: ' + tornado_proc.pid);
 
 tornado_proc.stderr.on('data',
   function (data) {
-	  console.log('tail output: ' + data);
+	  console.log('server_err: ' + data);
+  }
+);
+
+tornado_proc.stdout.on('data',
+  function (data) {
+	  console.log('server_output: ' + data);
   }
 );
 

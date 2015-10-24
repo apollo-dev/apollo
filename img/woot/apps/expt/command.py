@@ -10,7 +10,7 @@ from django.template import Template
 from django.views.decorators.csrf import csrf_exempt
 
 # local
-from apps.expt.models import Experiment
+from apps.expt.models import Experiment, LifFile
 
 # util
 import json
@@ -31,21 +31,18 @@ def create_experiment(request):
 
 		# create experiment using lif path, experiment directory path, inf file name, and experiment name
 		experiment_name = request.POST.get('experiment_name')
-		experiment_path = request.POST.get('experiment_path')
-		experiment_file_type = request.POST.get('experiment_file_type')
-		experiment_inf_path = request.POST.get('experiment_inf_path')
+		lif_path = request.POST.get('lif_path')
 
 		experiment, experiment_created = Experiment.objects.get_or_create(name=experiment_name)
 
 		if experiment_created:
-			if experiment_file_type == 'D':
-				experiment.storage_path = experiment_path
-				experiment.inf_path = experiment_inf_path
-			else:
-				experiment.lif_path = experiment_path
-
-			experiment.get_templates()
-
+			experiment.lif_path = lif_path
+			lif = LifFile.objects.create(experiment=experiment)
+			experiment.lif = lif
+			lif.save()
+			experiment.make_paths()
+			experiment.make_templates()
+			experiment.save()
 			return JsonResponse({'name': experiment.name, 'status':'created'})
 
 		else:
@@ -55,24 +52,44 @@ def create_experiment(request):
 def extract_experiment_details(request, experiment_name):
 	if request.method == 'GET':
 		# get experiment image size, total duration, number of series
+		experiment = Experiment.objects.get(name=experiment_name)
+		series_list = experiment.list_series()
 
 		# for each series make a series object
+		for series_name in series_list:
+			series, series_created = experiment.series.get_or_create(name=series_name)
 
-		return JsonResponse({'total_time':'15.7', 'number_of_series':'10', 'image_size':['512', '512']})
+		return JsonResponse({'number_of_series':str(len(series_list))})
 
 @csrf_exempt
 def list_series(request, experiment_name):
 	if request.method == 'GET':
-		experiment = Experiment.obejcts.get(name=experiment_name)
+		experiment = Experiment.objects.get(name=experiment_name)
 		return JsonResponse([series.name for series in experiment.series.all()], safe=False)
+
+@csrf_exempt
+def series_metadata(request, experiment_name, series_name):
+	if request.method == 'GET':
+		experiment = Experiment.objects.get(name=experiment_name)
+		series = experiment.series.get(name=series_name)
+
+		# get series metadata from LifFile
+		# rs, cs, zs, ts, channel names
+		# rmop, cmop, zmop, tpf
+		series_metadata = series.metadata()
 
 @csrf_exempt
 def generate_series_preview(request, experiment_name, series_name):
 	if request.method == 'GET':
+		experiment = Experiment.objects.get(name=experiment_name)
+		series = experiment.series.get(name=series_name)
 
+		# get series metadata from LifFile
+		# rs, cs, zs, ts, channel names
+		# rmop, cmop, zmop, tpf
+		series_metadata = series.metadata()
 
-		return JsonResponse()
+		# get image path from LifFile
+		preview_img_path = series.preview_image()
 
-@csrf_exempt
-def get_series_details(request, experiment_name, series_name):
-	if request.method == 'GET':
+		return JsonResponse({'experiment_name':experiment_name, 'series_name':series_name, 'img_path':preview_img_path})

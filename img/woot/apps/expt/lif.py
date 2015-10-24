@@ -1,6 +1,28 @@
 # apps.expt.lif
 #
 
+# django
+from django.conf import settings
+
+# util
+from os.path import join
+
+class LifFile():
+	def __init__(self, lif_path):
+		self.lif_path = lif_path
+
+	def extract_metadata(self):
+		#
+		pass
+
+	def get_series_metadata(self, series_name):
+		# rs, cs, zs, ts, channels
+		#
+		pass
+
+	def extract_series_source(self, series_name):
+		pass
+
 def series_metadata(file_name, series_name):
 
 	def block(whole, start, end):

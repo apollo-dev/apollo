@@ -305,16 +305,3 @@ class Mask(models.Model):
 		array = imread(self.url)
 		self.array = (exposure.rescale_intensity(array * 1.0) * (len(np.unique(array)) - 1)).astype(int) # rescale to contain integer grayscale id's.
 		return self.array
-
-	def save_array(self, root, template):
-		# 1. iterate through planes in bulk
-		# 2. for each plane, save plane based on root, template
-		# 3. create path with url and add to gon
-
-		if not os.path.exists(root):
-			os.makedirs(root)
-
-		self.file_name = template.rv.format(self.experiment.name, self.series.name, self.channel.name, str_value(self.t, self.series.ts), str_value(self.z, self.series.zs))
-		self.url = os.path.join(root, self.file_name)
-
-		imsave(self.url, self.array)
