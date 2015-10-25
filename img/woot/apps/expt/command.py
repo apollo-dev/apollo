@@ -89,7 +89,11 @@ def generate_series_preview(request, experiment_name):
 		for series in experiment.series.all():
 			series_metadata = series.metadata()
 
-			# get image path from LifFile
-			preview_img_path = series.preview_image()
+		# make preview images
+		experiment.make_preview_images()
 
-		return JsonResponse({'experiment_name':experiment_name, 'series_paths':{series.name:series.preview_path for series in experiment.series.all()}})
+		# data
+		series_list = [series.name for series in experiment.series.all()]
+		series_path_dictionary = {series.name:{'path':series.preview_path,'half':'true' if not series.rs==series.cs else 'false'} for series in experiment.series.all()}
+
+		return JsonResponse({'experiment_name':experiment_name, 'series_list':series_list, 'series_paths':series_path_dictionary})

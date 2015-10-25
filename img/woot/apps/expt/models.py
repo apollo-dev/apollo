@@ -58,6 +58,9 @@ class Experiment(models.Model):
 	def list_series(self):
 		return self.lif.series_list()
 
+	def make_preview_images(self):
+		self.lif.preview_images()
+
 class Series(models.Model):
 	# connections
 	experiment = models.ForeignKey(Experiment, related_name='series')
@@ -263,7 +266,7 @@ class LifFile(models.Model):
 
 		return series_metadata
 
-	def experiment_preview_images(self):
+	def preview_images(self):
 		# this unfortunately has to been done in one lump for speed and consistency purposes.
 		# The preview image for the processed series (composite) can be done later with more
 		# information.
@@ -271,7 +274,7 @@ class LifFile(models.Model):
 		# 1. get 00 images from each series
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(self.experiment.preview_path, '{}_s%s_preview.tiff'.format(self.experiment.name))
-		call('{bf} -range 0 0 {path} {out}'.format(bf=bfconvert, path=self.experiment.lif_path, out=fake_preview_path), shell=True)
+		call('{bf} -range 0 0 -autoscale {path} {out}'.format(bf=bfconvert, path=self.experiment.lif_path, out=fake_preview_path), shell=True)
 
 		# 2. convert tiff to png for browser
 		for series in self.experiment.series.all():
@@ -282,6 +285,4 @@ class LifFile(models.Model):
 			call('{} {} {}'.format(convert, series_fake_preview_path, series.preview_path), shell=True)
 
 			# 3. remove fake path
-			os.remove(fake_preview_path)
-
-		return [series.preview_path for series in self.experiment.series.all()]
+			os.remove(series_fake_preview_path)

@@ -388,6 +388,9 @@ $(document).ready(function() {
 				seriesSidebar.renderChild(seriesPreviewButton);
 
 				if (s !== data.length-1) {
+					console.log('not end ' + s);
+					console.log(data.length-1);
+
 					// insert spacer as well
 					var seriesPreviewSpacer = new Element('ss-preview-spacer-{0}'.format(seriesName), SPACER_TEMPLATE);
 					seriesPreviewSpacer.postRenderFunction = function (model) {
@@ -400,7 +403,35 @@ $(document).ready(function() {
 
 			// Make a series preview loader for each series in the list
 			// data is list of series names
-			
+			ajax('get', 'generate_series_preview/{0}'.format(experimentName), {}, function (data) {
+				var seriesList = data['series_list'];
+				var seriesPathDictionary = data['series_paths'];
+
+				for (s in seriesList) {
+					var seriesName = seriesList[s];
+					var seriesDictionary = seriesPathDictionary[seriesName];
+					var seriesPath = seriesDictionary['path'];
+					var trayShouldBeHalfHeight = (seriesDictionary['half'] === 'true');
+
+					+function (seriesName, seriesPath) { // IIFE: http://tobyho.com/2011/11/02/callbacks-in-loops/
+						// add image to tray
+						var tray = SSSeriesPreviewTrayDictionary[seriesName];
+						if (trayShouldBeHalfHeight) {
+							tray.model().animate({'height':'100px'});
+						}
+
+						tray.model().find('.spinner').fadeOut(defaultAnimationTime);
+						var previewImage = new Element('ss-preview-image-{0}'.format(seriesName), '<img id={id} style="width:100%;" />');
+						previewImage.properties['src'] = seriesPath;
+						previewImage.postRenderFunction = function (model) {
+							model.css({'opacity':'0'});
+							model.delay(1000).animate({'opacity':'1'}, 1000);
+						};
+
+						tray.renderChild(previewImage);
+					}(seriesName, seriesPath);
+				}
+			});
 
 			// var firstSeriesName = data[0];
 			// var insertPreview = function (data) {
