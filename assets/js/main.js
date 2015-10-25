@@ -400,35 +400,37 @@ $(document).ready(function() {
 
 			// Make a series preview loader for each series in the list
 			// data is list of series names
-			var firstSeriesName = data[0];
-			var insertPreview = function (data) {
-				var imgPath = data['img_path'];
-				var experimentName = data['experiment_name'];
-				var seriesName = data['series_name'];
+			
 
-				// fade spinner
-				var tray = SSSeriesPreviewTrayDictionary[seriesName];
-				tray.model().find('.spinner').fadeOut(defaultAnimationTime, function () {
-					var previewImage = new Element('ss-preview-image-{0}'.format(seriesName), '<img id={id} style="width:100%;" />');
-					previewImage.properties['src'] = imgPath;
-					previewImage.postRenderFunction = function (model) {
-						model.css({'opacity':'0'});
-						model.delay(1000).animate({'opacity':'1'}, 1000);
-					};
-
-					tray.renderChild(previewImage);
-					tray.model().removeAttr('height');
-				});
-			};
-
-			ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, firstSeriesName), {}, insertPreview).then(function () {
-				for (s in data) {
-					if (s !== 0) {
-						seriesName = data[s];
-						ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, seriesName), {}, insertPreview);
-					}
-				}
-			});
+			// var firstSeriesName = data[0];
+			// var insertPreview = function (data) {
+			// 	var imgPath = data['img_path'];
+			// 	var experimentName = data['experiment_name'];
+			// 	var seriesName = data['series_name'];
+			//
+			// 	// fade spinner
+			// 	var tray = SSSeriesPreviewTrayDictionary[seriesName];
+			// 	tray.model().find('.spinner').fadeOut(defaultAnimationTime, function () {
+			// 		var previewImage = new Element('ss-preview-image-{0}'.format(seriesName), '<img id={id} style="width:100%;" />');
+			// 		previewImage.properties['src'] = imgPath;
+			// 		previewImage.postRenderFunction = function (model) {
+			// 			model.css({'opacity':'0'});
+			// 			model.delay(1000).animate({'opacity':'1'}, 1000);
+			// 		};
+			//
+			// 		tray.renderChild(previewImage);
+			// 		tray.model().removeAttr('height');
+			// 	});
+			// };
+			//
+			// ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, firstSeriesName), {}, insertPreview).then(function () {
+			// 	for (s in data) {
+			// 		if (s !== 0) {
+			// 			seriesName = data[s];
+			// 			ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, seriesName), {}, insertPreview);
+			// 		}
+			// 	}
+			// });
 		});
 	}};
 
