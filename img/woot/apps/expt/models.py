@@ -229,9 +229,15 @@ class LifFile(models.Model):
 
 			# 2. rs, cs, zs, ts, rmop, cmop, zmop
 			pixels_line = block(series_block, '<Pixels', '>')
-			pixels_line_template = r'^<.+PhysicalSizeX="(?P<cmop>.+)" PhysicalSizeY="(?P<rmop>.+)" (PhysicalSizeZ="(?P<zmop>.+)" )?SignificantBits=".+" SizeC=".+" SizeT="(?P<ts>.+)" SizeX="(?P<cs>.+)" SizeY="(?P<rs>.+)" SizeZ="(?P<zs>.+)" Type=".+"$'
+			pixels_line_template = r'^<.+PhysicalSizeX="(?P<cmop>.+)" PhysicalSizeY="(?P<rmop>.+)" PhysicalSizeZ="(?P<zmop>.+)" SignificantBits=".+" SizeC=".+" SizeT="(?P<ts>.+)" SizeX="(?P<cs>.+)" SizeY="(?P<rs>.+)" SizeZ="(?P<zs>.+)" Type=".+"$'
+			pixels_line_template_no_Z = r'^<.+PhysicalSizeX="(?P<cmop>.+)" PhysicalSizeY="(?P<rmop>.+)" SignificantBits=".+" SizeC=".+" SizeT="(?P<ts>.+)" SizeX="(?P<cs>.+)" SizeY="(?P<rs>.+)" SizeZ="(?P<zs>.+)" Type=".+"$'
 
-			series_metadata.update(re.match(pixels_line_template, pixels_line).groupdict())
+			if re.match(pixels_line_template, pixels_line) is not None:
+				match_dict = re.match(pixels_line_template, pixels_line).groupdict()
+			else:
+				match_dict = re.match(pixels_line_template_no_Z, pixels_line).groupdict()
+
+			series_metadata.update(match_dict)
 
 			# 3. tpf
 			tpf_in_seconds = 0
@@ -257,29 +263,25 @@ class LifFile(models.Model):
 
 		return series_metadata
 
-	def preview_image(self, series_name):
-		series = self.experiment.series.get(name=series_name)
+	def experiment_preview_images(self):
+		# this unfortunately has to been done in one lump for speed and consistency purposes.
+		# The preview image for the processed series (composite) can be done later with more
+		# information.
 
-		if not series.preview_path:
-			# determine parameters for preview image
-			# - must be from brightfield channel
-			# - must be t0, z-mid
+		# 1. get 00 images from each series
+		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
+		fake_preview_path = join(self.experiment.preview_path, '{}_s%s_preview.tiff'.format(self.experiment.name))
+		call('{bf} -range 0 0 {path} {out}'.format(bf=bfconvert, path=self.experiment.lif_path, out=fake_preview_path), shell=True)
 
-			# 1. extract image and place in the experiment preview_path
-			bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
-			fake_preview_path = join(self.experiment.preview_path, '{}_s{}_preview.tiff'.format(self.experiment.name, series_name))
-
-			call('{bf} -series {series} -range {index} {index} {path} {out}'.format(bf=bfconvert, series=series.name, index=series.preview_image_index, path=self.experiment.lif_path, out=fake_preview_path), shell=True)
-
-			# convert tiff to png for browser
-			series.preview_path = join(self.experiment.preview_path, '{}_s{}_preview.png'.format(self.experiment.name, series_name))
+		# 2. convert tiff to png for browser
+		for series in self.experiment.series.all():
+			series_fake_preview_path = join(self.experiment.preview_path, '{}_s{}_preview.tiff'.format(self.experiment.name, series.name))
+			series.preview_path = join(self.experiment.preview_path, '{}_s{}_preview.png'.format(self.experiment.name, series.name))
 			series.save()
-
 			convert = join(settings.BIN_ROOT, 'convert')
+			call('{} {} {}'.format(convert, series_fake_preview_path, series.preview_path), shell=True)
 
-			call('{} {} {}'.format(convert, fake_preview_path, series.preview_path), shell=True)
-
-			# remove fake path
+			# 3. remove fake path
 			os.remove(fake_preview_path)
 
-		return series.preview_path
+		return [series.preview_path for series in self.experiment.series.all()]

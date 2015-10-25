@@ -79,17 +79,17 @@ def series_metadata(request, experiment_name, series_name):
 		series_metadata = series.metadata()
 
 @csrf_exempt
-def generate_series_preview(request, experiment_name, series_name):
+def generate_series_preview(request, experiment_name):
 	if request.method == 'GET':
 		experiment = Experiment.objects.get(name=experiment_name)
-		series = experiment.series.get(name=series_name)
 
 		# get series metadata from LifFile
 		# rs, cs, zs, ts, channel names
 		# rmop, cmop, zmop, tpf
-		series_metadata = series.metadata()
+		for series in experiment.series.all():
+			series_metadata = series.metadata()
 
-		# get image path from LifFile
-		preview_img_path = series.preview_image()
+			# get image path from LifFile
+			preview_img_path = series.preview_image()
 
-		return JsonResponse({'experiment_name':experiment_name, 'series_name':series_name, 'img_path':preview_img_path})
+		return JsonResponse({'experiment_name':experiment_name, 'series_paths':{series.name:series.preview_path for series in experiment.series.all()}})

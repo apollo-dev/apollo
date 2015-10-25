@@ -417,7 +417,7 @@ $(document).ready(function() {
 					};
 
 					tray.renderChild(previewImage);
-					tray.model().animate({'height': 'auto'}, defaultAnimationTime);
+					tray.model().removeAttr('height');
 				});
 			};
 
@@ -425,7 +425,7 @@ $(document).ready(function() {
 				for (s in data) {
 					if (s !== 0) {
 						seriesName = data[s];
-						ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, seriesName), insertPreview);
+						ajax('get', 'generate_series_preview/{0}/{1}'.format(experimentName, seriesName), {}, insertPreview);
 					}
 				}
 			});
