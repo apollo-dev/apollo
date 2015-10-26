@@ -65,29 +65,19 @@ def extract_experiment_details(request, experiment_name):
 def list_series(request, experiment_name):
 	if request.method == 'GET':
 		experiment = Experiment.objects.get(name=experiment_name)
-		return JsonResponse([series.name for series in experiment.series.all()], safe=False)
-
-@csrf_exempt
-def series_metadata(request, experiment_name, series_name):
-	if request.method == 'GET':
-		experiment = Experiment.objects.get(name=experiment_name)
-		series = experiment.series.get(name=series_name)
-
-		# get series metadata from LifFile
-		# rs, cs, zs, ts, channel names
-		# rmop, cmop, zmop, tpf
-		series_metadata = series.metadata()
-
-@csrf_exempt
-def generate_series_preview(request, experiment_name):
-	if request.method == 'GET':
-		experiment = Experiment.objects.get(name=experiment_name)
 
 		# get series metadata from LifFile
 		# rs, cs, zs, ts, channel names
 		# rmop, cmop, zmop, tpf
 		for series in experiment.series.all():
 			series_metadata = series.metadata()
+
+		return JsonResponse([{'name':series.name, 'title':series.title} for series in experiment.series.all()], safe=False)
+
+@csrf_exempt
+def generate_series_preview(request, experiment_name):
+	if request.method == 'GET':
+		experiment = Experiment.objects.get(name=experiment_name)
 
 		# make preview images
 		experiment.make_preview_images()

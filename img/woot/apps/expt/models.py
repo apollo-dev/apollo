@@ -44,10 +44,9 @@ class Experiment(models.Model):
 		self.inf_path = join(self.img_path, '{}.txt'.format(self.name))
 		self.partial_inf_path = join(self.img_path, '{}_partial.txt'.format(self.name))
 
-		os.makedirs(self.img_path)
-		os.makedirs(self.source_path)
-		os.makedirs(self.composite_path)
-		os.makedirs(self.preview_path)
+		for path in [self.img_path, self.source_path, self.composite_path, self.preview_path]:
+			if not exists(path):
+				os.makedirs(path)
 
 	def make_templates(self):
 		# templates
@@ -122,12 +121,11 @@ class Series(models.Model):
 			'channels':[channel.name for channel in self.channels.all()],
 		}
 
-	def preview_image(self):
-		if not self.preview_path:
-			self.preview_path = self.experiment.lif.preview_image(self.name)
-			self.save()
+	def mid_z(self):
+		return int(self.zs / 2.0)
 
-		return self.preview_path
+	def max_channel(self):
+		return max([int(channel.name) for channel in self.channels.all()])
 
 class PathChannel(models.Model):
 	# connections
@@ -190,8 +188,9 @@ class LifFile(models.Model):
 	def partial_metadata(self):
 		# omit the "-omexml" to only get some of the metadata
 		if not self.partial_metadata_extracted:
-			showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
-			call('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, self.experiment.lif_path, self.experiment.partial_inf_path), shell=True)
+			if not exists(self.experiment.partial_inf_path):
+				showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
+				call('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, self.experiment.lif_path, self.experiment.partial_inf_path), shell=True)
 			self.partial_metadata_extracted = True
 			self.save()
 
@@ -199,8 +198,9 @@ class LifFile(models.Model):
 
 	def metadata(self):
 		if not self.metadata_extracted:
-			showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
-			call('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, self.experiment.lif_path, self.experiment.inf_path), shell=True)
+			if not exists(self.experiment.inf_path):
+				showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
+				call('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, self.experiment.lif_path, self.experiment.inf_path), shell=True)
 			self.metadata_extracted = True
 			self.save()
 
@@ -271,18 +271,31 @@ class LifFile(models.Model):
 		# The preview image for the processed series (composite) can be done later with more
 		# information.
 
-		# 1. get 00 images from each series
-		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
-		fake_preview_path = join(self.experiment.preview_path, '{}_s%s_preview.tiff'.format(self.experiment.name))
-		call('{bf} -range 0 0 -autoscale {path} {out}'.format(bf=bfconvert, path=self.experiment.lif_path, out=fake_preview_path), shell=True)
+		# 1. get range of images from each series
+		# - I have to get all preview images from the series in the same call because the JVM starts and stops every time
+		# it is run, which is annoying. This means I have extract using a call that will not throw an error with any
+		# series. This mean I can't use "timepoint", "z", "channel" as series might not contain these. If I use "range",
+		# it will not throw an error if the range is larger. So, I have decided to use half the maximum z of any
+		# series for the upper limit. Then, each series will be in a separate tiff and can be separated again.
+		if len(os.listdir(self.experiment.preview_path)) < self.experiment.series.count():
+			max_z = max([series.zs for series in self.experiment.series.all()]) + 1
+
+			bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
+			fake_preview_path = join(self.experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(self.experiment.name))
+			call('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=self.experiment.lif_path, out=fake_preview_path), shell=True)
 
 		# 2. convert tiff to png for browser
 		for series in self.experiment.series.all():
-			series_fake_preview_path = join(self.experiment.preview_path, '{}_s{}_preview.tiff'.format(self.experiment.name, series.name))
-			series.preview_path = join(self.experiment.preview_path, '{}_s{}_preview.png'.format(self.experiment.name, series.name))
+			series.preview_path = join(self.experiment.preview_path, '{}_s{}_ch{}_t{}_z{}_preview.png'.format(self.experiment.name, series.name, series.max_channel(), 0, series.mid_z()))
 			series.save()
-			convert = join(settings.BIN_ROOT, 'convert')
-			call('{} {} {}'.format(convert, series_fake_preview_path, series.preview_path), shell=True)
 
-			# 3. remove fake path
-			os.remove(series_fake_preview_path)
+			# select preview path using max_channel and mid_z
+			if not exists(series.preview_path):
+				selected_path = join(self.experiment.preview_path, '{}_s{}_ch{}_t{}_z{}_preview.tiff'.format(self.experiment.name, series.name, series.max_channel(), 0, series.mid_z()))
+				convert = join(settings.BIN_ROOT, 'convert')
+				call('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True)
+
+		# delete everything that is not the selected paths
+		for file_name in os.listdir(self.experiment.preview_path):
+			if join(self.experiment.preview_path, file_name) not in [series.preview_path for series in self.experiment.series.all()]:
+				os.remove(join(self.experiment.preview_path, file_name))

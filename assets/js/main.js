@@ -362,42 +362,54 @@ $(document).ready(function() {
 
 			// replace interface elements with temporary placeholders
 			for (s in data) {
-				var seriesName = data[s];
+				var seriesNameDictionary = data[s];
+				var seriesName = seriesNameDictionary['name'];
+				var seriesTitle = seriesNameDictionary['title'];
+				console.log(seriesTitle);
 				// define trays and spinners and be sure to add the states for fading out when the previews have loaded.
 				// post render should fade them in
-				var seriesPreviewTray = new Element('ss-preview-tray-{0}'.format(seriesName), SPACER_TEMPLATE);
-				seriesPreviewTray.classes = ['tray']
-				seriesPreviewTray.specificStyle = {'height':'200px'};
-				seriesPreviewTray.postRenderFunction = function (model) {
-					model.css({'opacity':'0'});
-					model.delay(1000).animate({'opacity':'1'}, 1000);
-				}
-				SSSeriesPreviewTrayDictionary[seriesName] = seriesPreviewTray;
-				seriesSidebar.renderChild(seriesPreviewTray);
-
-				var seriesPreviewSpinner = new Element('ss-preview-spinner-{0}'.format(seriesName), '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />');
-				seriesPreviewTray.renderChild(seriesPreviewSpinner);
-
-				var seriesPreviewButton = new Element('ss-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
-				seriesPreviewButton.html = 'Series {0}'.format(seriesName);
-				seriesPreviewButton.postRenderFunction = function (model) {
-					model.css({'opacity':'0'});
-					model.delay(1000).animate({'opacity':'1'}, 1000);
-				}
-
-				seriesSidebar.renderChild(seriesPreviewButton);
-
-				if (s !== data.length-1) {
-					console.log('not end ' + s);
-					console.log(data.length-1);
-
-					// insert spacer as well
-					var seriesPreviewSpacer = new Element('ss-preview-spacer-{0}'.format(seriesName), SPACER_TEMPLATE);
-					seriesPreviewSpacer.postRenderFunction = function (model) {
+				if (!($('#ss-preview-tray-{0}'.format(seriesName)).length)) {
+					var seriesPreviewTray = new Element('ss-preview-tray-{0}'.format(seriesName), SPACER_TEMPLATE);
+					seriesPreviewTray.classes = ['tray']
+					seriesPreviewTray.specificStyle = {'height':'200px'};
+					seriesPreviewTray.postRenderFunction = function (model) {
 						model.css({'opacity':'0'});
 						model.delay(1000).animate({'opacity':'1'}, 1000);
 					}
-					seriesSidebar.renderChild(seriesPreviewSpacer);
+					SSSeriesPreviewTrayDictionary[seriesName] = seriesPreviewTray;
+					seriesSidebar.renderChild(seriesPreviewTray);
+
+					var seriesPreviewSpinner = new Element('ss-preview-spinner-{0}'.format(seriesName), '<img id={id} class="spinner" src="./assets/img/colour-loader.gif" />');
+					seriesPreviewTray.renderChild(seriesPreviewSpinner);
+
+					var seriesPreviewNameContentSpacer = new Element('ss-preview-name-content-spacer-{0}'.format(seriesName), SPACER_TEMPLATE);
+					seriesPreviewNameContentSpacer.classes = ['content', 'tray'];
+					console.log(seriesTitle);
+					seriesPreviewNameContentSpacer.html = '<p>{0}</p>'.format(seriesTitle);
+					seriesPreviewNameContentSpacer.postRenderFunction = function (model) {
+						model.css({'opacity':'0'});
+						model.delay(1000).animate({'opacity':'1'}, 1000);
+					}
+					seriesSidebar.renderChild(seriesPreviewNameContentSpacer)
+
+					var seriesPreviewButton = new Element('ss-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
+					seriesPreviewButton.html = 'Series {0}'.format(seriesName);
+					seriesPreviewButton.postRenderFunction = function (model) {
+						model.css({'opacity':'0'});
+						model.delay(1000).animate({'opacity':'1'}, 1000);
+					}
+
+					seriesSidebar.renderChild(seriesPreviewButton);
+
+					if (s !== data.length-1) {
+						// insert spacer as well
+						var seriesPreviewSpacer = new Element('ss-preview-spacer-{0}'.format(seriesName), SPACER_TEMPLATE);
+						seriesPreviewSpacer.postRenderFunction = function (model) {
+							model.css({'opacity':'0'});
+							model.delay(1000).animate({'opacity':'1'}, 1000);
+						}
+						seriesSidebar.renderChild(seriesPreviewSpacer);
+					}
 				}
 			}
 
@@ -409,27 +421,29 @@ $(document).ready(function() {
 
 				for (s in seriesList) {
 					var seriesName = seriesList[s];
-					var seriesDictionary = seriesPathDictionary[seriesName];
-					var seriesPath = seriesDictionary['path'];
-					var trayShouldBeHalfHeight = (seriesDictionary['half'] === 'true');
+					if (!($('#ss-preview-image-{0}'.format(seriesName)).length)) {
+						var seriesDictionary = seriesPathDictionary[seriesName];
+						var seriesPath = seriesDictionary['path'];
+						var trayShouldBeHalfHeight = (seriesDictionary['half'] === 'true');
 
-					+function (seriesName, seriesPath) { // IIFE: http://tobyho.com/2011/11/02/callbacks-in-loops/
-						// add image to tray
-						var tray = SSSeriesPreviewTrayDictionary[seriesName];
-						if (trayShouldBeHalfHeight) {
-							tray.model().animate({'height':'100px'});
-						}
+						+function (seriesName, seriesPath) { // IIFE: http://tobyho.com/2011/11/02/callbacks-in-loops/
+							// add image to tray
+							var tray = SSSeriesPreviewTrayDictionary[seriesName];
+							if (trayShouldBeHalfHeight) {
+								tray.model().animate({'height':'100px'});
+							}
 
-						tray.model().find('.spinner').fadeOut(defaultAnimationTime);
-						var previewImage = new Element('ss-preview-image-{0}'.format(seriesName), '<img id={id} style="width:100%;" />');
-						previewImage.properties['src'] = seriesPath;
-						previewImage.postRenderFunction = function (model) {
-							model.css({'opacity':'0'});
-							model.delay(1000).animate({'opacity':'1'}, 1000);
-						};
+							tray.model().find('.spinner').fadeOut(defaultAnimationTime);
+							var previewImage = new Element('ss-preview-image-{0}'.format(seriesName), '<img id={id} style="width:199px;" />');
+							previewImage.properties['src'] = seriesPath;
+							previewImage.postRenderFunction = function (model) {
+								model.css({'opacity':'0'});
+								model.delay(1000).animate({'opacity':'1'}, 1000);
+							};
 
-						tray.renderChild(previewImage);
-					}(seriesName, seriesPath);
+							tray.renderChild(previewImage);
+						}(seriesName, seriesPath);
+					}
 				}
 			});
 
