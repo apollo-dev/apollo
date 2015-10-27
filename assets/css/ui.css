@@ -28,7 +28,7 @@ To facilitate smooth animation, there will be no transition between these. Both 
   background-color: white;
 	display: block;
 	overflow-y: auto;
-	width: 201px;
+	width: 250px;
 	height: 100%;
 	border-right: 1px solid #CCC;
 }
@@ -36,10 +36,6 @@ To facilitate smooth animation, there will be no transition between these. Both 
 .sidebar.mini {
 	width: 51px;
 	border-right: 0px solid #CCC;
-}
-
-.sidebar.maxi {
-	width: 250px;
 }
 
 /*
@@ -50,11 +46,13 @@ spanning the sidebar or in groups of two, three, or four.
 */
 
 .btn {
-	width: 100%;
+	position: relative;
+	left: 25px;
+	width: 200px;
 	border-radius: 0px;
 	border-top: 0px;
-	border-left: 0px;
-	border-right: 0px;
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
 	height: 50px;
 }
 
@@ -62,18 +60,11 @@ button:focus {
 	outline:0px !important;
 }
 
-.sidebar.maxi .btn {
-	width: 200px;
-	position: relative;
-	left: 25px;
-	border-right: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-}
-
 .sidebar.mini .btn {
-	min-width: 51px;
+	left: 0px;
 	width: 51px;
 	border-right: 1px solid #CCC;
+	border-left: 0px;
 }
 
 .btn.notouch {
@@ -90,9 +81,10 @@ Sometimes space is needed without button functionality. Spacers are based on the
 */
 
 .spacer {
-	width: 100%;
-	min-width: 200px;
+	position: relative;
+	width: 200px;
 	float: left;
+	left: 25px;
 	min-height: 22px;
 	border-bottom: 1px solid #CCC;
 }
@@ -100,18 +92,19 @@ Sometimes space is needed without button functionality. Spacers are based on the
 .spacer.content {
 	padding-left: 10px;
 	padding-top: 10px;
-
-}
-
-.sidebar.maxi .spacer {
-	position: relative;
-	width: 200px;
-	left: 25px;
-}
-
-.sidebar.maxi .spacer.tray {
 	border-right: 1px solid #CCC;
 	border-left: 1px solid #CCC;
+}
+
+.sidebar .spacer.tray {
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	height: 200px;
+}
+
+.sidebar.mini .spacer {
+	width: 51px;
+	left: 0px;
 }
 
 /*
