@@ -1,7 +1,7 @@
 // Templates
 var PANEL_TEMPLATE = '<div id="{id}" class="panel"></div>';
 var SIDEBAR_TEMPLATE = '<div id="{id}" class="sidebar"></div>';
-var BUTTON_TEMPLATE = '<button id="{id}" class="btn btn-default">{html}</button>';
+var BUTTON_TEMPLATE = '<button id="{id}" class="btn btn-default"></button>';
 var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
 var CONTAINER_TEMPLATE = '<div id={id}><div id="{id}-spacer-tray" class="spacer tray"><img id="{id}-spinner" class="spinner" src="./assets/img/colour-loader.gif" /></div></div>';
 

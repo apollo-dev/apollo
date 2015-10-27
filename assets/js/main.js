@@ -268,7 +268,7 @@ $(document).ready(function() {
 	//        (_______/      (_______/      \_______)
 	//
 
-	///////////////	ELEMENT VARS
+	///////////////	CES ELEMENT VARS
 	var currentExperimentSidebar;
 	var CESTopSpacer;
 	var CESExperimentNameContentButton;
@@ -279,9 +279,48 @@ $(document).ready(function() {
 	var CESUnextractedHighDimensionSeriesContentButton;
 	var CESUnextractedHighDimensionSeriesContainer;
 
-	///////////////	DEFINITIONS AND MODIFICATIONS
-	///////////////	RENDER
-	///////////////	BUTTON BINDINGS
+	///////////////	CES DEFINITIONS AND MODIFICATIONS
+	// CES
+	currentExperimentSidebar = new Element('current-experiment-sidebar', SIDEBAR_TEMPLATE);
+	currentExperimentSidebar.specificStyle = {'left':'50px'};
+
+	// CES Top Spacer
+	CESTopSpacer = new Element('ces-ts', SPACER_TEMPLATE);
+
+	// CES Experiment Name Content Button
+	CESExperimentNameContentButton = new Element('ces-experiment-name-content-button', BUTTON_TEMPLATE);
+
+	// CES Experiment Detail Container
+	CESExperimentDetailContainer = new Element('ces-experiment-detail-container', CONTAINER_TEMPLATE);
+
+	// CES Loading Experiment Detail Content Button
+	CESLoadingExperimentDetailContentButton = new Element('ces-loading-experiment-detail-content-button', BUTTON_TEMPLATE);
+
+	// CES Experiment Detail Spacer
+	CESExperimentDetailSpacer = new Element('ces-experiment-detail-spacer', SPACER_TEMPLATE);
+	CESExperimentDetailSpacer.classes = ['content'];
+
+	// CES Middle Spacer
+	CESMiddleSpacer = new Element('ces-ms', SPACER_TEMPLATE);
+
+	// CES Unextracted High Dimension Series Content Button
+	CESUnextractedHighDimensionSeriesContentButton = new Element('ces-unextracted-high-dimension-series-content-button', BUTTON_TEMPLATE);
+
+	// CES Unextracted High Dimension Series Container
+	CESUnextractedHighDimensionSeriesContainer = new Element('ces-unextracted-high-dimension-series-container', CONTAINER_TEMPLATE);
+
+	///////////////	CES RENDER
+	currentExperimentSidebar.render(body);
+	currentExperimentSidebar.renderChild(CESTopSpacer);
+	currentExperimentSidebar.renderChild(CESExperimentNameContentButton);
+	currentExperimentSidebar.renderChild(CESExperimentDetailContainer);
+	currentExperimentSidebar.renderChild(CESLoadingExperimentDetailContentButton);
+	currentExperimentSidebar.renderChild(CESExperimentDetailSpacer);
+	currentExperimentSidebar.renderChild(CESMiddleSpacer);
+	currentExperimentSidebar.renderChild(CESUnextractedHighDimensionSeriesContentButton);
+	currentExperimentSidebar.renderChild(CESUnextractedHighDimensionSeriesContainer);
+
+	///////////////	CES BUTTON BINDINGS
 
 	///////////////////////////////////
 	/////////////// COMPOSITE SIDEBAR
@@ -295,10 +334,46 @@ $(document).ready(function() {
 	//        (_______/      \_______)
 	//
 
-	///////////////	ELEMENT VARS
-	///////////////	DEFINITIONS AND MODIFICATIONS
-	///////////////	RENDER
-	///////////////	BUTTON BINDINGS
+	///////////////	CS ELEMENT VARS
+	var compositeSidebar;
+	var CSTopSpacer;
+	var CSCompositeContentButton;
+	var CSMiddleSpacer;
+	var CSTrayContainer;
+	var CSGeneratingPreviewContentButton;
+	var CSSeriesPreviewTrayDictionary = {};
+	var CSSeriesPreviewContentTrayDictionary = {};
+	var CSSeriesPreviewButtonDictionary = {};
+
+	///////////////	CS DEFINITIONS AND MODIFICATIONS
+	// CS
+	compositeSidebar = new Element('composite-sidebar', SIDEBAR_TEMPLATE);
+	compositeSidebar.specificStyle = {'left':'300px'};
+
+	// CS Top Spacer
+	CSTopSpacer = new Element('cs-ts', SPACER_TEMPLATE);
+
+	// CS Composite Content Button
+	CSCompositeContentButton = new Element('cs-composite-content-button', BUTTON_TEMPLATE);
+
+	// CS Middle Spacer
+	CSMiddleSpacer = new Element('cs-middle-spacer', SPACER_TEMPLATE);
+
+	// CS Tray Container
+	CSTrayContainer = new Element('cs-tray-container', CONTAINER_TEMPLATE)
+
+	// CS Preview Loading Button
+	CSPreviewLoadingButton = new Element('cs-preview-loading-button', BUTTON_TEMPLATE);
+
+	///////////////	CS RENDER
+	compositeSidebar.render(body);
+	compositeSidebar.renderChild(CSTopSpacer);
+	compositeSidebar.renderChild(CSCompositeContentButton);
+	compositeSidebar.renderChild(CSMiddleSpacer);
+	compositeSidebar.renderChild(CSTrayContainer);
+	compositeSidebar.renderChild(CSPreviewLoadingButton);
+
+	///////////////	CS BUTTON BINDINGS
 
 	///////////////////////////////////
 	/////////////// CHANNEL SIDEBAR
@@ -312,9 +387,48 @@ $(document).ready(function() {
 	//        (_______/  |/     \|    \_______)
 	//
 
-	///////////////	ELEMENT VARS
-	///////////////	DEFINITIONS AND MODIFICATIONS
-	///////////////	RENDER
+	///////////////	CHS ELEMENT VARS
+	var channelSidebar;
+	var CHSTopSpacer;
+	var CHSChannelContentButton;
+	var CHSMiddleSpacer;
+	var CHSTrayContainer;
+	var CHSChannelDictionary = {};
+	var CHSBottomSpacer;
+	var CHSExtractButton;
+
+	///////////////	CHS DEFINITIONS AND MODIFICATIONS
+	// CHS
+	channelSidebar = new Element('info-sidebar', SIDEBAR_TEMPLATE);
+	channelSidebar.specificStyle = {'left':'550px'};
+
+	// CHS Top Spacer
+	CHSTopSpacer = new Element('chs-ts', SPACER_TEMPLATE);
+
+	// CHS Info Content Button
+	CHSChannelContentButton = new Element('chs-channels-content-button', BUTTON_TEMPLATE);
+
+	// CHS Middle Spacer
+	CHSMiddleSpacer = new Element('chs-middle-spacer', SPACER_TEMPLATE);
+
+	// CHS Tray Container
+	CHSTrayContainer = new Element('chs-tray-container', CONTAINER_TEMPLATE);
+
+	// CHS Bottom Spacer
+	CHSBottomSpacer = new Element('chs-bs', SPACER_TEMPLATE);
+
+	// CHS Extract Button
+	CHSExtractButton = new Element('chs-extract-button', BUTTON_TEMPLATE);
+
+	///////////////	CHS RENDER
+	channelSidebar.render(body);
+	channelSidebar.renderChild(CHSTopSpacer);
+	channelSidebar.renderChild(CHSChannelContentButton);
+	channelSidebar.renderChild(CHSMiddleSpacer);
+	channelSidebar.renderChild(CHSTrayContainer);
+	channelSidebar.renderChild(CHSBottomSpacer);
+	channelSidebar.renderChild(CHSExtractButton);
+
 	///////////////	BUTTON BINDINGS
 
 	///////////////////////////////////
@@ -330,8 +444,58 @@ $(document).ready(function() {
 	//
 
 	///////////////	ELEMENT VARS
+	var modSidebar;
+	var MODSTopSpacer;
+	var MODSModContentButton;
+	var MODSMiddleSpacer;
+	var MODSAvailableModsContentButton;
+	var MODSAvailableModsContainer;
+	var MODSAvailableModsButtonDictionary = {};
+	var MODSBottomSpacer;
+	var MODSExistingModsContentButton;
+	var MODSExistingModsContainer;
+	var MODSExistingModsButtonDictionary = {};
+
 	///////////////	DEFINITIONS AND MODIFICATIONS
+	// MODS
+	modSidebar = new Element('mod-sidebar', SIDEBAR_TEMPLATE);
+	modSidebar.specificStyle = {'left':'800px'};
+
+	// MODS Top Spacer
+	MODSTopSpacer = new Element('mods-ts', SPACER_TEMPLATE);
+
+	// MODS Mod Content Button
+	MODSModContentButton = new Element('mods-mod-content-button', BUTTON_TEMPLATE);
+
+	// MODS Middle Spacer
+	MODSMiddleSpacer = new Element('mods-ms', SPACER_TEMPLATE);
+
+	// MODS Available Mods Content Button
+	MODSAvailableModsContentButton = new Element('mods-available-mods-content-button', BUTTON_TEMPLATE);
+
+	// MODS Available Mods Container
+	MODSAvailableModsContainer = new Element('mods-available-mods-container', CONTAINER_TEMPLATE);
+
+	// MODS Bottom Spacer
+	MODSBottomSpacer = new Element('mods-bs', SPACER_TEMPLATE);
+
+	// MODS Existing Mods Content Button
+	MODSExistingModsContentButton = new Element('mods-existing-mods-content-button', BUTTON_TEMPLATE);
+
+	// MODS Existing Mods Container
+	MODSExistingModsContainer = new Element('mods-existing-mods-container', CONTAINER_TEMPLATE);
+
 	///////////////	RENDER
+	modSidebar.render(body);
+	modSidebar.renderChild(MODSTopSpacer);
+	modSidebar.renderChild(MODSModContentButton);
+	modSidebar.renderChild(MODSMiddleSpacer);
+	modSidebar.renderChild(MODSAvailableModsContentButton);
+	modSidebar.renderChild(MODSAvailableModsContainer);
+	modSidebar.renderChild(MODSBottomSpacer);
+	modSidebar.renderChild(MODSExistingModsContentButton);
+	modSidebar.renderChild(MODSExistingModsContainer);
+
 	///////////////	BUTTON BINDINGS
 
 	///////////////////////////////////
@@ -347,6 +511,14 @@ $(document).ready(function() {
 	//
 
 	///////////////	ELEMENT VARS
+	var progressSidebar;
+	var PROGSTopSpacer;
+	var PROGSInProgressContentButton;
+	var PROGS
+	var PROGS
+	var PROGS
+	var PROGS
+
 	///////////////	DEFINITIONS AND MODIFICATIONS
 	///////////////	RENDER
 	///////////////	BUTTON BINDINGS
