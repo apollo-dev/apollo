@@ -2,7 +2,6 @@ $(document).ready(function() {
 
 	var remote = require('remote'); // access the main node process
 	var dialog = remote.require('dialog'); // access open file dialog
-	var settings = require("./settings.json"); // external settings
 
 	///////////////////////////////////
 	///////////////	UI ELEMENTS
@@ -73,7 +72,7 @@ $(document).ready(function() {
 		'position':'fixed',
 		'top':'141px',
 		'left':'calc(100% - 50px)',
-		'height':'calc(50% - 151px)',
+		'height':'200px',
 		'width':'100%',
 		'border':'1px solid #CCC',
 	};
@@ -969,6 +968,7 @@ $(document).ready(function() {
 		'top':'0px',
 		'width':'100px',
 	};
+	SCONMarkerTimepointLockButtonTab.html = 'Tab';
 
 	// SCON Marker Placement Button Q
 	SCONMarkerPlacementButtonQ = new Element('scon-marker-placement-button-q', BUTTON_TEMPLATE);
@@ -977,6 +977,7 @@ $(document).ready(function() {
 		'top':'0px',
 		'width':'50px',
 	};
+	SCONMarkerPlacementButtonQ.html = 'Q';
 
 	// SCON Multichannel Balloon Selection Button W
 	SCONMultichannelBalloonSelectionButtonW = new Element('scon-multichannel-balloon-selection-button-w', BUTTON_TEMPLATE);
@@ -985,6 +986,7 @@ $(document).ready(function() {
 		'top':'0px',
 		'width':'50px',
 	};
+	SCONMultichannelBalloonSelectionButtonW.html = 'W';
 
 	// SCON Freehand Selection Button E
 	SCONFreehandSelectionButtonE = new Element('scon-freehand-selection-button-e', BUTTON_TEMPLATE);
@@ -993,6 +995,7 @@ $(document).ready(function() {
 		'top':'0px',
 		'width':'50px',
 	};
+	SCONFreehandSelectionButtonE.html = 'E';
 
 	// SCON Slice Selection Button R
 	SCONSliceSelectionButtonR = new Element('scon-slice-selection-button-r', BUTTON_TEMPLATE);
@@ -1001,6 +1004,7 @@ $(document).ready(function() {
 		'top':'0px',
 		'width':'50px',
 	};
+	SCONSliceSelectionButtonR.html = 'R';
 
 	// SCON Rectangle Selection Button T
 	SCONRectangleSelectionButtonT = new Element('scon-rectangle-selection-button-t', BUTTON_TEMPLATE);
@@ -1009,6 +1013,7 @@ $(document).ready(function() {
 		'top':'0px',
 		'width':'50px',
 	};
+	SCONRectangleSelectionButtonT.html = 'T';
 
 	// SCON Timepoint First Button A
 	SCONTimepointFirstButtonA = new Element('scon-timepoint-first-button-a', BUTTON_TEMPLATE);
@@ -1017,6 +1022,7 @@ $(document).ready(function() {
 		'top':'60px',
 		'width':'50px',
 	};
+	SCONTimepointFirstButtonA.html = 'A';
 
 	// SCON Timepoint Previous Button S
 	SCONTimepointPreviousButtonS = new Element('scon-timepoint-previous-button-s', BUTTON_TEMPLATE);
@@ -1025,6 +1031,7 @@ $(document).ready(function() {
 		'top':'60px',
 		'width':'50px',
 	};
+	SCONTimepointPreviousButtonS.html = 'S';
 
 	// SCON Timepoint Next Button D
 	SCONTimepointNextButtonD = new Element('scon-timepoint-next-button-d', BUTTON_TEMPLATE);
@@ -1033,6 +1040,7 @@ $(document).ready(function() {
 		'top':'60px',
 		'width':'50px',
 	};
+	SCONTimepointNextButtonD.html = 'D';
 
 	// SCON Timepoint Last Button F
 	SCONTimepointLastButtonF = new Element('scon-timepoint-last-button-f', BUTTON_TEMPLATE);
@@ -1041,6 +1049,7 @@ $(document).ready(function() {
 		'top':'60px',
 		'width':'50px',
 	};
+	SCONTimepointLastButtonF.html = 'F';
 
 	/////////////// SCON RENDER
 	segmentationConsole.render(body);

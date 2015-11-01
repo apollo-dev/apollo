@@ -27,13 +27,27 @@
 
 	<!-- load jQuery and main content into "#main" -->
 	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script> -->
-	<script src="./assets/js/jquery-1.11.3.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
-	<script src="./assets/js/preventzoom.js"></script>
-	<script src="./assets/js/util.js"></script>
-	<script src="./assets/js/string-format.js" onload="window.format = module.exports; format.extend(String.prototype);"></script>
+	<script src="./assets/js/jquery/jquery-1.11.3.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+
+	<!-- general utility stuff comes before everything. -->
+	<script src="./assets/js/util/preventzoom.js"></script>
+	<script src="./assets/js/util/util.js"></script>
+	<script src="./assets/js/util/string-format.js" onload="window.format = module.exports; format.extend(String.prototype);"></script>
+	<script src="./assets/js/util/mousetrap.js"></script> <!-- keyboard shortcuts -->
+	<script src="./assets/js/util/shortcuts.js"></script>
+	<script src="./assets/js/vendor/bootstrap.min.js"></script>
+
+	<!-- globals - important for controlling paper canvases -->
+	<script src="./assets/js/globals.js"></script>
+
+	<!-- paper shenanigans -->
+	<script type="text/javascript" src="./assets/js/paper/paper.js"></script> <!-- sort of necessary -->
+	<!-- <script type="text/paperscript" src="./assets/js/paper/marker.js"></script>
+	<script type="text/paperscript" src="./assets/js/paper/region.js"></script>
+	<script type="text/paperscript" src="./assets/js/paper/slice.js"></script>
+	<script type="text/paperscript" src="./assets/js/paper/lasso.js"></script> -->
+
+	<!-- main content definitions -->
 	<script src="./assets/js/ui.js"></script>
 	<script src="./assets/js/main.js"></script>
-	<script src="./assets/js/mousetrap.js"></script> <!-- keyboard shortcuts -->
-	<script src="./assets/js/shortcuts.js"></script>
-	<script src="./assets/js/vendor/bootstrap.min.js"></script>
 </html>
