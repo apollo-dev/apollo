@@ -3,11 +3,21 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta content='True' name='HandheldFriendly' />
 		<link rel="stylesheet" href="./assets/css/bootstrap.min.css">
 		<link rel="stylesheet" href="./assets/css/bootstrap.icon-large.min.css">
 		<link rel="stylesheet" href="./assets/css/main.css">
 		<link rel="stylesheet" href="./assets/css/ui.css">
+		<style type="text/css">
+			#image {
+				position: fixed;
+				left: calc(50% - 512px);
+				top: 141px;
+				height: 512px;
+				width: 1024px;
+				background-color: blue;
+			}
+		</style>
 	</head>
 	<body>
 		<!-- Titles -->
@@ -18,6 +28,7 @@
 	<!-- load jQuery and main content into "#main" -->
 	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script> -->
 	<script src="./assets/js/jquery-1.11.3.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+	<script src="./assets/js/preventzoom.js"></script>
 	<script src="./assets/js/util.js"></script>
 	<script src="./assets/js/string-format.js" onload="window.format = module.exports; format.extend(String.prototype);"></script>
 	<script src="./assets/js/ui.js"></script>

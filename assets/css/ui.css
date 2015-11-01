@@ -38,6 +38,27 @@ To facilitate smooth animation, there will be no transition between these. Both 
 	border-right: 0px solid #CCC;
 }
 
+.topbar {
+	position: absolute;
+	background-color: white;
+	display: block;
+	height: 51px;
+	border-left: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+}
+
+.bottombar {
+
+}
+
+.rightbar {
+
+}
+
+.console {
+
+}
+
 /*
 
 The sidebars contain menu items. These come in the form of buttons, which can take the form of a single button
@@ -65,6 +86,23 @@ button:focus {
 	width: 51px;
 	border-right: 1px solid #CCC;
 	border-left: 0px;
+}
+
+.topbar .btn {
+	left: auto;
+	width: 51px;
+	float: right;
+	border-top: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+	border-left: 0px;
+	border-bottom: 0px;
+}
+
+.console .btn {
+	width: 51px;
+	height: 51px;
+	position: absolute;
+	border-top: 1px solid #CCC;
 }
 
 .btn.notouch {
