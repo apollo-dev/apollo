@@ -16,6 +16,78 @@ $(document).ready(function() {
 	var SEGMENT_STATE = 'SegmentState';
 
 	///////////////////////////////////
+	/////////////// CANVAS CONTAINER
+	//         _______        _______
+	//        (  ____ \      (  ____ \
+	//        | (    \/      | (    \/
+	//        | |            | |
+	//        | |            | |
+	//        | |            | |
+	//        | (____/\      | (____/\
+	//        (_______/      (_______/
+	//
+
+	/////////////// CC ELEMENT VARS
+	var paperMarkerCanvas;
+
+	/////////////// CC DEFINITIONS AND MODIFICATIONS
+	paperMarkerCanvas = new Element(window.paperMarkerScope['canvas'], CANVAS_TEMPLATE);
+
+	/////////////// CC RENDER
+	paperMarkerCanvas.render(body);
+
+	/////////////// CC BUTTON BINDINGS
+
+	///////////////////////////////////
+	/////////////// PAPER SCRIPTS
+	//         _______        _______
+	//        (  ____ )      (  ____ \
+	//        | (    )|      | (    \/
+	//        | (____)|      | (_____
+	//        |  _____)      (_____  )
+	//        | (                  ) |
+	//        | )            /\____) |
+	//        |/             \_______)
+	//
+	var paperDir = './assets/js/paper/{0}.js';
+
+	/////////////// PS ELEMENT VARS
+	var paperMarkerScript;
+
+	/////////////// PS DEFINITIONS AND MODIFICATIONS
+	paperMarkerScript = new Element('paper-marker-script', PAPERSCRIPT_TEMPLATE);
+	paperMarkerScript.properties['src'] = paperDir.format('marker');
+	paperMarkerScript.properties['canvas'] = window.paperMarkerScope['canvas'];
+
+	/////////////// PS RENDER
+	paperMarkerScript.render(body);
+
+	/////////////// PS BUTTON BINDINGS
+
+	///////////////////////////////////
+	/////////////// TRACK CONTAINER
+	//        _________       _______
+	//        \__   __/      (  ____ \
+	//           ) (         | (    \/
+	//           | |         | |
+	//           | |         | |
+	//           | |         | |
+	//           | |         | (____/\
+	//           )_(         (_______/
+	//
+
+	/////////////// TC ELEMENT VARS
+	var trackContainer;
+
+	/////////////// TC DEFINITIONS AND MODIFICATIONS
+	trackContainer = new Element('track-container', BASIC_TEMPLATE);
+
+	/////////////// TC RENDER
+	trackContainer.render(body);
+
+	/////////////// TC BUTTON BINDINGS
+
+	///////////////////////////////////
 	/////////////// IMAGE PALETTE
 	// image palette has a defined size and no default placement of an image can extend beyond it without user action.
 	// also bottom level element

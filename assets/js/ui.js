@@ -6,6 +6,8 @@ var BUTTON_TEMPLATE = '<button id="{id}" class="btn btn-default"></button>';
 var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
 var CONTAINER_TEMPLATE = '<div id={id}><div id="{id}-spacer-tray" class="spacer tray"><img id="{id}-spinner" class="spinner" src="./assets/img/colour-loader.gif" /></div></div>';
 var BASIC_TEMPLATE = '<div id={id}></div>';
+var PAPERSCRIPT_TEMPLATE = '<script id="{id}" type="text/paperscript"></script>';
+var CANVAS_TEMPLATE = '<canvas id="{id}"></canvas>';
 
 // Default states
 var HOME_STATE = 'HS';

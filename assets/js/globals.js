@@ -3,9 +3,9 @@ $(document).ready(function() {
 	var settings = require("./settings.json"); // external settings
 
 	// define window globals for paper to latch on to
-	window.paperMarkerScope = {canvas:'markerCanvas'};
-	window.paperRegionScope = {canvas:'regionCanvas'};
-	window.paperSliceScope = {canvas:'sliceCanvas'};
-	window.paperLassoScope = {canvas:'lassoCanvas'};
+	window.paperMarkerScope = {canvas:'paper-marker-canvas'};
+	window.paperRegionScope = {canvas:'paper-region-canvas'};
+	window.paperSliceScope = {canvas:'paper-slice-canvas'};
+	window.paperLassoScope = {canvas:'paper-lasso-canvas'};
 
 });
