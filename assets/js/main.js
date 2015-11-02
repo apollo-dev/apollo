@@ -16,55 +16,6 @@ $(document).ready(function() {
 	var SEGMENT_STATE = 'SegmentState';
 
 	///////////////////////////////////
-	/////////////// CANVAS CONTAINER
-	//         _______        _______
-	//        (  ____ \      (  ____ \
-	//        | (    \/      | (    \/
-	//        | |            | |
-	//        | |            | |
-	//        | |            | |
-	//        | (____/\      | (____/\
-	//        (_______/      (_______/
-	//
-
-	/////////////// CC ELEMENT VARS
-	var paperMarkerCanvas;
-
-	/////////////// CC DEFINITIONS AND MODIFICATIONS
-	paperMarkerCanvas = new Element(window.paperMarkerScope['canvas'], CANVAS_TEMPLATE);
-
-	/////////////// CC RENDER
-	paperMarkerCanvas.render(body);
-
-	/////////////// CC BUTTON BINDINGS
-
-	///////////////////////////////////
-	/////////////// PAPER SCRIPTS
-	//         _______        _______
-	//        (  ____ )      (  ____ \
-	//        | (    )|      | (    \/
-	//        | (____)|      | (_____
-	//        |  _____)      (_____  )
-	//        | (                  ) |
-	//        | )            /\____) |
-	//        |/             \_______)
-	//
-	var paperDir = './assets/js/paper/{0}.js';
-
-	/////////////// PS ELEMENT VARS
-	var paperMarkerScript;
-
-	/////////////// PS DEFINITIONS AND MODIFICATIONS
-	paperMarkerScript = new Element('paper-marker-script', PAPERSCRIPT_TEMPLATE);
-	paperMarkerScript.properties['src'] = paperDir.format('marker');
-	paperMarkerScript.properties['canvas'] = window.paperMarkerScope['canvas'];
-
-	/////////////// PS RENDER
-	paperMarkerScript.render(body);
-
-	/////////////// PS BUTTON BINDINGS
-
-	///////////////////////////////////
 	/////////////// TRACK CONTAINER
 	//        _________       _______
 	//        \__   __/      (  ____ \
@@ -104,8 +55,11 @@ $(document).ready(function() {
 
 	///////////////	IP ELEMENT VARS
 	var imagePalette;
+	var IPImageContainer;
+	var IPCanvasContainer;
 
 	///////////////	IP DEFINITIONS AND MODIFICATIONS
+	// IP
 	imagePalette = new Element('image-palette', BASIC_TEMPLATE);
 	imagePalette.specificStyle = {
 		'position':'fixed',
@@ -118,10 +72,107 @@ $(document).ready(function() {
 		'border':'1px solid #CCC',
 	};
 
+	// IP Image Container
+	IPImageContainer = new Element('ip-image-container', BASIC_TEMPLATE);
+	IPImageContainer.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
+
+	// IP Canvas Container
+	IPCanvasContainer = new Element('ip-canvas-container', BASIC_TEMPLATE);
+	IPCanvasContainer.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
+
 	///////////////	IP RENDER
 	imagePalette.render(body);
+	imagePalette.renderChild(IPImageContainer);
+	imagePalette.renderChild(IPCanvasContainer);
 
 	///////////////	IP BUTTON BINDINGS
+
+	///////////////////////////////////
+	/////////////// CANVAS CONTAINER
+	//         _______        _______
+	//        (  ____ \      (  ____ \
+	//        | (    \/      | (    \/
+	//        | |            | |
+	//        | |            | |
+	//        | |            | |
+	//        | (____/\      | (____/\
+	//        (_______/      (_______/
+	//
+
+	/////////////// CC ELEMENT VARS
+	var paperMarkerCanvas;
+	var paperRegionCanvas;
+	var paperSliceCanvas;
+	var paperLassoCanvas;
+
+	/////////////// CC DEFINITIONS AND MODIFICATIONS
+	paperMarkerCanvas = new Element(window.paperMarkerScope['canvas'], CANVAS_TEMPLATE);
+	paperMarkerCanvas.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
+
+	paperRegionCanvas = new Element(window.paperRegionScope['canvas'], CANVAS_TEMPLATE);
+	paperRegionCanvas.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
+
+	paperSliceCanvas = new Element(window.paperSliceScope['canvas'], CANVAS_TEMPLATE);
+	paperSliceCanvas.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
+
+	paperLassoCanvas = new Element(window.paperLassoScope['canvas'], CANVAS_TEMPLATE);
+	paperLassoCanvas.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
+
+	/////////////// CC RENDER
+	IPCanvasContainer.renderChild(paperMarkerCanvas);
+	IPCanvasContainer.renderChild(paperRegionCanvas);
+	IPCanvasContainer.renderChild(paperSliceCanvas);
+	IPCanvasContainer.renderChild(paperLassoCanvas);
+
+	/////////////// CC BUTTON BINDINGS
+
+	///////////////////////////////////
+	/////////////// PAPER SCRIPTS
+	//         _______        _______
+	//        (  ____ )      (  ____ \
+	//        | (    )|      | (    \/
+	//        | (____)|      | (_____
+	//        |  _____)      (_____  )
+	//        | (                  ) |
+	//        | )            /\____) |
+	//        |/             \_______)
+	//
+	var paperDir = './assets/js/paper/{0}.js';
+
+	/////////////// PS ELEMENT VARS
+	var paperMarkerScript;
+	var paperRegionScript;
+	var paperSliceScript;
+	var paperLassoScript;
+
+	/////////////// PS DEFINITIONS AND MODIFICATIONS
+	// marker
+	paperMarkerScript = new Element('paper-marker-script', PAPERSCRIPT_TEMPLATE);
+	paperMarkerScript.properties['src'] = paperDir.format('marker');
+	paperMarkerScript.properties['canvas'] = window.paperMarkerScope['canvas'];
+
+	// region
+	paperRegionScript = new Element('paper-region-script', PAPERSCRIPT_TEMPLATE);
+	paperRegionScript.properties['src'] = paperDir.format('region');
+	paperRegionScript.properties['canvas'] = window.paperRegionScope['canvas'];
+
+	// slice
+	paperSliceScript = new Element('paper-slice-script', PAPERSCRIPT_TEMPLATE);
+	paperSliceScript.properties['src'] = paperDir.format('slice');
+	paperSliceScript.properties['canvas'] = window.paperSliceScope['canvas'];
+
+	// lasso
+	paperLassoScript = new Element('paper-lasso-script', PAPERSCRIPT_TEMPLATE);
+	paperLassoScript.properties['src'] = paperDir.format('lasso');
+	paperLassoScript.properties['canvas'] = window.paperLassoScope['canvas'];
+
+	/////////////// PS RENDER
+	paperMarkerScript.render(body);
+	paperRegionScript.render(body);
+	paperSliceScript.render(body);
+	paperLassoScript.render(body);
+
+	/////////////// PS BUTTON BINDINGS
 
 	///////////////////////////////////
 	/////////////// CHANNEL PALETTE
