@@ -11664,7 +11664,7 @@ var Http = {
 		async = (async === undefined) ? true : async;
 		var xhr = new (window.ActiveXObject || XMLHttpRequest)(
 					'Microsoft.XMLHTTP');
-		xhr.open(method.toUpperCase(), url, async);
+		xhr.open(method.toUpperCase(), url, true);
 		if ('overrideMimeType' in xhr)
 			xhr.overrideMimeType('text/plain');
 		xhr.onreadystatechange = function() {

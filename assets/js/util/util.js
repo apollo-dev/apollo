@@ -1,3 +1,4 @@
+// all purpose ajax
 function ajax (type, url, data, callback) {
 	var ajax_params = {
 		type: type,
@@ -18,3 +19,8 @@ function ajax (type, url, data, callback) {
 
 	return $.ajax(ajax_params);
 };
+
+// state transition functions
+function postRenderFadeIn (model) {
+	
+}

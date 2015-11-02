@@ -1,29 +1,24 @@
 // Templates
 var PANEL_TEMPLATE = '<div id="{id}" class="panel"></div>';
 var SIDEBAR_TEMPLATE = '<div id="{id}" class="sidebar"></div>';
-var BUTTON_TEMPLATE = '<button id="{id}" class="btn btn-default">{html}</button>';
+var TOPBAR_TEMPLATE = '<div id="{id}" class="topbar"></div>';
+var BUTTON_TEMPLATE = '<button id="{id}" class="btn btn-default"></button>';
 var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
+var CONTAINER_TEMPLATE = '<div id={id}><div id="{id}-spacer-tray" class="spacer tray"><img id="{id}-spinner" class="spinner" src="./assets/img/colour-loader.gif" /></div></div>';
+var BASIC_TEMPLATE = '<div id={id}></div>';
+var PAPERSCRIPT_TEMPLATE = '<script id="{id}" type="text/paperscript"></script>';
+var CANVAS_TEMPLATE = '<canvas id="{id}" resize></canvas>';
 
-// States
+// Default states
 var HOME_STATE = 'HS';
+var NULL_STATE = 'NS';
 
 // global
 var body = $('body');
 var elements = [];
+var currentState = '';
 var defaultAnimationTime = 400;
 var defaultState = {'css': {'left':'-1000px'}};
-
-// Definitions
-// var Button = new Element('button-id', BUTTON_TEMPLATE);
-// Button.classes = [css classes];
-// Button.specificStyle = {css};
-// Button.properties = {none-style properties};
-// Button.html = 'Home';
-// Button.states[HOME_STATE] = {animatable css};
-// Button.stateSwitch[HOME_STATE] = NEW_EXPERIMENT_STATE;
-// Button.stateSwitch[NEW_EXPERIMENT_STATE] = HOME_STATE;
-// Button.preRenderFunction = function () {};
-// Button.postRenderFunction = function () {};
 
 // Element
 function Element (id, template) {
@@ -37,9 +32,12 @@ function Element (id, template) {
 	this.html = '';
 
 	// state properties
-	this.state = HOME_STATE;
+	this.state = '';
 	this.states = {};
 	this.stateSwitch = {};
+
+	// a state might look like:
+	// state = {'css':{}, 'time':'300', 'fn':function, 'local':{'element-id-1':function1, 'element-id-2':function2}};
 
 	// link to DOM
 	this.model = function () {
@@ -51,9 +49,10 @@ function Element (id, template) {
 	this.postRenderFunction = function (model) {};
 
 	// states
-	this.changeState = function (stateName) {
-		this.state = stateName;
-		var newState = this.states[this.state];
+	this.changeState = function (triggerId, stateName, args) {
+
+		// get the actions
+		var newState = this.states[stateName];
 		if (!($.isEmptyObject(newState))) {
 			var time, fn;
 			if (newState.hasOwnProperty('css')) {
@@ -68,10 +67,23 @@ function Element (id, template) {
 
 			if (newState.hasOwnProperty('fn')) {
 				fn = newState['fn'];
-				fn(this.model());
+				fn(this.model(), args);
+			}
+
+			if (newState.hasOwnProperty('local')) {
+				var localStates = newState['local'];
+
+				if (localStates.hasOwnProperty(triggerId)) {
+					localFn = localStates[triggerId];
+					localFn(this.model(), args);
+				}
 			}
 		}
 
+		// finally set the new state
+		if (stateName !== NULL_STATE) {
+			this.state = stateName;
+		}
 	}
 
 	// render to a chosen parent element
@@ -99,8 +111,10 @@ function Element (id, template) {
 			this.model().attr(property, this.properties[property]);
 		}
 
-		// 5. set inner html
-		this.model().html(this.html);
+		// 5. html
+		if (this.html !== '') {
+			this.model().html(this.html);
+		}
 
 		// post render function
 		this.postRenderFunction(this.model());
@@ -111,13 +125,17 @@ function Element (id, template) {
 		child.render(this.model());
 	}
 
+	this.remove = function () {
+		this.model().remove();
+	}
+
 	/////// INTERFACE METHODS
-	this.click = function (fn) {
+	this.click = function (fn, args) {
 		var element = this;
 
 		this.model().on('click', function (e) {
 			// impose global changes
-			changeState(element.stateSwitch[element.state]);
+			changeState(this.id, element.stateSwitch[element.state], args);
 
 			// more specific actions
 			fn(element.model());
@@ -132,11 +150,11 @@ function Element (id, template) {
 	elements.push(this);
 }
 
-function changeState (stateName) {
-	if (typeof stateName !== 'undefined') { // not-stateless thing is clicked
+function changeState (triggerId, stateName, args) {
+	if (typeof stateName !== 'undefined' && stateName !== currentState) { // not-stateless thing is clicked
 		for (lm in elements) {
 			var element = elements[lm];
-			element.changeState(stateName);
+			element.changeState(triggerId, stateName, args);
 		}
 	}
 }
