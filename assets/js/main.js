@@ -34,7 +34,7 @@ $(document).ready(function() {
 	trackContainer = new Element('track-container', BASIC_TEMPLATE);
 
 	/////////////// TC RENDER
-	trackContainer.render(body);
+	// trackContainer.render(body);
 
 	/////////////// TC BUTTON BINDINGS
 
@@ -81,9 +81,9 @@ $(document).ready(function() {
 	IPCanvasContainer.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
 
 	///////////////	IP RENDER
-	imagePalette.render(body);
-	imagePalette.renderChild(IPImageContainer);
-	imagePalette.renderChild(IPCanvasContainer);
+	// imagePalette.render(body);
+	// imagePalette.renderChild(IPImageContainer);
+	// imagePalette.renderChild(IPCanvasContainer);
 
 	///////////////	IP BUTTON BINDINGS
 
@@ -119,10 +119,10 @@ $(document).ready(function() {
 	paperLassoCanvas.specificStyle = {'position':'absolute', 'height':'100%', 'width':'100%'};
 
 	/////////////// CC RENDER
-	IPCanvasContainer.renderChild(paperMarkerCanvas);
-	IPCanvasContainer.renderChild(paperRegionCanvas);
-	IPCanvasContainer.renderChild(paperSliceCanvas);
-	IPCanvasContainer.renderChild(paperLassoCanvas);
+	// IPCanvasContainer.renderChild(paperMarkerCanvas);
+	// IPCanvasContainer.renderChild(paperRegionCanvas);
+	// IPCanvasContainer.renderChild(paperSliceCanvas);
+	// IPCanvasContainer.renderChild(paperLassoCanvas);
 
 	/////////////// CC BUTTON BINDINGS
 
@@ -167,10 +167,10 @@ $(document).ready(function() {
 	paperLassoScript.properties['canvas'] = window.paperLassoScope['canvas'];
 
 	/////////////// PS RENDER
-	paperMarkerScript.render(body);
-	paperRegionScript.render(body);
-	paperSliceScript.render(body);
-	paperLassoScript.render(body);
+	// paperMarkerScript.render(body);
+	// paperRegionScript.render(body);
+	// paperSliceScript.render(body);
+	// paperLassoScript.render(body);
 
 	/////////////// PS BUTTON BINDINGS
 
@@ -201,7 +201,7 @@ $(document).ready(function() {
 	};
 
 	/////////////// CP RENDER
-	channelPalette.render(body);
+	// channelPalette.render(body);
 
 	/////////////// CP BUTTON BINDINGS
 
@@ -233,7 +233,7 @@ $(document).ready(function() {
 	};
 
 	/////////////// TP RENDER
-	trackPalette.render(body);
+	// trackPalette.render(body);
 
 	/////////////// TP BUTTON BINDINGS
 
@@ -1026,9 +1026,9 @@ $(document).ready(function() {
 	BMSBackButton.html = '<span class="glyphicon glyphicon-chevron-left"></span>';
 
 	/////////////// BMS RENDER
-	backMiniSidebar.render(body);
-	backMiniSidebar.renderChild(BMSTopSpacer);
-	backMiniSidebar.renderChild(BMSBackButton);
+	// backMiniSidebar.render(body);
+	// backMiniSidebar.renderChild(BMSTopSpacer);
+	// backMiniSidebar.renderChild(BMSBackButton);
 
 	/////////////// BMS BUTTON BINDINGS
 
@@ -1175,17 +1175,17 @@ $(document).ready(function() {
 	SCONTimepointLastButtonF.html = 'F';
 
 	/////////////// SCON RENDER
-	segmentationConsole.render(body);
-	segmentationConsole.renderChild(SCONMarkerTimepointLockButtonTab);
-	segmentationConsole.renderChild(SCONMarkerPlacementButtonQ);
-	segmentationConsole.renderChild(SCONMultichannelBalloonSelectionButtonW);
-	segmentationConsole.renderChild(SCONFreehandSelectionButtonE);
-	segmentationConsole.renderChild(SCONSliceSelectionButtonR);
-	segmentationConsole.renderChild(SCONRectangleSelectionButtonT);
-	segmentationConsole.renderChild(SCONTimepointFirstButtonA);
-	segmentationConsole.renderChild(SCONTimepointPreviousButtonS);
-	segmentationConsole.renderChild(SCONTimepointNextButtonD);
-	segmentationConsole.renderChild(SCONTimepointLastButtonF);
+	// segmentationConsole.render(body);
+	// segmentationConsole.renderChild(SCONMarkerTimepointLockButtonTab);
+	// segmentationConsole.renderChild(SCONMarkerPlacementButtonQ);
+	// segmentationConsole.renderChild(SCONMultichannelBalloonSelectionButtonW);
+	// segmentationConsole.renderChild(SCONFreehandSelectionButtonE);
+	// segmentationConsole.renderChild(SCONSliceSelectionButtonR);
+	// segmentationConsole.renderChild(SCONRectangleSelectionButtonT);
+	// segmentationConsole.renderChild(SCONTimepointFirstButtonA);
+	// segmentationConsole.renderChild(SCONTimepointPreviousButtonS);
+	// segmentationConsole.renderChild(SCONTimepointNextButtonD);
+	// segmentationConsole.renderChild(SCONTimepointLastButtonF);
 
 	/////////////// SCON BUTTON BINDINGS
 
