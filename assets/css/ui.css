@@ -112,6 +112,19 @@ button:focus {
 	box-shadow: none;
 }
 
+.btn.progress-inset {
+	padding: 0px;
+}
+
+div.progress-inset {
+	position: relative;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 0%;
+	background-color: #00BA8A;
+}
+
 /*
 
 Sometimes space is needed without button functionality. Spacers are based on the height of the x+- buttons.

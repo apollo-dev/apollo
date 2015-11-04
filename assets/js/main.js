@@ -17,6 +17,7 @@ $(document).ready(function() {
 
 	///////////////////////////////////
 	/////////////// TRACK CONTAINER
+	// http://patorjk.com/software/taag/#p=display&f=Epic&t=Type%20Something%20
 	//        _________       _______
 	//        \__   __/      (  ____ \
 	//           ) (         | (    \/
@@ -264,11 +265,11 @@ $(document).ready(function() {
 	///////////////	ES DEFINITIONS AND MODIFICATIONS
 	// ES
 	experimentSidebar = new Element('experiment-sidebar', SIDEBAR_TEMPLATE);
-	experimentSidebar.specificStyle = defaultState['css'];
-	experimentSidebar.states[HOME_STATE] = defaultState;
-	// experimentSidebar.states[HOME_STATE] = {
-	// 	'css':{'left':'0px'}
-	// };
+	// experimentSidebar.specificStyle = defaultState['css'];
+	// experimentSidebar.states[HOME_STATE] = defaultState;
+	experimentSidebar.states[HOME_STATE] = {
+		'css':{'left':'0px'},
+	};
 	experimentSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
 	experimentSidebar.states[EXPERIMENT_STATE] = defaultState;
 	experimentSidebar.states[PROGRESS_STATE] = defaultState;
@@ -809,6 +810,63 @@ $(document).ready(function() {
 	///////////////	BUTTON BINDINGS
 
 	///////////////////////////////////
+	/////////////// PROGRESS DETAIL SIDEBAR
+	//         _______        ______         _______
+	//        (  ____ )      (  __  \       (  ____ \
+	//        | (    )|      | (  \  )      | (    \/
+	//        | (____)|      | |   ) |      | (_____
+	//        |  _____)      | |   | |      (_____  )
+	//        | (            | |   ) |            ) |
+	//        | )            | (__/  )      /\____) |
+	//        |/             (______/       \_______)
+	//
+
+	///////////////	PDS ELEMENT VARS
+	var progressDetailSidebar;
+	var PDSTopSpacer;
+	var PDSProgressDetailContentButton;
+	var PDSTestProgress;
+	var PDSMiddleSpacer;
+	var PDSProgressDetailContainer;
+	var PDSProgressDetailButtonDictionary = {};
+
+	///////////////	PDS DEFINITIONS AND MODIFICATIONS
+	// PDS
+	progressDetailSidebar = new Element('progress-detail-sidebar', SIDEBAR_TEMPLATE);
+	progressDetailSidebar.specificStyle = defaultState['css'];
+	progressDetailSidebar.states[HOME_STATE] = defaultState;
+	progressDetailSidebar.states[PROGRESS_STATE] = {'css':{'left':'300px'}};;
+	progressDetailSidebar.states[EXPERIMENT_STATE] = defaultState;
+	progressDetailSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
+	progressDetailSidebar.states[SETTINGS_STATE] = defaultState;
+
+	// PDS Top Spacer
+	PDSTopSpacer = new Element('pds-ts', SPACER_TEMPLATE);
+
+	// PDS Progress Detail Content Button
+	PDSProgressDetailContentButton = new Element('pds-progress-detail-content-button', BUTTON_TEMPLATE);
+	PDSProgressDetailContentButton.classes = ['progress-inset', 'notouch'];
+
+	// PDS Middle Spacer
+	PDSMiddleSpacer = new Element('pds-ms', SPACER_TEMPLATE);
+
+	// PDS Progress Detail Container
+	PDSProgressDetailContainer = new Element('pds-progress-detail-container', CONTAINER_TEMPLATE);
+
+	// test
+	PDSTestProgress = new Element('pds-test', PROGRESS_TEMPLATE);
+
+	///////////////	PDS RENDER
+	progressDetailSidebar.render(body);
+	progressDetailSidebar.renderChild(PDSTopSpacer);
+	progressDetailSidebar.renderChild(PDSProgressDetailContentButton);
+	PDSProgressDetailContentButton.renderChild(PDSTestProgress);
+	progressDetailSidebar.renderChild(PDSMiddleSpacer);
+	progressDetailSidebar.renderChild(PDSProgressDetailContainer);
+
+	///////////////	PDS BUTTON BINDINGS
+
+	///////////////////////////////////
 	/////////////// PROGRESS SIDEBAR
 	//         _______    _______    _______    _______        _______
 	//        (  ____ )  (  ____ )  (  ___  )  (  ____ \      (  ____ \
@@ -1199,7 +1257,7 @@ $(document).ready(function() {
 
 	function loadMainContent () {
 		ajax('get', 'list_experiments', {}, function (data) {
-
+			changeState('', NEW_EXPERIMENT_STATE, {});
 		});
 	};
 

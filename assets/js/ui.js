@@ -3,6 +3,7 @@ var PANEL_TEMPLATE = '<div id="{id}" class="panel"></div>';
 var SIDEBAR_TEMPLATE = '<div id="{id}" class="sidebar"></div>';
 var TOPBAR_TEMPLATE = '<div id="{id}" class="topbar"></div>';
 var BUTTON_TEMPLATE = '<button id="{id}" class="btn btn-default"></button>';
+var PROGRESS_TEMPLATE = '<div class="progress-inset"></div>'
 var SPACER_TEMPLATE = '<div id="{id}" class="spacer"></div>';
 var CONTAINER_TEMPLATE = '<div id={id}><div id="{id}-spacer-tray" class="spacer tray"><img id="{id}-spinner" class="spinner" src="./assets/img/colour-loader.gif" /></div></div>';
 var BASIC_TEMPLATE = '<div id={id}></div>';
