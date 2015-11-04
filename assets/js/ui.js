@@ -9,6 +9,7 @@ var CONTAINER_TEMPLATE = '<div id={id}><div id="{id}-spacer-tray" class="spacer 
 var BASIC_TEMPLATE = '<div id={id}></div>';
 var PAPERSCRIPT_TEMPLATE = '<script id="{id}" type="text/paperscript"></script>';
 var CANVAS_TEMPLATE = '<canvas id="{id}" resize></canvas>';
+var INPUT_TEMPLATE = '<input id="{id}" type="text" />';
 
 // Default states
 var HOME_STATE = 'HS';

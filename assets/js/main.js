@@ -345,6 +345,7 @@ $(document).ready(function() {
 	var NESTopSpacer;
 	var NESLifPathButton;
 	var NESExperimentNameButton;
+	var NESExperimentNameInput;
 	var NESMiddleSpacer;
 	var NESPreviewButton;
 	var NESBottomSpacer;
@@ -371,15 +372,23 @@ $(document).ready(function() {
 
 	// NES Lif Path Button
 	NESLifPathButton = new Element('nes-lif-path-button', BUTTON_TEMPLATE);
+	NESLifPathButton.html = 'Choose .lif path...';
 
 	// NES Experiment Name Button
 	NESExperimentNameButton = new Element('nes-experiment-name-button', BUTTON_TEMPLATE);
+	NESExperimentNameButton.classes = ['progress-inset', 'notouch'];
+
+	// NES Experiment Name Input
+	NESExperimentNameInput = new Element('nes-experiment-name-input', INPUT_TEMPLATE);
+	NESExperimentNameInput.specificStyle = {'width':'125px'};
+	NESExperimentNameInput.properties['placeholder'] = 'Experiment name...';
 
 	// NES Middle Spacer
 	NESMiddleSpacer = new Element('nes-ms', SPACER_TEMPLATE);
 
 	// NES Preview Button
 	NESPreviewButton = new Element('nes-preview-button', BUTTON_TEMPLATE);
+	NESPreviewButton.html = 'Generate preview...';
 
 	// NES Bottom Spacer
 	NESBottomSpacer = new Element('nes-bs', SPACER_TEMPLATE);
@@ -395,6 +404,7 @@ $(document).ready(function() {
 
 	// NES Extracting Experiment Details Button
 	NESExtractingExperimentDetailsContentButton = new Element('nes-extracting-experiment-details-content-button', BUTTON_TEMPLATE);
+	NESExtractingExperimentDetailsContentButton.html = 'Extracting details..';
 
 	// NES Detail Spacer
 	NESDetailSpacer = new Element('nes-detail-spacer', SPACER_TEMPLATE);
@@ -405,6 +415,7 @@ $(document).ready(function() {
 	newExperimentSidebar.renderChild(NESTopSpacer);
 	newExperimentSidebar.renderChild(NESLifPathButton);
 	newExperimentSidebar.renderChild(NESExperimentNameButton);
+	NESExperimentNameButton.renderChild(NESExperimentNameInput);
 	newExperimentSidebar.renderChild(NESMiddleSpacer);
 	newExperimentSidebar.renderChild(NESPreviewButton);
 	newExperimentSidebar.renderChild(NESBottomSpacer);
@@ -415,6 +426,9 @@ $(document).ready(function() {
 	NESTrayContainer.renderChild(NESDetailSpacer);
 
 	///////////////	NES BUTTON BINDINGS
+	NESLifPathButton.click(function (model) {
+		
+	}, {});
 
 	///////////////////////////////////
 	/////////////// SERIES SIDEBAR
@@ -456,6 +470,7 @@ $(document).ready(function() {
 
 	// SS Series Content Button
 	SSSeriesContentButton = new Element('ss-series-content-button', BUTTON_TEMPLATE);
+	SSSeriesContentButton.html = 'Available series';
 
 	// SS Middle Spacer
 	SSMiddleSpacer = new Element('ss-ms', SPACER_TEMPLATE);
@@ -465,6 +480,7 @@ $(document).ready(function() {
 
 	// SS Preview Loading Button
 	SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
+	SSPreviewLoadingButton.html = 'Loading previews...';
 
 	///////////////	SS RENDER
 	seriesSidebar.render(body);
@@ -514,6 +530,7 @@ $(document).ready(function() {
 
 	// INFS Info Content Button
 	INFSInfoContentButton = new Element('infs-info-content-button', BUTTON_TEMPLATE);
+	INFSInfoContentButton.html = 'Series info';
 
 	// INFS Tray Container
 	INFSTrayContainer = new Element('infs-tray-container', CONTAINER_TEMPLATE);
@@ -527,6 +544,7 @@ $(document).ready(function() {
 
 	// INFS Extract Button
 	INFSExtractButton = new Element('infs-extract-button', BUTTON_TEMPLATE);
+	INFSExtractButton.html = 'Extract...';
 
 	///////////////	INFS RENDER
 	infoSidebar.render(body);

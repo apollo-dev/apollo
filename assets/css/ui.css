@@ -125,6 +125,11 @@ div.progress-inset {
 	background-color: #00BA8A;
 }
 
+.btn.progress-inset input {
+	border: 0px;
+	outline: none;
+}
+
 /*
 
 Sometimes space is needed without button functionality. Spacers are based on the height of the x+- buttons.
