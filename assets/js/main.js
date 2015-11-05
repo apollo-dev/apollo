@@ -10,6 +10,8 @@ $(document).ready(function() {
 	///////////////////////////////////
 	/////////////// STATES
 	var NEW_EXPERIMENT_STATE = 'NewExperimentState';
+	var NEW_EXPERIMENT_STATE_GENERATEPREVIEW = 'NewExperimentStateGeneratePreview';
+	var NEW_EXPERIMENT_STATE_SERIES_INFO = 'NewExperimentStateSeriesInfo';
 	var EXPERIMENT_STATE = 'ExperimentState';
 	var PROGRESS_STATE = 'ProgressState';
 	var SETTINGS_STATE = 'SettingsState';
@@ -37,7 +39,7 @@ $(document).ready(function() {
 	/////////////// TC RENDER
 	// trackContainer.render(body);
 
-	/////////////// TC BUTTON BINDINGS
+	/////////////// TC BINDINGS
 
 	///////////////////////////////////
 	/////////////// IMAGE PALETTE
@@ -86,7 +88,7 @@ $(document).ready(function() {
 	// imagePalette.renderChild(IPImageContainer);
 	// imagePalette.renderChild(IPCanvasContainer);
 
-	///////////////	IP BUTTON BINDINGS
+	///////////////	IP BINDINGS
 
 	///////////////////////////////////
 	/////////////// CANVAS CONTAINER
@@ -125,7 +127,7 @@ $(document).ready(function() {
 	// IPCanvasContainer.renderChild(paperSliceCanvas);
 	// IPCanvasContainer.renderChild(paperLassoCanvas);
 
-	/////////////// CC BUTTON BINDINGS
+	/////////////// CC BINDINGS
 
 	///////////////////////////////////
 	/////////////// PAPER SCRIPTS
@@ -173,7 +175,7 @@ $(document).ready(function() {
 	// paperSliceScript.render(body);
 	// paperLassoScript.render(body);
 
-	/////////////// PS BUTTON BINDINGS
+	/////////////// PS BINDINGS
 
 	///////////////////////////////////
 	/////////////// CHANNEL PALETTE
@@ -204,7 +206,7 @@ $(document).ready(function() {
 	/////////////// CP RENDER
 	// channelPalette.render(body);
 
-	/////////////// CP BUTTON BINDINGS
+	/////////////// CP BINDINGS
 
 	///////////////////////////////////
 	/////////////// TRACK PALETTE
@@ -236,7 +238,7 @@ $(document).ready(function() {
 	/////////////// TP RENDER
 	// trackPalette.render(body);
 
-	/////////////// TP BUTTON BINDINGS
+	/////////////// TP BINDINGS
 
 	///////////////////////////////////
 	/////////////// EXPERIMENT SIDEBAR
@@ -311,7 +313,7 @@ $(document).ready(function() {
 	experimentSidebar.renderChild(ESActiveExperimentsContentButton);
 	experimentSidebar.renderChild(ESTrayContainer);
 
-	///////////////	ES BUTTON BINDINGS
+	///////////////	ES BINDINGS
 	ESInProgressButton.click(function (model) {
 		changeState(model.id, PROGRESS_STATE, {});
 	}, {});
@@ -380,14 +382,16 @@ $(document).ready(function() {
 
 	// NES Experiment Name Input
 	NESExperimentNameInput = new Element('nes-experiment-name-input', INPUT_TEMPLATE);
-	NESExperimentNameInput.specificStyle = {'width':'125px'};
-	NESExperimentNameInput.properties['placeholder'] = 'Experiment name...';
+	NESExperimentNameInput.specificStyle = {'width':'125px', 'text-align':'center'};
+	NESExperimentNameInput.properties['defaultValue'] = 'Experiment name...';
+	NESExperimentNameInput.properties['value'] = 'Experiment name...';
 
 	// NES Middle Spacer
 	NESMiddleSpacer = new Element('nes-ms', SPACER_TEMPLATE);
 
 	// NES Preview Button
 	NESPreviewButton = new Element('nes-preview-button', BUTTON_TEMPLATE);
+	NESPreviewButton.classes = ['btn-success'];
 	NESPreviewButton.html = 'Generate preview...';
 
 	// NES Bottom Spacer
@@ -404,6 +408,7 @@ $(document).ready(function() {
 
 	// NES Extracting Experiment Details Button
 	NESExtractingExperimentDetailsContentButton = new Element('nes-extracting-experiment-details-content-button', BUTTON_TEMPLATE);
+	NESExtractingExperimentDetailsContentButton.classes = ['notouch'];
 	NESExtractingExperimentDetailsContentButton.html = 'Extracting details..';
 
 	// NES Detail Spacer
@@ -425,9 +430,18 @@ $(document).ready(function() {
 	NESTrayContainer.renderChild(NESExtractingExperimentDetailsContentButton);
 	NESTrayContainer.renderChild(NESDetailSpacer);
 
-	///////////////	NES BUTTON BINDINGS
+	///////////////	NES BINDINGS
 	NESLifPathButton.click(function (model) {
-		
+		dialog.showOpenDialog({properties:['openFile']}, function (filenames) {
+			if (typeof filenames !== 'undefined') {
+				if (filenames.length === 1) {
+					var path = filenames[0];
+					var filename = path.replace(/.*(\/|\\)/, '');
+					model.html("File: " + filename);
+					model.attr('path', path);
+				}
+			}
+		})
 	}, {});
 
 	///////////////////////////////////
@@ -458,7 +472,8 @@ $(document).ready(function() {
 	seriesSidebar = new Element('series-sidebar', SIDEBAR_TEMPLATE);
 	seriesSidebar.specificStyle = defaultState['css'];
 	seriesSidebar.states[HOME_STATE] = defaultState;
-	seriesSidebar.states[NEW_EXPERIMENT_STATE] = {
+	seriesSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
+	seriesSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
 		'css':{'left':'300px'},
 		'time':defaultAnimationTime
 	}
@@ -470,6 +485,7 @@ $(document).ready(function() {
 
 	// SS Series Content Button
 	SSSeriesContentButton = new Element('ss-series-content-button', BUTTON_TEMPLATE);
+	SSSeriesContentButton.classes = ['notouch'];
 	SSSeriesContentButton.html = 'Available series';
 
 	// SS Middle Spacer
@@ -480,6 +496,7 @@ $(document).ready(function() {
 
 	// SS Preview Loading Button
 	SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
+	SSPreviewLoadingButton.classes = ['notouch'];
 	SSPreviewLoadingButton.html = 'Loading previews...';
 
 	///////////////	SS RENDER
@@ -490,7 +507,7 @@ $(document).ready(function() {
 	seriesSidebar.renderChild(SSTrayContainer);
 	seriesSidebar.renderChild(SSPreviewLoadingButton);
 
-	///////////////	SS BUTTON BINDINGS
+	///////////////	SS BINDINGS
 
 	///////////////////////////////////
 	/////////////// INFO SIDEBAR
@@ -518,7 +535,9 @@ $(document).ready(function() {
 	infoSidebar = new Element('info-sidebar', SIDEBAR_TEMPLATE);
 	infoSidebar.specificStyle = defaultState['css'];
 	infoSidebar.states[HOME_STATE] = defaultState;
-	infoSidebar.states[NEW_EXPERIMENT_STATE] = {
+	infoSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
+	infoSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = defaultState;
+	infoSidebar.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {
 		'css':{'left':'550px'},
 		'time':defaultAnimationTime
 	}
@@ -530,6 +549,7 @@ $(document).ready(function() {
 
 	// INFS Info Content Button
 	INFSInfoContentButton = new Element('infs-info-content-button', BUTTON_TEMPLATE);
+	INFSInfoContentButton.classes = ['notouch'];
 	INFSInfoContentButton.html = 'Series info';
 
 	// INFS Tray Container
@@ -544,6 +564,7 @@ $(document).ready(function() {
 
 	// INFS Extract Button
 	INFSExtractButton = new Element('infs-extract-button', BUTTON_TEMPLATE);
+	INFSExtractButton.classes = ['btn-success'];
 	INFSExtractButton.html = 'Extract...';
 
 	///////////////	INFS RENDER
@@ -555,7 +576,7 @@ $(document).ready(function() {
 	infoSidebar.renderChild(INFSMiddleSpacer);
 	infoSidebar.renderChild(INFSExtractButton);
 
-	///////////////	INFS BUTTON BINDINGS
+	///////////////	INFS BINDINGS
 
 	///////////////////////////////////
 	/////////////// CURRENT EXPERIMENT SIDEBAR
@@ -628,7 +649,7 @@ $(document).ready(function() {
 	currentExperimentSidebar.renderChild(CESUnextractedHighDimensionSeriesContentButton);
 	currentExperimentSidebar.renderChild(CESUnextractedHighDimensionSeriesContainer);
 
-	///////////////	CES BUTTON BINDINGS
+	///////////////	CES BINDINGS
 
 	///////////////////////////////////
 	/////////////// COMPOSITE SIDEBAR
@@ -688,7 +709,7 @@ $(document).ready(function() {
 	compositeSidebar.renderChild(CSTrayContainer);
 	compositeSidebar.renderChild(CSPreviewLoadingButton);
 
-	///////////////	CS BUTTON BINDINGS
+	///////////////	CS BINDINGS
 
 	///////////////////////////////////
 	/////////////// CHANNEL SIDEBAR
@@ -751,7 +772,7 @@ $(document).ready(function() {
 	channelSidebar.renderChild(CHSBottomSpacer);
 	channelSidebar.renderChild(CHSExtractButton);
 
-	///////////////	BUTTON BINDINGS
+	///////////////	BINDINGS
 
 	///////////////////////////////////
 	/////////////// MOD SIDEBAR
@@ -825,7 +846,7 @@ $(document).ready(function() {
 	modSidebar.renderChild(MODSExistingModsContentButton);
 	modSidebar.renderChild(MODSExistingModsContainer);
 
-	///////////////	BUTTON BINDINGS
+	///////////////	BINDINGS
 
 	///////////////////////////////////
 	/////////////// PROGRESS DETAIL SIDEBAR
@@ -882,7 +903,7 @@ $(document).ready(function() {
 	progressDetailSidebar.renderChild(PDSMiddleSpacer);
 	progressDetailSidebar.renderChild(PDSProgressDetailContainer);
 
-	///////////////	PDS BUTTON BINDINGS
+	///////////////	PDS BINDINGS
 
 	///////////////////////////////////
 	/////////////// PROGRESS SIDEBAR
@@ -933,7 +954,7 @@ $(document).ready(function() {
 	progressSidebar.renderChild(PROGSMiddleSpacer);
 	progressSidebar.renderChild(PROGSInProgressContainer);
 
-	///////////////	PROGS BUTTON BINDINGS
+	///////////////	PROGS BINDINGS
 
 	///////////////////////////////////
 	/////////////// SETTINGS SIDEBAR
@@ -984,7 +1005,7 @@ $(document).ready(function() {
 	settingsSidebar.renderChild(SETSMiddleSpacer);
 	settingsSidebar.renderChild(SETSInProgressContainer);
 
-	///////////////	BUTTON BINDINGS
+	///////////////	BINDINGS
 
 	///////////////////////////////////
 	/////////////// MINI SIDEBAR
@@ -1055,7 +1076,7 @@ $(document).ready(function() {
 	miniSidebar.renderChild(MSSettingsButton);
 	miniSidebar.renderChild(MSNewExperimentButton);
 
-	///////////////	MS BUTTON BINDINGS
+	///////////////	MS BINDINGS
 	MSHomeButton.click(function (model) {
 		changeState(model.id, HOME_STATE, {});
 	}, {});
@@ -1106,7 +1127,7 @@ $(document).ready(function() {
 	// backMiniSidebar.renderChild(BMSTopSpacer);
 	// backMiniSidebar.renderChild(BMSBackButton);
 
-	/////////////// BMS BUTTON BINDINGS
+	/////////////// BMS BINDINGS
 
 	///////////////////////////////////
 	/////////////// SEGMENTATION MINI SIDEBAR
@@ -1123,7 +1144,7 @@ $(document).ready(function() {
 	/////////////// SMS ELEMENT VARS
 	/////////////// SMS DEFINITIONS AND MODIFICATIONS
 	/////////////// SMS RENDER
-	/////////////// SMS BUTTON BINDINGS
+	/////////////// SMS BINDINGS
 
 	///////////////////////////////////
 	/////////////// SEGMENTATION CONSOLE (WASD)
@@ -1263,7 +1284,7 @@ $(document).ready(function() {
 	// segmentationConsole.renderChild(SCONTimepointNextButtonD);
 	// segmentationConsole.renderChild(SCONTimepointLastButtonF);
 
-	/////////////// SCON BUTTON BINDINGS
+	/////////////// SCON BINDINGS
 
 	///////////////////////////////////
 	///////////////	SHORTCUT KEY BINDINGS
@@ -1291,6 +1312,19 @@ $(document).ready(function() {
 	// to this method.
 	body.on('mouseup', '.btn', function () {
 		$(this).blur();
+	});
+
+	// blur and focus input fields properly
+	body.on('focus', 'input', function () {
+		if ($(this).val() === $(this).attr('defaultValue')) {
+			$(this).val('');
+		}
+	});
+
+	body.on('blur', 'input', function () {
+		if ($(this).val() === '') {
+			$(this).val($(this).attr('defaultValue'));
+		}
 	});
 
 });
