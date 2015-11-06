@@ -21,6 +21,7 @@ var elements = [];
 var currentState = '';
 var defaultAnimationTime = 400;
 var defaultState = {'css': {'left':'-1000px'}};
+var invisibleState = {'fn':fadeOut};
 
 // Element
 function Element (id, template) {
@@ -88,6 +89,17 @@ function Element (id, template) {
 		}
 	}
 
+	this.local = function (stateName, trigger, fn) {
+		var state = this.states[stateName];
+
+		if (!(state.hasOwnProperty('local'))) {
+			state['local'] = {};
+		}
+		state['local'][trigger.id] = fn;
+
+		this.states[stateName] = state;
+	};
+
 	// render to a chosen parent element
 	this.render = function (parent) {
 		// pre-render
@@ -154,9 +166,18 @@ function Element (id, template) {
 
 function changeState (triggerId, stateName, args) {
 	if (typeof stateName !== 'undefined' && stateName !== currentState) { // not-stateless thing is clicked
+		$('#state').html(stateName);
 		for (lm in elements) {
 			var element = elements[lm];
 			element.changeState(triggerId, stateName, args);
 		}
 	}
+}
+
+function fadeIn (model) {
+	model.fadeIn(defaultAnimationTime);
+}
+
+function fadeOut (model) {
+	model.fadeOut(defaultAnimationTime);
 }

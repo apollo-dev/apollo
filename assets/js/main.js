@@ -10,6 +10,9 @@ $(document).ready(function() {
 	///////////////////////////////////
 	/////////////// STATES
 	var NEW_EXPERIMENT_STATE = 'NewExperimentState';
+	var NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN = 'NewExperimentStateExperimentChosen';
+	var NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED = 'NewExperimentStateExperimentRequested';
+	var NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED = 'NewExperimentStateExperimentCreated';
 	var NEW_EXPERIMENT_STATE_GENERATEPREVIEW = 'NewExperimentStateGeneratePreview';
 	var NEW_EXPERIMENT_STATE_SERIES_INFO = 'NewExperimentStateSeriesInfo';
 	var EXPERIMENT_STATE = 'ExperimentState';
@@ -331,185 +334,6 @@ $(document).ready(function() {
 	}, {});
 
 	///////////////////////////////////
-	/////////////// NEW EXPERIMENT SIDEBAR
-	//         _              _______        _______
-	//        ( (    /|      (  ____ \      (  ____ \
-	//        |  \  ( |      | (    \/      | (    \/
-	//        |   \ | |      | (__          | (_____
-	//        | (\ \) |      |  __)         (_____  )
-	//        | | \   |      | (                  ) |
-	//        | )  \  |      | (____/\      /\____) |
-	//        |/    )_)      (_______/      \_______)
-	//
-
-	///////////////	NES ELEMENT VARS
-	var newExperimentSidebar;
-	var NESTopSpacer;
-	var NESLifPathButton;
-	var NESExperimentNameButton;
-	var NESExperimentNameInput;
-	var NESMiddleSpacer;
-	var NESPreviewButton;
-	var NESBottomSpacer;
-	var NESExperimentCreatedContentButton;
-	var NESExperimentNameContentButton;
-	var NESTrayContainer;
-	var NESExtractingExperimentDetailsButton;
-	var NESDetailSpacer;
-
-	///////////////	NES DEFINITIONS AND MODIFICATIONS
-	// NES
-	newExperimentSidebar = new Element('new-experiment-sidebar', SIDEBAR_TEMPLATE);
-	newExperimentSidebar.specificStyle = defaultState['css'];
-	newExperimentSidebar.states[HOME_STATE] = defaultState;
-	newExperimentSidebar.states[NEW_EXPERIMENT_STATE] = {
-		'css':{'left':'50px'},
-		'time':defaultAnimationTime
-	}
-	newExperimentSidebar.states[PROGRESS_STATE] = defaultState;
-	newExperimentSidebar.states[SETTINGS_STATE] = defaultState;
-
-	// NES Top Spacer
-	NESTopSpacer = new Element('nes-ts', SPACER_TEMPLATE);
-
-	// NES Lif Path Button
-	NESLifPathButton = new Element('nes-lif-path-button', BUTTON_TEMPLATE);
-	NESLifPathButton.html = 'Choose .lif path...';
-
-	// NES Experiment Name Button
-	NESExperimentNameButton = new Element('nes-experiment-name-button', BUTTON_TEMPLATE);
-	NESExperimentNameButton.classes = ['progress-inset', 'notouch'];
-
-	// NES Experiment Name Input
-	NESExperimentNameInput = new Element('nes-experiment-name-input', INPUT_TEMPLATE);
-	NESExperimentNameInput.specificStyle = {'width':'125px', 'text-align':'center'};
-	NESExperimentNameInput.properties['defaultValue'] = 'Experiment name...';
-	NESExperimentNameInput.properties['value'] = 'Experiment name...';
-
-	// NES Middle Spacer
-	NESMiddleSpacer = new Element('nes-ms', SPACER_TEMPLATE);
-
-	// NES Preview Button
-	NESPreviewButton = new Element('nes-preview-button', BUTTON_TEMPLATE);
-	NESPreviewButton.classes = ['btn-success'];
-	NESPreviewButton.html = 'Generate preview...';
-
-	// NES Bottom Spacer
-	NESBottomSpacer = new Element('nes-bs', SPACER_TEMPLATE);
-
-	// NES Experiment Created Content Button
-	NESExperimentCreatedContentButton = new Element('nes-experiment-created-content-button', BUTTON_TEMPLATE);
-
-	// NES Experiment Name Content Button
-	NESExperimentNameContentButton = new Element('nes-experiment-name-content-button', BUTTON_TEMPLATE);
-
-	// NES Tray Container
-	NESTrayContainer = new Element('nes-tray-container', CONTAINER_TEMPLATE);
-
-	// NES Extracting Experiment Details Button
-	NESExtractingExperimentDetailsContentButton = new Element('nes-extracting-experiment-details-content-button', BUTTON_TEMPLATE);
-	NESExtractingExperimentDetailsContentButton.classes = ['notouch'];
-	NESExtractingExperimentDetailsContentButton.html = 'Extracting details..';
-
-	// NES Detail Spacer
-	NESDetailSpacer = new Element('nes-detail-spacer', SPACER_TEMPLATE);
-	NESDetailSpacer.classes = ['content'];
-
-	///////////////	NES RENDER
-	newExperimentSidebar.render(body);
-	newExperimentSidebar.renderChild(NESTopSpacer);
-	newExperimentSidebar.renderChild(NESLifPathButton);
-	newExperimentSidebar.renderChild(NESExperimentNameButton);
-	NESExperimentNameButton.renderChild(NESExperimentNameInput);
-	newExperimentSidebar.renderChild(NESMiddleSpacer);
-	newExperimentSidebar.renderChild(NESPreviewButton);
-	newExperimentSidebar.renderChild(NESBottomSpacer);
-	newExperimentSidebar.renderChild(NESExperimentCreatedContentButton);
-	newExperimentSidebar.renderChild(NESExperimentNameContentButton);
-	newExperimentSidebar.renderChild(NESTrayContainer);
-	NESTrayContainer.renderChild(NESExtractingExperimentDetailsContentButton);
-	NESTrayContainer.renderChild(NESDetailSpacer);
-
-	///////////////	NES BINDINGS
-	NESLifPathButton.click(function (model) {
-		dialog.showOpenDialog({properties:['openFile']}, function (filenames) {
-			if (typeof filenames !== 'undefined') {
-				if (filenames.length === 1) {
-					var path = filenames[0];
-					var filename = path.replace(/.*(\/|\\)/, '');
-					model.html("File: " + filename);
-					model.attr('path', path);
-				}
-			}
-		})
-	}, {});
-
-	///////////////////////////////////
-	/////////////// SERIES SIDEBAR
-	//         _______        _______
-	//        (  ____ \      (  ____ \
-	//        | (    \/      | (    \/
-	//        | (_____       | (_____
-	//        (_____  )      (_____  )
-	//              ) |            ) |
-	//        /\____) |      /\____) |
-	//        \_______)      \_______)
-	//
-
-	///////////////	SS ELEMENT VARS
-	var seriesSidebar;
-	var SSTopSpacer;
-	var SSSeriesContentButton;
-	var SSMiddleSpacer;
-	var SSTrayContainer;
-	var SSGeneratingPreviewContentButton;
-	var SSSeriesPreviewTrayDictionary = {}; // stores elements with series names as keys
-	var SSSeriesPreviewContentTrayDictionary = {};
-	var SSSeriesPreviewButtonDictionary = {};
-
-	///////////////	SS DEFINITIONS AND MODIFICATIONS
-	// SS
-	seriesSidebar = new Element('series-sidebar', SIDEBAR_TEMPLATE);
-	seriesSidebar.specificStyle = defaultState['css'];
-	seriesSidebar.states[HOME_STATE] = defaultState;
-	seriesSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
-	seriesSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
-		'css':{'left':'300px'},
-		'time':defaultAnimationTime
-	}
-	seriesSidebar.states[PROGRESS_STATE] = defaultState;
-	seriesSidebar.states[SETTINGS_STATE] = defaultState;
-
-	// SS Top Spacer
-	SSTopSpacer = new Element('ss-ts', SPACER_TEMPLATE);
-
-	// SS Series Content Button
-	SSSeriesContentButton = new Element('ss-series-content-button', BUTTON_TEMPLATE);
-	SSSeriesContentButton.classes = ['notouch'];
-	SSSeriesContentButton.html = 'Available series';
-
-	// SS Middle Spacer
-	SSMiddleSpacer = new Element('ss-ms', SPACER_TEMPLATE);
-
-	// SS Tray Container
-	SSTrayContainer = new Element('ss-tray-container', CONTAINER_TEMPLATE)
-
-	// SS Preview Loading Button
-	SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
-	SSPreviewLoadingButton.classes = ['notouch'];
-	SSPreviewLoadingButton.html = 'Loading previews...';
-
-	///////////////	SS RENDER
-	seriesSidebar.render(body);
-	seriesSidebar.renderChild(SSTopSpacer);
-	seriesSidebar.renderChild(SSSeriesContentButton);
-	seriesSidebar.renderChild(SSMiddleSpacer);
-	seriesSidebar.renderChild(SSTrayContainer);
-	seriesSidebar.renderChild(SSPreviewLoadingButton);
-
-	///////////////	SS BINDINGS
-
-	///////////////////////////////////
 	/////////////// INFO SIDEBAR
 	//        _________ _        _______        _______
 	//        \__   __/( (    /|(  ____ \      (  ____ \
@@ -577,6 +401,245 @@ $(document).ready(function() {
 	infoSidebar.renderChild(INFSExtractButton);
 
 	///////////////	INFS BINDINGS
+
+	///////////////////////////////////
+	/////////////// SERIES SIDEBAR
+	//         _______        _______
+	//        (  ____ \      (  ____ \
+	//        | (    \/      | (    \/
+	//        | (_____       | (_____
+	//        (_____  )      (_____  )
+	//              ) |            ) |
+	//        /\____) |      /\____) |
+	//        \_______)      \_______)
+	//
+
+	///////////////	SS ELEMENT VARS
+	var seriesSidebar;
+	var SSTopSpacer;
+	var SSSeriesContentButton;
+	var SSMiddleSpacer;
+	var SSTrayContainer;
+	var SSGeneratingPreviewContentButton;
+	var SSSeriesPreviewTrayDictionary = {}; // stores elements with series names as keys
+	var SSSeriesPreviewContentTrayDictionary = {};
+	var SSSeriesPreviewButtonDictionary = {};
+
+	///////////////	SS DEFINITIONS AND MODIFICATIONS
+	// SS
+	seriesSidebar = new Element('series-sidebar', SIDEBAR_TEMPLATE);
+	seriesSidebar.specificStyle = defaultState['css'];
+	seriesSidebar.states[HOME_STATE] = defaultState;
+	seriesSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
+	seriesSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
+		'css':{'left':'300px'},
+		'time':defaultAnimationTime
+	}
+	seriesSidebar.states[PROGRESS_STATE] = defaultState;
+	seriesSidebar.states[SETTINGS_STATE] = defaultState;
+
+	// SS Top Spacer
+	SSTopSpacer = new Element('ss-ts', SPACER_TEMPLATE);
+
+	// SS Series Content Button
+	SSSeriesContentButton = new Element('ss-series-content-button', BUTTON_TEMPLATE);
+	SSSeriesContentButton.classes = ['notouch'];
+	SSSeriesContentButton.html = 'Available series';
+
+	// SS Middle Spacer
+	SSMiddleSpacer = new Element('ss-ms', SPACER_TEMPLATE);
+
+	// SS Tray Container
+	SSTrayContainer = new Element('ss-tray-container', CONTAINER_TEMPLATE)
+
+	// SS Preview Loading Button
+	SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
+	SSPreviewLoadingButton.classes = ['notouch'];
+	SSPreviewLoadingButton.html = 'Loading previews...';
+
+	///////////////	SS RENDER
+	seriesSidebar.render(body);
+	seriesSidebar.renderChild(SSTopSpacer);
+	seriesSidebar.renderChild(SSSeriesContentButton);
+	seriesSidebar.renderChild(SSMiddleSpacer);
+	seriesSidebar.renderChild(SSTrayContainer);
+	seriesSidebar.renderChild(SSPreviewLoadingButton);
+
+	///////////////	SS BINDINGS
+
+	///////////////////////////////////
+	/////////////// NEW EXPERIMENT SIDEBAR
+	//         _              _______        _______
+	//        ( (    /|      (  ____ \      (  ____ \
+	//        |  \  ( |      | (    \/      | (    \/
+	//        |   \ | |      | (__          | (_____
+	//        | (\ \) |      |  __)         (_____  )
+	//        | | \   |      | (                  ) |
+	//        | )  \  |      | (____/\      /\____) |
+	//        |/    )_)      (_______/      \_______)
+	//
+
+	///////////////	NES ELEMENT VARS
+	var newExperimentSidebar;
+	var NESTopSpacer;
+	var NESLifPathButton;
+	var NESExperimentNameButton;
+	var NESExperimentNameInput;
+	var NESMiddleSpacer;
+	var NESPreviewButton;
+	var NESBottomSpacer;
+	var NESExperimentCreatedContentButton;
+	var NESExperimentNameContentButton;
+	var NESTrayContainer;
+	var NESExtractingExperimentDetailsButton;
+	var NESDetailSpacer;
+
+	///////////////	NES DEFINITIONS AND MODIFICATIONS
+	// NES
+	newExperimentSidebar = new Element('new-experiment-sidebar', SIDEBAR_TEMPLATE);
+	newExperimentSidebar.specificStyle = defaultState['css'];
+	newExperimentSidebar.states[HOME_STATE] = defaultState;
+	newExperimentSidebar.states[NEW_EXPERIMENT_STATE] = {
+		'css':{'left':'50px'},
+		'time':defaultAnimationTime
+	}
+	newExperimentSidebar.states[PROGRESS_STATE] = defaultState;
+	newExperimentSidebar.states[SETTINGS_STATE] = defaultState;
+
+	// NES Top Spacer
+	NESTopSpacer = new Element('nes-ts', SPACER_TEMPLATE);
+
+	// NES Lif Path Button
+	NESLifPathButton = new Element('nes-lif-path-button', BUTTON_TEMPLATE);
+	NESLifPathButton.html = 'Choose .lif path...';
+	NESLifPathButton.states[NEW_EXPERIMENT_STATE] = {'fn':function (model) {
+		model.html('Choose .lif path...');
+		model.attr('path', '');
+	}};
+
+	// NES Experiment Name Button
+	NESExperimentNameButton = new Element('nes-experiment-name-button', BUTTON_TEMPLATE);
+	NESExperimentNameButton.classes = ['progress-inset'];
+
+	// NES Experiment Name Input
+	NESExperimentNameInput = new Element('nes-experiment-name-input', INPUT_TEMPLATE);
+	NESExperimentNameInput.specificStyle = {'width':'125px', 'text-align':'center', 'background-color':'transparent'};
+	NESExperimentNameInput.properties['defaultValue'] = 'Experiment name...';
+	NESExperimentNameInput.properties['value'] = 'Experiment name...';
+	NESExperimentNameInput.states[NEW_EXPERIMENT_STATE] = {'fn':function (model) {
+		model.val(model.attr('defaultValue'));
+	}};
+
+	// NES Middle Spacer
+	NESMiddleSpacer = new Element('nes-ms', SPACER_TEMPLATE);
+	NESMiddleSpacer.specificStyle = {'display':'none'};
+	NESMiddleSpacer.states[HOME_STATE] = invisibleState;
+	NESMiddleSpacer.states[NEW_EXPERIMENT_STATE] = {'fn':fadeOut};
+	NESMiddleSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN] = {'fn':fadeIn};
+
+	// NES Preview Button
+	NESPreviewButton = new Element('nes-preview-button', BUTTON_TEMPLATE);
+	NESPreviewButton.classes = ['btn-success'];
+	NESPreviewButton.html = 'Generate preview...';
+	NESPreviewButton.specificStyle = {'display':'none'};
+	NESPreviewButton.states[HOME_STATE] = invisibleState;
+	NESPreviewButton.states[NEW_EXPERIMENT_STATE] = {'fn':fadeOut};
+	NESPreviewButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN] = {'fn':fadeIn};
+
+	// NES Bottom Spacer
+	NESBottomSpacer = new Element('nes-bs', SPACER_TEMPLATE);
+	NESBottomSpacer.specificStyle = {'display':'none'};
+	NESBottomSpacer.states[HOME_STATE] = invisibleState;
+	NESBottomSpacer.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESBottomSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED] = {'fn':fadeIn};
+
+	// NES Experiment Created Content Button
+	NESExperimentCreatedContentButton = new Element('nes-experiment-created-content-button', BUTTON_TEMPLATE);
+	NESExperimentCreatedContentButton.specificStyle = {'display':'none'};
+	NESExperimentCreatedContentButton.states[HOME_STATE] = invisibleState;
+	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED] = {'fn':fadeIn};
+
+	// NES Experiment Name Content Button
+	NESExperimentNameContentButton = new Element('nes-experiment-name-content-button', BUTTON_TEMPLATE);
+	NESExperimentNameContentButton.specificStyle = {'display':'none'};
+	NESExperimentNameContentButton.states[HOME_STATE] = invisibleState;
+	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED] = {'fn':fadeIn};
+	NESExperimentNameContentButton.local(NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED, NESPreviewButton, function (model, args) {
+		
+	});
+
+	// NES Tray Container
+	NESTrayContainer = new Element('nes-tray-container', CONTAINER_TEMPLATE);
+	NESTrayContainer.specificStyle = {'display':'none'};
+	NESTrayContainer.states[HOME_STATE] = invisibleState;
+	NESTrayContainer.states[NEW_EXPERIMENT_STATE] = invisibleState;
+
+	// NES Extracting Experiment Details Button
+	NESExtractingExperimentDetailsContentButton = new Element('nes-extracting-experiment-details-content-button', BUTTON_TEMPLATE);
+	NESExtractingExperimentDetailsContentButton.classes = ['notouch'];
+	NESExtractingExperimentDetailsContentButton.html = 'Extracting details..';
+	NESExtractingExperimentDetailsContentButton.specificStyle = {'display':'none'};
+	NESExtractingExperimentDetailsContentButton.states[HOME_STATE] = invisibleState;
+	NESExtractingExperimentDetailsContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
+
+	// NES Detail Spacer
+	NESDetailSpacer = new Element('nes-detail-spacer', SPACER_TEMPLATE);
+	NESDetailSpacer.classes = ['content'];
+	NESDetailSpacer.specificStyle = {'display':'none'};
+	NESDetailSpacer.states[HOME_STATE] = invisibleState;
+	NESDetailSpacer.states[NEW_EXPERIMENT_STATE] = invisibleState;
+
+	///////////////	NES RENDER
+	newExperimentSidebar.render(body);
+	newExperimentSidebar.renderChild(NESTopSpacer);
+	newExperimentSidebar.renderChild(NESLifPathButton);
+	newExperimentSidebar.renderChild(NESExperimentNameButton);
+	NESExperimentNameButton.renderChild(NESExperimentNameInput);
+	newExperimentSidebar.renderChild(NESMiddleSpacer);
+	newExperimentSidebar.renderChild(NESPreviewButton);
+	newExperimentSidebar.renderChild(NESBottomSpacer);
+	newExperimentSidebar.renderChild(NESExperimentCreatedContentButton);
+	newExperimentSidebar.renderChild(NESExperimentNameContentButton);
+	newExperimentSidebar.renderChild(NESTrayContainer);
+	NESTrayContainer.renderChild(NESExtractingExperimentDetailsContentButton);
+	NESTrayContainer.renderChild(NESDetailSpacer);
+
+	///////////////	NES BINDINGS
+	NESLifPathButton.click(function (model) {
+		dialog.showOpenDialog({properties:['openFile']}, function (filenames) {
+			if (typeof filenames !== 'undefined') {
+				if (filenames.length === 1) {
+					var path = filenames[0];
+					var filename = path.replace(/.*(\/|\\)/, '');
+					model.html("File: " + filename);
+					model.attr('path', path);
+					changeState(model.id, NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN, {});
+				}
+			}
+		})
+	}, {});
+
+	NESExperimentNameButton.click(function (model) {
+		var input = NESExperimentNameInput.model();
+		input.focus();
+	});
+
+	NESPreviewButton.click(function (model) {
+		var inputButton = NESExperimentNameButton.model();
+		var input = NESExperimentNameInput.model();
+
+		if (input.val() === input.attr('defaultValue')) {
+			inputButton.addClass('btn-danger');
+		} else {
+			inputButton.removeClass('btn-danger');
+
+			var experimentName = input.val();
+			var experimentPath = inputButton.attr('path');
+			changeState(model.id, NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED, {'experiment_name':experimentName, 'experiment_path':experimentPath});
+		}
+	});
 
 	///////////////////////////////////
 	/////////////// CURRENT EXPERIMENT SIDEBAR
