@@ -90,6 +90,10 @@ function Element (id, template) {
 	}
 
 	this.local = function (stateName, trigger, fn) {
+		if (!(this.states.hasOwnProperty(stateName))) {
+			this.states[stateName] = {};
+		}
+
 		var state = this.states[stateName];
 
 		if (!(state.hasOwnProperty('local'))) {

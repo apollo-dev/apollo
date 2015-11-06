@@ -1,8 +1,16 @@
 // all purpose ajax
 function ajax (type, url, data, callback) {
+	var dataString = '';
+	if (type === 'get') {
+		for (arg in data) {
+			dataString = dataString + data[arg];
+		}
+		dataString = dataString + '/';
+	}
+
 	var ajax_params = {
 		type: type,
-		url:'http://localhost:{0}/expt/commands/{1}/'.format(settings['port'], url),
+		url:'http://localhost:{0}/expt/commands/{1}/{2}'.format(settings['port'], url, dataString),
 		success: function (data, textStatus, XMLHttpRequest) {
 			callback(data);
 		},
@@ -13,7 +21,7 @@ function ajax (type, url, data, callback) {
 		}
 	};
 
-	if (!($.isEmptyObject(data))) { // allow for no data to be sent with a GET request for example.
+	if (type === 'post') { // allow for no data to be sent with a GET request for example.
 		ajax_params['data'] = data;
 	}
 
@@ -22,5 +30,5 @@ function ajax (type, url, data, callback) {
 
 // state transition functions
 function postRenderFadeIn (model) {
-	
+
 }

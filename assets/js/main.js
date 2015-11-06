@@ -12,7 +12,7 @@ $(document).ready(function() {
 	var NEW_EXPERIMENT_STATE = 'NewExperimentState';
 	var NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN = 'NewExperimentStateExperimentChosen';
 	var NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED = 'NewExperimentStateExperimentRequested';
-	var NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED = 'NewExperimentStateExperimentCreated';
+	var NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED = 'NewExperimentStateExperimentReceived';
 	var NEW_EXPERIMENT_STATE_GENERATEPREVIEW = 'NewExperimentStateGeneratePreview';
 	var NEW_EXPERIMENT_STATE_SERIES_INFO = 'NewExperimentStateSeriesInfo';
 	var EXPERIMENT_STATE = 'ExperimentState';
@@ -403,71 +403,6 @@ $(document).ready(function() {
 	///////////////	INFS BINDINGS
 
 	///////////////////////////////////
-	/////////////// SERIES SIDEBAR
-	//         _______        _______
-	//        (  ____ \      (  ____ \
-	//        | (    \/      | (    \/
-	//        | (_____       | (_____
-	//        (_____  )      (_____  )
-	//              ) |            ) |
-	//        /\____) |      /\____) |
-	//        \_______)      \_______)
-	//
-
-	///////////////	SS ELEMENT VARS
-	var seriesSidebar;
-	var SSTopSpacer;
-	var SSSeriesContentButton;
-	var SSMiddleSpacer;
-	var SSTrayContainer;
-	var SSGeneratingPreviewContentButton;
-	var SSSeriesPreviewTrayDictionary = {}; // stores elements with series names as keys
-	var SSSeriesPreviewContentTrayDictionary = {};
-	var SSSeriesPreviewButtonDictionary = {};
-
-	///////////////	SS DEFINITIONS AND MODIFICATIONS
-	// SS
-	seriesSidebar = new Element('series-sidebar', SIDEBAR_TEMPLATE);
-	seriesSidebar.specificStyle = defaultState['css'];
-	seriesSidebar.states[HOME_STATE] = defaultState;
-	seriesSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
-	seriesSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
-		'css':{'left':'300px'},
-		'time':defaultAnimationTime
-	}
-	seriesSidebar.states[PROGRESS_STATE] = defaultState;
-	seriesSidebar.states[SETTINGS_STATE] = defaultState;
-
-	// SS Top Spacer
-	SSTopSpacer = new Element('ss-ts', SPACER_TEMPLATE);
-
-	// SS Series Content Button
-	SSSeriesContentButton = new Element('ss-series-content-button', BUTTON_TEMPLATE);
-	SSSeriesContentButton.classes = ['notouch'];
-	SSSeriesContentButton.html = 'Available series';
-
-	// SS Middle Spacer
-	SSMiddleSpacer = new Element('ss-ms', SPACER_TEMPLATE);
-
-	// SS Tray Container
-	SSTrayContainer = new Element('ss-tray-container', CONTAINER_TEMPLATE)
-
-	// SS Preview Loading Button
-	SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
-	SSPreviewLoadingButton.classes = ['notouch'];
-	SSPreviewLoadingButton.html = 'Loading previews...';
-
-	///////////////	SS RENDER
-	seriesSidebar.render(body);
-	seriesSidebar.renderChild(SSTopSpacer);
-	seriesSidebar.renderChild(SSSeriesContentButton);
-	seriesSidebar.renderChild(SSMiddleSpacer);
-	seriesSidebar.renderChild(SSTrayContainer);
-	seriesSidebar.renderChild(SSPreviewLoadingButton);
-
-	///////////////	SS BINDINGS
-
-	///////////////////////////////////
 	/////////////// NEW EXPERIMENT SIDEBAR
 	//         _              _______        _______
 	//        ( (    /|      (  ____ \      (  ____ \
@@ -551,38 +486,64 @@ $(document).ready(function() {
 	NESBottomSpacer.specificStyle = {'display':'none'};
 	NESBottomSpacer.states[HOME_STATE] = invisibleState;
 	NESBottomSpacer.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESBottomSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED] = {'fn':fadeIn};
+	NESBottomSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
 
 	// NES Experiment Created Content Button
 	NESExperimentCreatedContentButton = new Element('nes-experiment-created-content-button', BUTTON_TEMPLATE);
+	NESExperimentCreatedContentButton.classes = ['notouch'];
 	NESExperimentCreatedContentButton.specificStyle = {'display':'none'};
 	NESExperimentCreatedContentButton.states[HOME_STATE] = invisibleState;
 	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED] = {'fn':fadeIn};
+	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
 
 	// NES Experiment Name Content Button
 	NESExperimentNameContentButton = new Element('nes-experiment-name-content-button', BUTTON_TEMPLATE);
+	NESExperimentNameContentButton.classes = ['notouch'];
 	NESExperimentNameContentButton.specificStyle = {'display':'none'};
 	NESExperimentNameContentButton.states[HOME_STATE] = invisibleState;
 	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED] = {'fn':fadeIn};
 	NESExperimentNameContentButton.local(NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED, NESPreviewButton, function (model, args) {
-		
+		// need to modify html of button with callback
+		var experimentCreatedButton = NESExperimentCreatedContentButton.model();
+
+		// ajax
+		ajax('post', 'create_experiment', args, function (data) {
+			experimentCreatedButton.html('Experiment: {0}'.format(data['status']));
+			model.html(data['name']);
+
+			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED, args);
+		});
 	});
+	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
 
 	// NES Tray Container
 	NESTrayContainer = new Element('nes-tray-container', CONTAINER_TEMPLATE);
 	NESTrayContainer.specificStyle = {'display':'none'};
 	NESTrayContainer.states[HOME_STATE] = invisibleState;
 	NESTrayContainer.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESTrayContainer.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
+	NESTrayContainer.local(NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED, NESExperimentNameContentButton, function (model, args) {
+		// other elements
+		var detailButton = NESExtractingExperimentDetailsContentButton.model();
+		var detailSpacer = NESDetailSpacer.model();
+
+		// ajax
+		ajax('get', 'extract_experiment_details', {'experiment_name': args['experiment_name']}, function (data) {
+			// set html
+			detailSpacer.html('<p>Number of series: {0}</p>'.format(data['number_of_series']));
+
+			// changeState
+			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATEPREVIEW, args);
+		});
+	});
 
 	// NES Extracting Experiment Details Button
 	NESExtractingExperimentDetailsContentButton = new Element('nes-extracting-experiment-details-content-button', BUTTON_TEMPLATE);
 	NESExtractingExperimentDetailsContentButton.classes = ['notouch'];
 	NESExtractingExperimentDetailsContentButton.html = 'Extracting details..';
-	NESExtractingExperimentDetailsContentButton.specificStyle = {'display':'none'};
 	NESExtractingExperimentDetailsContentButton.states[HOME_STATE] = invisibleState;
 	NESExtractingExperimentDetailsContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESExtractingExperimentDetailsContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
 
 	// NES Detail Spacer
 	NESDetailSpacer = new Element('nes-detail-spacer', SPACER_TEMPLATE);
@@ -590,6 +551,16 @@ $(document).ready(function() {
 	NESDetailSpacer.specificStyle = {'display':'none'};
 	NESDetailSpacer.states[HOME_STATE] = invisibleState;
 	NESDetailSpacer.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESDetailSpacer.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {'fn':function (model) {
+		var tray = NESTrayContainer.model().find('.tray');
+		var button = NESExtractingExperimentDetailsContentButton.model();
+
+		button.fadeOut(defaultAnimationTime, function () {
+			tray.fadeOut(defaultAnimationTime, function () {
+				model.fadeIn(defaultAnimationTime);
+			})
+		});
+	}};
 
 	///////////////	NES RENDER
 	newExperimentSidebar.render(body);
@@ -627,19 +598,129 @@ $(document).ready(function() {
 	});
 
 	NESPreviewButton.click(function (model) {
-		var inputButton = NESExperimentNameButton.model();
+		var nameButton = NESExperimentNameButton.model();
+		var pathButton = NESLifPathButton.model();
 		var input = NESExperimentNameInput.model();
 
 		if (input.val() === input.attr('defaultValue')) {
-			inputButton.addClass('btn-danger');
+			nameButton.addClass('btn-danger');
 		} else {
-			inputButton.removeClass('btn-danger');
+			nameButton.removeClass('btn-danger');
 
 			var experimentName = input.val();
-			var experimentPath = inputButton.attr('path');
-			changeState(model.id, NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED, {'experiment_name':experimentName, 'experiment_path':experimentPath});
+			var experimentPath = pathButton.attr('path');
+			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED, {'experiment_name':experimentName, 'lif_path':experimentPath});
 		}
 	});
+
+	///////////////////////////////////
+	/////////////// SERIES SIDEBAR
+	//         _______        _______
+	//        (  ____ \      (  ____ \
+	//        | (    \/      | (    \/
+	//        | (_____       | (_____
+	//        (_____  )      (_____  )
+	//              ) |            ) |
+	//        /\____) |      /\____) |
+	//        \_______)      \_______)
+	//
+
+	///////////////	SS ELEMENT VARS
+	var seriesSidebar;
+	var SSTopSpacer;
+	var SSSeriesContentButton;
+	var SSMiddleSpacer;
+	var SSTrayContainer;
+	var SSGeneratingPreviewContentButton;
+	var SSSeriesPreviewTrayDictionary = {}; // stores elements with series names as keys
+	var SSSeriesPreviewContentTrayDictionary = {};
+	var SSSeriesPreviewButtonDictionary = {};
+
+	///////////////	SS DEFINITIONS AND MODIFICATIONS
+	// SS
+	seriesSidebar = new Element('series-sidebar', SIDEBAR_TEMPLATE);
+	seriesSidebar.specificStyle = defaultState['css'];
+	seriesSidebar.states[HOME_STATE] = defaultState;
+	seriesSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
+	seriesSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
+		'css':{'left':'300px'},
+		'time':defaultAnimationTime,
+		'fn':function (model) {
+			model.find('.tray').fadeIn(defaultAnimationTime);
+		}
+	}
+
+	seriesSidebar.states[PROGRESS_STATE] = defaultState;
+	seriesSidebar.states[SETTINGS_STATE] = defaultState;
+
+	// SS Top Spacer
+	SSTopSpacer = new Element('ss-ts', SPACER_TEMPLATE);
+
+	// SS Series Content Button
+	SSSeriesContentButton = new Element('ss-series-content-button', BUTTON_TEMPLATE);
+	SSSeriesContentButton.classes = ['notouch'];
+	SSSeriesContentButton.html = 'Available series';
+
+	// SS Middle Spacer
+	SSMiddleSpacer = new Element('ss-ms', SPACER_TEMPLATE);
+
+	// SS Tray Container
+	SSTrayContainer = new Element('ss-tray-container', CONTAINER_TEMPLATE);
+	SSTrayContainer.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
+		'fn':function (model) {
+			model.find('.tray').fadeIn(defaultAnimationTime);
+		}
+	}
+	SSTrayContainer.local(NEW_EXPERIMENT_STATE_GENERATEPREVIEW, NESTrayContainer, function (model, args) {
+		var button = SSPreviewLoadingButton.model();
+		var tray = model.find('.tray');
+
+		// make ajax request for series list
+		ajax('get', 'list_series', {'experiment_name': args['experiment_name']}, function (data) {
+			// fade tray
+			button.fadeOut(defaultAnimationTime, function () {
+				tray.fadeOut(defaultAnimationTime, function () {
+					// create tray for each series
+					for (s in data) {
+						var seriesName = data[s]['name'];
+
+						var seriesContainer = new Element('ss-series-preview-container-{0}'.format(seriesName), CONTAINER_TEMPLATE);
+						seriesContainer.postRenderFunction = fadeIn;
+						var seriesButton = new Element('ss-series-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
+						seriesButton.postRenderFunction = fadeIn;
+						seriesButton.html = 'Series: {0}'.format(seriesName);
+						var spacer = new Element('ss-ps-{0}'.format(seriesName), SPACER_TEMPLATE);
+						spacer.postRenderFunction = fadeIn;
+
+						// render
+						SSTrayContainer.renderChild(seriesContainer);
+						SSTrayContainer.renderChild(seriesButton);
+						SSTrayContainer.renderChild(spacer);
+					}
+				});
+			});
+
+			// make ajax request for previews
+			// ajax('get', 'generate_series_preview', {'experiment_name': args['experiment_name']}, function (data) {
+			//
+			// });
+		});
+	});
+
+	// SS Preview Loading Button
+	SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
+	SSPreviewLoadingButton.classes = ['notouch'];
+	SSPreviewLoadingButton.html = 'Loading previews...';
+
+	///////////////	SS RENDER
+	seriesSidebar.render(body);
+	seriesSidebar.renderChild(SSTopSpacer);
+	seriesSidebar.renderChild(SSSeriesContentButton);
+	seriesSidebar.renderChild(SSMiddleSpacer);
+	seriesSidebar.renderChild(SSTrayContainer);
+	seriesSidebar.renderChild(SSPreviewLoadingButton);
+
+	///////////////	SS BINDINGS
 
 	///////////////////////////////////
 	/////////////// CURRENT EXPERIMENT SIDEBAR
