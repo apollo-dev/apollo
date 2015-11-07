@@ -158,10 +158,6 @@ Sometimes space is needed without button functionality. Spacers are based on the
 	height: 200px;
 }
 
-.sidebar .spacer.tray .preview {
-	height: 100%;
-}
-
 .sidebar.mini .spacer {
 	width: 51px;
 	left: 0px;

@@ -637,19 +637,26 @@ $(document).ready(function() {
 							var imageHalfHeight = seriesPathDictionary[seriesName]['half'];
 
 							// fade spinner
-							+function () {
+							+function (seriesName, seriesPath) {
 								var seriesContainer = SSSeriesPreviewContainerDictionary[seriesName];
 
-								seriesContainer.model().find('.spinner').fadeOut(defaultAnimationTime, function () {
-									if (imageHalfHeight) {
-										seriesContainer.model().animate({'height':'100px'}, defaultAnimationTime);
-									}
-									var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img class="preview" id="{id}" />');
-									previewImage.properties['src'] = seriesPath;
+								seriesContainer.model().find('.tray').fadeOut(defaultAnimationTime, function () {
+									seriesContainer.model().find('.spinner').fadeOut(0, function () {
+										if (!imageHalfHeight) {
+											seriesContainer.model().animate({'height':'100px'}, defaultAnimationTime);
+										}
+										var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{id}" />');
+										previewImage.properties['src'] = seriesPath;
+										previewImage.specificStyle = {'position':'relative', 'width':'200px', 'left':'25px'};
+										previewImage.postRenderFunction = function (model) {
+											model.css({'opacity':'0'});
+											model.animate({'opacity':'1'}, defaultAnimationTime);
+										};
 
-									seriesContainer.renderChild(previewImage);
+										seriesContainer.renderChild(previewImage);
+									});
 								});
-							}();
+							}(seriesName, seriesPath);
 						}
 					});
 				});
