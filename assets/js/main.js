@@ -21,6 +21,25 @@ $(document).ready(function() {
 	var SEGMENT_STATE = 'SegmentState';
 
 	///////////////////////////////////
+	/////////////// ELEMENT VARS
+	// TRACK CONTAINER
+	var trackContainer;
+
+	// IMAGE PALETTE
+	var imagePalette;
+	var IPImageContainer;
+	var IPCanvasContainer;
+
+	// CANVAS CONTAINER
+	var paperMarkerCanvas;
+	var paperRegionCanvas;
+	var paperSliceCanvas;
+	var paperLassoCanvas;
+
+	// NEED TO DO REST OF ELEMENT VARS HERE
+	// This is so I can render stuff when I want
+
+	///////////////////////////////////
 	/////////////// TRACK CONTAINER
 	// http://patorjk.com/software/taag/#p=display&f=Epic&t=Type%20Something%20
 	//        _________       _______
@@ -32,9 +51,6 @@ $(document).ready(function() {
 	//           | |         | (____/\
 	//           )_(         (_______/
 	//
-
-	/////////////// TC ELEMENT VARS
-	var trackContainer;
 
 	/////////////// TC DEFINITIONS AND MODIFICATIONS
 	trackContainer = new Element('track-container', BASIC_TEMPLATE);
@@ -58,11 +74,6 @@ $(document).ready(function() {
 	//        \_______/      |/
 	//
 	// Multi touch: http://www.html5rocks.com/en/mobile/touch/
-
-	///////////////	IP ELEMENT VARS
-	var imagePalette;
-	var IPImageContainer;
-	var IPCanvasContainer;
 
 	///////////////	IP DEFINITIONS AND MODIFICATIONS
 	// IP
@@ -104,12 +115,6 @@ $(document).ready(function() {
 	//        | (____/\      | (____/\
 	//        (_______/      (_______/
 	//
-
-	/////////////// CC ELEMENT VARS
-	var paperMarkerCanvas;
-	var paperRegionCanvas;
-	var paperSliceCanvas;
-	var paperLassoCanvas;
 
 	/////////////// CC DEFINITIONS AND MODIFICATIONS
 	paperMarkerCanvas = new Element(window.paperMarkerScope['canvas'], CANVAS_TEMPLATE);
