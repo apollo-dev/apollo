@@ -637,17 +637,19 @@ $(document).ready(function() {
 							var imageHalfHeight = seriesPathDictionary[seriesName]['half'];
 
 							// fade spinner
-							var seriesContainer = SSSeriesPreviewContainerDictionary[seriesName];
+							+function () {
+								var seriesContainer = SSSeriesPreviewContainerDictionary[seriesName];
 
-							seriesContainer.model().find('.spinner').fadeOut(defaultAnimationTime, function () {
-								if (imageHalfHeight) {
-									seriesContainer.model().animate({'height':'100px'}, defaultAnimationTime);
-								}
-								var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{0}" />');
-								previewImage.properties['src'] = seriesPath;
+								seriesContainer.model().find('.spinner').fadeOut(defaultAnimationTime, function () {
+									if (imageHalfHeight) {
+										seriesContainer.model().animate({'height':'100px'}, defaultAnimationTime);
+									}
+									var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img class="preview" id="{id}" />');
+									previewImage.properties['src'] = seriesPath;
 
-								seriesContainer.renderChild(previewImage);
-							});
+									seriesContainer.renderChild(previewImage);
+								});
+							}();
 						}
 					});
 				});
