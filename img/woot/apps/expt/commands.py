@@ -13,4 +13,5 @@ urlpatterns = [
 	url(r'^extract_experiment_details/(?P<experiment_name>.+)/', extract_experiment_details),
 	url(r'^list_series/(?P<experiment_name>.+)/', list_series),
 	url(r'^generate_series_preview/(?P<experiment_name>.+)/', generate_series_preview),
+	url(r'^series_details/(?P<experiment_name>.+)/(?P<series_name>.+)/', series_details),
 ]

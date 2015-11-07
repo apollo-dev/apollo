@@ -10,7 +10,7 @@ from django.template import Template
 from django.views.decorators.csrf import csrf_exempt
 
 # local
-from apps.expt.models import Experiment, LifFile
+from apps.expt.models import Experiment, LifFile, Series
 
 # util
 import json
@@ -20,7 +20,7 @@ import json
 # methods
 @csrf_exempt
 def list_experiments(request):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		# safe=False allows non-dict obejcts to be serialised
 		# https://docs.djangoproject.com/en/1.8/ref/request-response/#jsonresponse-objects
 		return JsonResponse([experiment.name for experiment in Experiment.objects.all()], safe=False)
@@ -50,7 +50,7 @@ def create_experiment(request):
 
 @csrf_exempt
 def extract_experiment_details(request, experiment_name):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		# get experiment image size, total duration, number of series
 		experiment = Experiment.objects.get(name=experiment_name)
 		series_list = experiment.list_series()
@@ -63,7 +63,7 @@ def extract_experiment_details(request, experiment_name):
 
 @csrf_exempt
 def list_series(request, experiment_name):
-	if request.method == 'GET':
+	if request.method == 'POST':
 		experiment = Experiment.objects.get(name=experiment_name)
 
 		# get series metadata from LifFile
@@ -75,8 +75,10 @@ def list_series(request, experiment_name):
 		return JsonResponse([{'name':series.name, 'title':series.title} for series in experiment.series.all()], safe=False)
 
 @csrf_exempt
-def generate_series_preview(request, experiment_name):
-	if request.method == 'GET':
+def generate_series_preview(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+
 		experiment = Experiment.objects.get(name=experiment_name)
 
 		# make preview images
@@ -87,3 +89,16 @@ def generate_series_preview(request, experiment_name):
 		series_path_dictionary = {series.name:{'path':series.preview_path,'half':'true' if not series.rs==series.cs else 'false'} for series in experiment.series.all()}
 
 		return JsonResponse({'experiment_name':experiment_name, 'series_list':series_list, 'series_paths':series_path_dictionary})
+
+@csrf_exempt
+def series_details(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+		series_name = request.POST.get('series_name')
+
+		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
+
+		return JsonResponse({'metadata':series.metadata()})
+
+@csrf_exempt
+def extract_series(request):

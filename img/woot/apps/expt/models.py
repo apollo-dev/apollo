@@ -13,6 +13,7 @@ from apps.expt.lif import LifFile
 # util
 import re
 import os
+import json
 from os.path import abspath, basename, dirname, join, normpath, exists
 from scipy.misc.pilutil import imread, imsave
 import numpy as np
@@ -118,7 +119,7 @@ class Series(models.Model):
 			'cmop':str(self.cmop),
 			'zmop':str(self.zmop),
 			'tpf':str(self.tpf),
-			'channels':[channel.name for channel in self.channels.all()],
+			'channels':json.dumps([channel.name for channel in self.channels.all()]),
 		}
 
 	def mid_z(self):

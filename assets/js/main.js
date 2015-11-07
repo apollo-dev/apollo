@@ -92,6 +92,7 @@ $(document).ready(function() {
 	var SSGeneratingPreviewContentButton;
 	var SSSeriesPreviewContainerDictionary = {}; // stores elements with series names as keys
 	var SSSeriesPreviewButtonDictionary = {};
+	var SSSeriesPreviewSpacerDictionary = {};
 
 	// CURRENT EXPERIMENT SIDEBAR
 	var currentExperimentSidebar;
@@ -566,6 +567,22 @@ $(document).ready(function() {
 		'time':defaultAnimationTime,
 		'fn':function (model) {
 			model.find('.tray').fadeIn(defaultAnimationTime);
+
+			// remove all previous series previews
+			for (key in SSSeriesPreviewContainerDictionary) {
+				var container = SSSeriesPreviewContainerDictionary[key];
+				var button = SSSeriesPreviewButtonDictionary[key];
+				var spacer = SSSeriesPreviewSpacerDictionary[key];
+
+				container.model().remove();
+				button.model().remove();
+				spacer.model().remove();
+			}
+
+			// clear dictionaries
+			SSSeriesPreviewContainerDictionary = {};
+			SSSeriesPreviewButtonDictionary = {};
+			SSSeriesPreviewSpacerDictionary = {};
 		}
 	}
 
@@ -593,12 +610,15 @@ $(document).ready(function() {
 	SSTrayContainer.local(NEW_EXPERIMENT_STATE_GENERATEPREVIEW, NESTrayContainer, function (model, args) {
 		var button = SSPreviewLoadingButton.model();
 		var tray = model.find('.tray');
+		var middleSpacer = SSMiddleSpacer.model();
 
 		// make ajax request for series list
 		ajax('get', 'list_series', {'experiment_name': args['experiment_name']}, function (data) {
 			// fade tray
 			button.fadeOut(defaultAnimationTime, function () {
+				middleSpacer.animate({'opacity':'0'}, defaultAnimationTime);
 				tray.fadeOut(defaultAnimationTime, function () {
+					middleSpacer.animate({'opacity':'1'}, defaultAnimationTime);
 					// create tray for each series
 					for (s in data) {
 						var seriesName = data[s]['name'];
@@ -608,17 +628,27 @@ $(document).ready(function() {
 						var seriesButton = new Element('ss-series-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
 						seriesButton.postRenderFunction = fadeIn;
 						seriesButton.html = 'Series: {0}'.format(seriesName);
+						seriesButton.properties['experiment'] = args['experiment_name'];
+						seriesButton.properties['series'] = seriesName;
 						var spacer = new Element('ss-ps-{0}'.format(seriesName), SPACER_TEMPLATE);
 						spacer.postRenderFunction = fadeIn;
 
 						// add to dictionaries
 						SSSeriesPreviewContainerDictionary[seriesName] = seriesContainer;
 						SSSeriesPreviewButtonDictionary[seriesName] = seriesButton;
+						SSSeriesPreviewSpacerDictionary[seriesName] = spacer;
 
 						// render
 						SSTrayContainer.renderChild(seriesContainer);
 						SSTrayContainer.renderChild(seriesButton);
 						SSTrayContainer.renderChild(spacer);
+
+						// bind
+						+function (args, seriesName) {
+							seriesButton.click(function (model) {
+								changeState(model.id, NEW_EXPERIMENT_STATE_SERIES_INFO, {'experiment':args['experiment_name'], 'series':seriesName})
+							});
+						}(args, seriesName);
 					}
 
 					// make ajax request for previews
@@ -652,7 +682,6 @@ $(document).ready(function() {
 											model.css({'opacity':'0'});
 											model.animate({'opacity':'1'}, defaultAnimationTime);
 										};
-
 										seriesContainer.renderChild(previewImage);
 									});
 								});
@@ -687,10 +716,7 @@ $(document).ready(function() {
 	infoSidebar.states[HOME_STATE] = defaultState;
 	infoSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
 	infoSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = defaultState;
-	infoSidebar.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {
-		'css':{'left':'550px'},
-		'time':defaultAnimationTime
-	}
+	infoSidebar.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'css':{'left':'550px'}}
 	infoSidebar.states[PROGRESS_STATE] = defaultState;
 	infoSidebar.states[SETTINGS_STATE] = defaultState;
 
@@ -704,10 +730,48 @@ $(document).ready(function() {
 
 	// INFS Tray Container
 	INFSTrayContainer = new Element('infs-tray-container', CONTAINER_TEMPLATE);
+	INFSTrayContainer.states[NEW_EXPERIMENT_STATE] = {'fn':fadeIn};
 
 	// INFS Info Spacer
 	INFSInfoSpacer = new Element('infs-info-spacer', SPACER_TEMPLATE);
 	INFSInfoSpacer.classes = ['content'];
+	INFSInfoSpacer.states[NEW_EXPERIMENT_STATE] = {'fn':fadeOut};
+	INFSInfoSpacer.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
+		// clear current content
+		// model.html('');
+
+		ajax('get', 'series_details', args, function (data) {
+			var keys = ['title','acquisition_date','rs','cs','zs','ts','rmop','cmop','zmop','tpf','channels'];
+			var metadata = data['metadata'];
+			var titles = {
+				'title':'Series title:',
+				'acquisition_date':'Aquisition date:',
+				'rs':'Rows:',
+				'cs':'Columns:',
+				'zs':'Levels:',
+				'ts':'Frames:',
+				'rmop':'Row resolution:',
+				'cmop':'Column resolution:',
+				'zmop':'Level resolution:',
+				'tpf':'Minutes per frame:',
+				'channels':'Channels:'
+			}
+
+			INFSTrayContainer.model().fadeOut(defaultAnimationTime, function () {
+				var html = '<p>{0} {1}</p>'.format('Series', args['series']);
+				for (k in keys) {
+					var key = keys[k];
+					var item = metadata[key];
+					var title = titles[key];
+
+					html += '<p>{0} {1}</p>'.format(title, item);
+				}
+				model.html(html);
+
+				model.fadeIn(defaultAnimationTime);
+			});
+		});
+	}};
 
 	// INFS Middle Spacer
 	INFSMiddleSpacer = new Element('infs-middle-spacer', SPACER_TEMPLATE);
@@ -716,6 +780,10 @@ $(document).ready(function() {
 	INFSExtractButton = new Element('infs-extract-button', BUTTON_TEMPLATE);
 	INFSExtractButton.classes = ['btn-success'];
 	INFSExtractButton.html = 'Extract...';
+	INFSExtractButton.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
+		model.attr('experiment', args['experiment']);
+		model.attr('series', args['series']);
+	}};
 
 	///////////////////////////////////
 	/////////////// CURRENT EXPERIMENT SIDEBAR
@@ -1369,6 +1437,10 @@ $(document).ready(function() {
 	}, {});
 
 	// INFO SIDEBAR
+	INFSExtractButton.click(function (model) {
+		// change text of series preview button
+		// make ajax request starting extraction
+	});
 
 	// NEW EXPERIMENT SIDEBAR
 	NESLifPathButton.click(function (model) {

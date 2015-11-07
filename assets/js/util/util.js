@@ -3,10 +3,11 @@ function ajax (type, url, data, callback) {
 	var dataString = '';
 	if (type === 'get') {
 		for (arg in data) {
-			dataString = dataString + data[arg];
+			dataString = dataString + data[arg] + '/';
 		}
-		dataString = dataString + '/';
 	}
+
+	// EITHER MAKE ALL REQUESTS INTO POST REQUESTS (YEAH, WHY NOT?) OR FIND A BETTER WAY OF DOING ARGS
 
 	var ajax_params = {
 		type: type,
