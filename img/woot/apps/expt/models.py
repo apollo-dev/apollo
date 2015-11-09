@@ -122,6 +122,9 @@ class Series(models.Model):
 			'channels':json.dumps([channel.name for channel in self.channels.all()]),
 		}
 
+	def extract(self):
+		pass
+
 	def mid_z(self):
 		return int(self.zs / 2.0)
 
@@ -300,3 +303,6 @@ class LifFile(models.Model):
 		for file_name in os.listdir(self.experiment.preview_path):
 			if join(self.experiment.preview_path, file_name) not in [series.preview_path for series in self.experiment.series.all()]:
 				os.remove(join(self.experiment.preview_path, file_name))
+
+	def extract_series(self, series_name):
+		pass

@@ -49,8 +49,10 @@ def create_experiment(request):
 			return JsonResponse({'name': experiment.name, 'status':'exists'})
 
 @csrf_exempt
-def extract_experiment_details(request, experiment_name):
+def extract_experiment_details(request):
 	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+
 		# get experiment image size, total duration, number of series
 		experiment = Experiment.objects.get(name=experiment_name)
 		series_list = experiment.list_series()
@@ -62,8 +64,10 @@ def extract_experiment_details(request, experiment_name):
 		return JsonResponse({'number_of_series':str(len(series_list))})
 
 @csrf_exempt
-def list_series(request, experiment_name):
+def list_series(request):
 	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+
 		experiment = Experiment.objects.get(name=experiment_name)
 
 		# get series metadata from LifFile
@@ -102,3 +106,19 @@ def series_details(request):
 
 @csrf_exempt
 def extract_series(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+		series_name = request.POST.get('series_name')
+
+		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
+		series.extract()
+
+		return JsonResponse('')
+
+@csrf_exempt
+def is_series_extracting(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+		series_name = request.POST.get('series_name')
+
+		series = Series.objects.get(experiment__name=experiment_name, name=series_name)

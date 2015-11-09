@@ -145,7 +145,6 @@ $(document).ready(function() {
 	var PDSProgressDetailContentButton;
 	var PDSTestProgress;
 	var PDSMiddleSpacer;
-	var PDSProgressDetailContainer;
 	var PDSProgressDetailButtonDictionary = {};
 
 	// PROGRESS SIDEBAR
@@ -153,8 +152,7 @@ $(document).ready(function() {
 	var PROGSTopSpacer;
 	var PROGSInProgressContentButton;
 	var PROGSMiddleSpacer;
-	var PROGSInProgressContainer;
-	var PROGSInProgressButtonDictionary = {};
+	var PROGSButtonDictionary;
 
 	// SETTING SIDEBAR
 	var settingsSidebar;
@@ -490,7 +488,7 @@ $(document).ready(function() {
 		var experimentCreatedButton = NESExperimentCreatedContentButton.model();
 
 		// ajax
-		ajax('post', 'create_experiment', args, function (data) {
+		ajax('create_experiment', args, function (data) {
 			experimentCreatedButton.html('Experiment: {0}'.format(data['status']));
 			model.html(data['name']);
 
@@ -511,7 +509,7 @@ $(document).ready(function() {
 		var detailSpacer = NESDetailSpacer.model();
 
 		// ajax
-		ajax('get', 'extract_experiment_details', {'experiment_name': args['experiment_name']}, function (data) {
+		ajax('extract_experiment_details', args, function (data) {
 			// set html
 			detailSpacer.html('<p>Number of series: {0}</p>'.format(data['number_of_series']));
 
@@ -613,7 +611,7 @@ $(document).ready(function() {
 		var middleSpacer = SSMiddleSpacer.model();
 
 		// make ajax request for series list
-		ajax('get', 'list_series', {'experiment_name': args['experiment_name']}, function (data) {
+		ajax('list_series', args, function (data) {
 			// fade tray
 			button.fadeOut(defaultAnimationTime, function () {
 				middleSpacer.animate({'opacity':'0'}, defaultAnimationTime);
@@ -627,6 +625,10 @@ $(document).ready(function() {
 						seriesContainer.postRenderFunction = fadeIn;
 						var seriesButton = new Element('ss-series-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
 						seriesButton.postRenderFunction = fadeIn;
+
+						// NEED TO CHECK HERE IF SERIES IS EXTRACTING CURRENTLY
+						// GET PERCENTAGE
+
 						seriesButton.html = 'Series: {0}'.format(seriesName);
 						seriesButton.properties['experiment'] = args['experiment_name'];
 						seriesButton.properties['series'] = seriesName;
@@ -646,13 +648,13 @@ $(document).ready(function() {
 						// bind
 						+function (args, seriesName) {
 							seriesButton.click(function (model) {
-								changeState(model.id, NEW_EXPERIMENT_STATE_SERIES_INFO, {'experiment':args['experiment_name'], 'series':seriesName})
+								changeState(model.id, NEW_EXPERIMENT_STATE_SERIES_INFO, {'experiment_name':args['experiment_name'], 'series_name':seriesName})
 							});
 						}(args, seriesName);
 					}
 
 					// make ajax request for previews
-					ajax('get', 'generate_series_preview', {'experiment_name': args['experiment_name']}, function (data) {
+					ajax('generate_series_preview', args, function (data) {
 
 						// extract data
 						var experimentName = data['experiment_name'];
@@ -737,10 +739,7 @@ $(document).ready(function() {
 	INFSInfoSpacer.classes = ['content'];
 	INFSInfoSpacer.states[NEW_EXPERIMENT_STATE] = {'fn':fadeOut};
 	INFSInfoSpacer.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
-		// clear current content
-		// model.html('');
-
-		ajax('get', 'series_details', args, function (data) {
+		ajax('series_details', args, function (data) {
 			var keys = ['title','acquisition_date','rs','cs','zs','ts','rmop','cmop','zmop','tpf','channels'];
 			var metadata = data['metadata'];
 			var titles = {
@@ -758,7 +757,7 @@ $(document).ready(function() {
 			}
 
 			INFSTrayContainer.model().fadeOut(defaultAnimationTime, function () {
-				var html = '<p>{0} {1}</p>'.format('Series', args['series']);
+				var html = '<p>{0} {1}</p>'.format('Series', args['series_name']);
 				for (k in keys) {
 					var key = keys[k];
 					var item = metadata[key];
@@ -766,8 +765,8 @@ $(document).ready(function() {
 
 					html += '<p>{0} {1}</p>'.format(title, item);
 				}
-				model.html(html);
 
+				model.html(html);
 				model.fadeIn(defaultAnimationTime);
 			});
 		});
@@ -781,8 +780,8 @@ $(document).ready(function() {
 	INFSExtractButton.classes = ['btn-success'];
 	INFSExtractButton.html = 'Extract...';
 	INFSExtractButton.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
-		model.attr('experiment', args['experiment']);
-		model.attr('series', args['series']);
+		model.attr('experiment', args['experiment_name']);
+		model.attr('series', args['series_name']);
 	}};
 
 	///////////////////////////////////
@@ -990,12 +989,6 @@ $(document).ready(function() {
 	// PDS Middle Spacer
 	PDSMiddleSpacer = new Element('pds-ms', SPACER_TEMPLATE);
 
-	// PDS Progress Detail Container
-	PDSProgressDetailContainer = new Element('pds-progress-detail-container', CONTAINER_TEMPLATE);
-
-	// test
-	PDSTestProgress = new Element('pds-test', PROGRESS_TEMPLATE);
-
 	///////////////////////////////////
 	/////////////// PROGRESS SIDEBAR
 	//         _______    _______    _______    _______        _______
@@ -1025,9 +1018,6 @@ $(document).ready(function() {
 
 	// PROGS Middle Spacer
 	PROGSMiddleSpacer = new Element('progs-ms', SPACER_TEMPLATE);
-
-	// PROGS In Progess Container
-	PROGSInProgressContainer = new Element('progs-in-progress-container', CONTAINER_TEMPLATE);
 
 	///////////////////////////////////
 	/////////////// SETTINGS SIDEBAR
@@ -1359,17 +1349,17 @@ $(document).ready(function() {
 	// PROGRESS DETAIL SIDEBAR
 	progressDetailSidebar.render(body);
 	progressDetailSidebar.renderChild(PDSTopSpacer);
-	progressDetailSidebar.renderChild(PDSProgressDetailContentButton);
-	PDSProgressDetailContentButton.renderChild(PDSTestProgress);
-	progressDetailSidebar.renderChild(PDSMiddleSpacer);
-	progressDetailSidebar.renderChild(PDSProgressDetailContainer);
+	// progressDetailSidebar.renderChild(PDSProgressDetailContentButton);
+	// PDSProgressDetailContentButton.renderChild(PDSTestProgress);
+	// progressDetailSidebar.renderChild(PDSMiddleSpacer);
+	// progressDetailSidebar.renderChild(PDSProgressDetailContainer);
 
 	// PROGRESS SIDEBAR
 	progressSidebar.render(body);
 	progressSidebar.renderChild(PROGSTopSpacer);
 	progressSidebar.renderChild(PROGSInProgressContentButton);
 	progressSidebar.renderChild(PROGSMiddleSpacer);
-	progressSidebar.renderChild(PROGSInProgressContainer);
+	// progressSidebar.renderChild(PROGSInProgressContainer);
 
 	// SETTING SIDEBAR
 	settingsSidebar.render(body);
@@ -1438,8 +1428,25 @@ $(document).ready(function() {
 
 	// INFO SIDEBAR
 	INFSExtractButton.click(function (model) {
+		// get details from button
+		var experimentName = model.attr('experiment');
+		var seriesName = model.attr('series');
+
+		// element vars
+		var previewButton = SSSeriesPreviewButtonDictionary[seriesName];
+		// var ps = progressSidebar;
+		// PROGSButtonDictionary
+
+
 		// change text of series preview button
-		// make ajax request starting extraction
+		previewButton.model().html('Extracting series {0}...'.format(seriesName));
+
+		// change text of extract button
+		model.html('Extracting...');
+
+		// add extraction button to progress bar
+
+		// make ajax request starting extraction, should start loop
 	});
 
 	// NEW EXPERIMENT SIDEBAR
@@ -1526,7 +1533,7 @@ $(document).ready(function() {
 	///////////////
 
 	function loadMainContent () {
-		ajax('get', 'list_experiments', {}, function (data) {
+		ajax('list_experiments', {}, function (data) {
 			changeState('', NEW_EXPERIMENT_STATE, {});
 		});
 	};
