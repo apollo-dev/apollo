@@ -33,6 +33,10 @@ class Experiment(models.Model):
 	inf_path = models.CharField(max_length=255)
 	partial_inf_path = models.CharField(max_length=255)
 
+	# 2. status
+	extraction_cap = 4
+	extraction_counter = models.IntegerField(default=0)
+
 	# methods
 	def __str__(self):
 		return self.name
@@ -78,15 +82,32 @@ class Series(models.Model):
 	zmop = models.FloatField(default=0.0)
 	tpf = models.FloatField(default=0.0)
 	preview_image_index = models.IntegerField(default=0)
-
 	preview_path = models.CharField(max_length=255)
+
+	# status flags
 	metadata_set = models.BooleanField(default=False)
+	in_queue = models.BooleanField(default=False)
 	source_extracted = models.BooleanField(default=False)
 	processing_complete = models.BooleanField(default=False)
+
+	# progress
+	source_extraction_percentage = models.IntegerField(default=0)
+	processing_percentage = models.IntegerField(default=0)
 
 	# methods
 	def __str__(self):
 		return '{}: series {}'.format(self.experiment, self.index)
+
+	def extraction_status(self):
+		status_dict = {
+			'in_queue':self.in_queue,
+			'source_extracted':self.source_extracted,
+			'processing_complete':self.processing_complete,
+			'source_extraction_percentage':self.source_extraction_percentage,
+			'processing_percentage':self.processing_percentage,
+		}
+
+		return status_dict
 
 	def metadata(self):
 		if not self.metadata_set:
@@ -123,7 +144,7 @@ class Series(models.Model):
 		}
 
 	def extract(self):
-		pass
+		return self.experiment.lif.extract_series(self.name)
 
 	def mid_z(self):
 		return int(self.zs / 2.0)
@@ -305,4 +326,17 @@ class LifFile(models.Model):
 				os.remove(join(self.experiment.preview_path, file_name))
 
 	def extract_series(self, series_name):
-		pass
+		# get series
+		series = experiment.series.get(name=series_name)
+
+		# wait in queue
+		extraction_counter = self.experiment.extraction_counter
+		while extraction_counter == self.experiment.extraction_cap:
+			# reset from db (is this the right way?)
+			extraction_counter = self.experiment.extraction_counter
+
+			# set "in-queue"
+			series.in_queue = True
+			series.save()
+
+		# when out of queue

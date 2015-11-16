@@ -626,10 +626,24 @@ $(document).ready(function() {
 						var seriesButton = new Element('ss-series-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
 						seriesButton.postRenderFunction = fadeIn;
 
-						// NEED TO CHECK HERE IF SERIES IS EXTRACTING CURRENTLY
+						// NEED TO CHECK HERE IF SERIES IS CURRENTLY EXTRACTING
 						// GET PERCENTAGE
+						ajaxloop('series_extraction_status', {'experiment_name':args['experiment_name'], 'series_name':seriesName}, function (data) {
+							// repeat
+							// 1. update label and progress background
+							seriesButton.html = 'Series: {0} ({1}%)'.format(seriesName, data[''])
 
-						seriesButton.html = 'Series: {0}'.format(seriesName);
+						}, function (data) {
+							// completion condition
+							// 2. is "complete" true in the data
+
+						}, function (data) {
+							// completion
+							// 3. change text to "completed", or something
+							seriesButton.html = 'Series: {0} (extracted)'.format(seriesName);
+
+						});
+
 						seriesButton.properties['experiment'] = args['experiment_name'];
 						seriesButton.properties['series'] = seriesName;
 						var spacer = new Element('ss-ps-{0}'.format(seriesName), SPACER_TEMPLATE);
@@ -782,6 +796,9 @@ $(document).ready(function() {
 	INFSExtractButton.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
 		model.attr('experiment', args['experiment_name']);
 		model.attr('series', args['series_name']);
+
+		// check if the series is currently extracting
+
 	}};
 
 	///////////////////////////////////

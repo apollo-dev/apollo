@@ -19,7 +19,21 @@ function ajax (url, data, callback) {
 };
 
 function ajaxloop (url, data, repeatCallback, completionCondition, completionCallback) {
+	function loopFunction () {
+		setTimeout(function () {
+			// run ajax call
+			ajax(url, data, function (data) {
+				if (completionCondition(data)) {
+					completionCallback(data);
+				} else {
+					repeatCallback(data);
+					loopFunction();
+				}
+			});
+		}, 500);
+	}
 
+	loopFunction();
 }
 
 // state transition functions

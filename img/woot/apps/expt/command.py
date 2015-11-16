@@ -113,12 +113,14 @@ def extract_series(request):
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
 		series.extract()
 
-		return JsonResponse('')
+		return JsonResponse({'status':'complete'})
 
 @csrf_exempt
-def is_series_extracting(request):
+def series_extraction_status(request):
 	if request.method == 'POST':
 		experiment_name = request.POST.get('experiment_name')
 		series_name = request.POST.get('series_name')
 
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
+
+		
