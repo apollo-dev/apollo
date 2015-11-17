@@ -65,6 +65,38 @@ tornado_proc.stdout.on('data',
   }
 );
 
+// 4. spawn rabbitmq process
+var rabbitmq_proc = spawn('sh', [__dirname + '/run_rabbitmq.sh'], {env: env_duplicate})
+console.log('rabbitmq process id: ' + rabbitmq_proc.pid);
+
+rabbitmq_proc.stderr.on('data',
+	function (data) {
+		console.log('rabbit_err: ' + data);
+	}
+);
+
+rabbitmq_proc.stdout.on('data',
+	function (data) {
+		console.log('rabbit_output: ' + data);
+	}
+);
+
+// 5. spawn celery process
+var celery_proc = spawn(__dirname + '/bin/python3.4', [__dirname + '/img/manage.py', 'celery', 'worker', '--loglevel=info'], {env: env_duplicate});
+console.log('celery process id: ' + celery_proc.pid);
+
+celery_proc.stderr.on('data',
+	function (data) {
+		console.log('celery_err: ' + data);
+	}
+);
+
+celery_proc.stdout.on('data',
+	function (data) {
+		console.log('celery_output: ' + data);
+	}
+);
+
 ///////////////////////////////////
 ///////////////////////////////////
 ///////////////
@@ -111,11 +143,15 @@ app.on('ready', function() {
     // when you should delete the corresponding element.
     mainWindow = null;
 		tornado_proc.kill();
+		rabbitmq_proc.kill();
+		celery_proc.kill();
   });
 });
 
 app.on('quit', function () { // when cmd + Q or anything else is pressed
 	tornado_proc.kill();
+	rabbitmq_proc.kill();
+	celery_proc.kill();
 });
 
 ///////////////////////////////////

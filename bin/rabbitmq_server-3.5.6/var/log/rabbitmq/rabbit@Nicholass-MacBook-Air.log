@@ -1,0 +1,569 @@
+
+=INFO REPORT==== 17-Nov-2015::18:15:18 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::18:15:18 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::18:15:18 ===
+Memory limit set to 1212MB of 3030MB total.
+
+=INFO REPORT==== 17-Nov-2015::18:15:18 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::18:15:18 ===
+Limiting to approx 156 file handles (138 sockets)
+
+=INFO REPORT==== 17-Nov-2015::18:15:18 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::18:15:19 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Memory limit set to 1136MB of 2840MB total.
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Limiting to approx 156 file handles (138 sockets)
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Adding vhost '/'
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Creating user 'guest'
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Setting user tags for user 'guest' to [administrator]
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Setting permissions for 'guest' in '/' to '.*', '.*', '.*'
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=WARNING REPORT==== 17-Nov-2015::18:39:21 ===
+msg_store_persistent: rebuilding indices from scratch
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::18:39:21 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::18:39:38 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::18:39:38 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::18:39:38 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::18:39:38 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+Memory limit set to 1607MB of 4018MB total.
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+Limiting to approx 156 file handles (138 sockets)
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::18:44:37 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::18:44:46 ===
+accepting AMQP connection <0.242.0> (127.0.0.1:49298 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:44:46 ===
+accepting AMQP connection <0.249.0> (127.0.0.1:49299 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:45:09 ===
+closing AMQP connection <0.249.0> (127.0.0.1:49299 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:45:09 ===
+closing AMQP connection <0.242.0> (127.0.0.1:49298 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:45:12 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::18:45:12 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::18:45:12 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::18:45:12 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::18:45:18 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::18:45:18 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::18:45:18 ===
+Memory limit set to 1626MB of 4065MB total.
+
+=INFO REPORT==== 17-Nov-2015::18:45:18 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::18:45:18 ===
+Limiting to approx 156 file handles (138 sockets)
+
+=INFO REPORT==== 17-Nov-2015::18:45:18 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::18:45:18 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::18:45:19 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::18:45:19 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::18:45:19 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::18:45:19 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::18:45:22 ===
+accepting AMQP connection <0.248.0> (127.0.0.1:49321 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:45:22 ===
+accepting AMQP connection <0.254.0> (127.0.0.1:49322 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:45:26 ===
+closing AMQP connection <0.254.0> (127.0.0.1:49322 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:45:26 ===
+closing AMQP connection <0.248.0> (127.0.0.1:49321 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::18:45:27 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::18:45:27 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::18:45:27 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::18:45:27 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+Memory limit set to 1408MB of 3520MB total.
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+Limiting to approx 924 file handles (829 sockets)
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:19:42 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::19:19:53 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::19:19:53 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:19:53 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::19:19:53 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+Memory limit set to 1404MB of 3510MB total.
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+Limiting to approx 924 file handles (829 sockets)
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:20:37 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::19:21:39 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::19:21:39 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:21:39 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::19:21:39 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::19:21:42 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::19:21:42 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+Memory limit set to 1416MB of 3540MB total.
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+Limiting to approx 924 file handles (829 sockets)
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:21:43 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::19:21:50 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::19:21:50 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:21:50 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::19:21:50 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+Memory limit set to 1413MB of 3533MB total.
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+Limiting to approx 924 file handles (829 sockets)
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:22:00 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::19:22:07 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::19:22:07 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:22:07 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::19:22:07 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+Memory limit set to 1388MB of 3471MB total.
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+Limiting to approx 924 file handles (829 sockets)
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:23:41 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::19:24:34 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::19:24:34 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:24:34 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::19:24:34 ===
+Halting Erlang VM
+
+=INFO REPORT==== 17-Nov-2015::19:24:38 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 17-Nov-2015::19:24:38 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+Memory limit set to 1391MB of 3479MB total.
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+Limiting to approx 924 file handles (829 sockets)
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:24:39 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 17-Nov-2015::19:24:40 ===
+accepting AMQP connection <0.234.0> (127.0.0.1:51857 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 17-Nov-2015::19:24:40 ===
+accepting AMQP connection <0.240.0> (127.0.0.1:51858 -> 127.0.0.1:5672)
+
+=WARNING REPORT==== 17-Nov-2015::19:25:03 ===
+closing AMQP connection <0.234.0> (127.0.0.1:51857 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 17-Nov-2015::19:25:03 ===
+closing AMQP connection <0.240.0> (127.0.0.1:51858 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=INFO REPORT==== 17-Nov-2015::19:25:04 ===
+Stopping RabbitMQ
+
+=INFO REPORT==== 17-Nov-2015::19:25:04 ===
+stopped TCP Listener on [::]:5672
+
+=INFO REPORT==== 17-Nov-2015::19:25:04 ===
+Stopped RabbitMQ application
+
+=INFO REPORT==== 17-Nov-2015::19:25:04 ===
+Halting Erlang VM
