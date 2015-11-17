@@ -17,7 +17,6 @@ import json
 from os.path import abspath, basename, dirname, join, normpath, exists
 from scipy.misc.pilutil import imread, imsave
 import numpy as np
-from subprocess import call, Popen, PIPE
 from celery import current_app
 from celery.result import AsyncResult
 
@@ -90,6 +89,7 @@ class Series(models.Model):
 	is_new = models.BooleanField(default=True)
 	metadata_set = models.BooleanField(default=False)
 	in_queue = models.BooleanField(default=False)
+	extraction_processing_id = models.IntegerField(default=0)
 	source_extracted = models.BooleanField(default=False)
 	processing_complete = models.BooleanField(default=False)
 
