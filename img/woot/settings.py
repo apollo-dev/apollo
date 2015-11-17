@@ -200,15 +200,6 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 ########## END APP CONFIGURATION
 
 
-########## CELERY CONFIGURATION
-# http://stackoverflow.com/questions/18133249/django-celery-cannot-connect-to-amqp-guest127-0-0-80005672
-# use this until rabbitmq server is set up
-BROKER_URL = 'django://'
-INSTALLED_APPS += ('kombu.transport.django',)
-
-########## END CELERY CONFIGURATION
-
-
 ########## LOGGING CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
 LOGGING = {
