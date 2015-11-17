@@ -15,6 +15,7 @@ $(document).ready(function() {
 	var NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED = 'NewExperimentStateExperimentReceived';
 	var NEW_EXPERIMENT_STATE_GENERATEPREVIEW = 'NewExperimentStateGeneratePreview';
 	var NEW_EXPERIMENT_STATE_SERIES_INFO = 'NewExperimentStateSeriesInfo';
+	var NEW_EXPERIMENT_STATE_SERIES_EXTRACTING = 'NewExperimentStateSeriesExtracting';
 	var EXPERIMENT_STATE = 'ExperimentState';
 	var PROGRESS_STATE = 'ProgressState';
 	var SETTINGS_STATE = 'SettingsState';
@@ -623,35 +624,45 @@ $(document).ready(function() {
 
 						var seriesContainer = new Element('ss-series-preview-container-{0}'.format(seriesName), CONTAINER_TEMPLATE);
 						seriesContainer.postRenderFunction = fadeIn;
+						SSSeriesPreviewContainerDictionary[seriesName] = seriesContainer;
 						var seriesButton = new Element('ss-series-preview-button-{0}'.format(seriesName), BUTTON_TEMPLATE);
 						seriesButton.postRenderFunction = fadeIn;
+						seriesButton.properties['experiment'] = args['experiment_name'];
+						seriesButton.properties['series'] = seriesName;
+						SSSeriesPreviewButtonDictionary[seriesName] = seriesButton;
 
 						// NEED TO CHECK HERE IF SERIES IS CURRENTLY EXTRACTING
 						// GET PERCENTAGE
 						ajaxloop('series_extraction_status', {'experiment_name':args['experiment_name'], 'series_name':seriesName}, function (data) {
 							// repeat
 							// 1. update label and progress background
-							seriesButton.html = 'Series: {0} ({1}%)'.format(seriesName, data[''])
-
+							var seriesName = data['series_name'];
+							var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
+							seriesButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
 						}, function (data) {
 							// completion condition
 							// 2. is "complete" true in the data
+							// states
+							var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATEPREVIEW;
+							var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
+							var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
+							var notStates = notGPstate && notSIstate && notSEstate;
 
+							return (data['new'] || (data['source_extracted'] && data['processing_complete']) || notStates)
 						}, function (data) {
 							// completion
 							// 3. change text to "completed", or something
-							seriesButton.html = 'Series: {0} (extracted)'.format(seriesName);
-
+							var seriesName = data['series_name'];
+							var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
+							if (data['new']) {
+								seriesButton.model().html('Series: {0}'.format(seriesName));
+							} else {
+								seriesButton.model().html('Series: {0} (extracted)'.format(seriesName));
+							}
 						});
 
-						seriesButton.properties['experiment'] = args['experiment_name'];
-						seriesButton.properties['series'] = seriesName;
 						var spacer = new Element('ss-ps-{0}'.format(seriesName), SPACER_TEMPLATE);
 						spacer.postRenderFunction = fadeIn;
-
-						// add to dictionaries
-						SSSeriesPreviewContainerDictionary[seriesName] = seriesContainer;
-						SSSeriesPreviewButtonDictionary[seriesName] = seriesButton;
 						SSSeriesPreviewSpacerDictionary[seriesName] = spacer;
 
 						// render
@@ -792,13 +803,51 @@ $(document).ready(function() {
 	// INFS Extract Button
 	INFSExtractButton = new Element('infs-extract-button', BUTTON_TEMPLATE);
 	INFSExtractButton.classes = ['btn-success'];
-	INFSExtractButton.html = 'Extract...';
 	INFSExtractButton.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
 		model.attr('experiment', args['experiment_name']);
 		model.attr('series', args['series_name']);
 
 		// check if the series is currently extracting
+		ajaxloop('series_extraction_status', args, function (data) {
+			// repeat
+			// 1. update label and progress background
+			var seriesName = data['series_name'];
+			INFSExtractButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
+		}, function (data) {
+			// completion condition
+			// 2. is "complete" true in the data
+			return (data['new'] || (data['source_extracted'] && data['processing_complete']) || currentState!==NEW_EXPERIMENT_STATE_SERIES_INFO)
+		}, function (data) {
+			// completion
+			// 3. change text to "completed", or something
+			var seriesName = data['series_name'];
+			var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
+			if (data['new']) {
+				INFSExtractButton.model().html('Extract...');
+			} else {
+				INFSExtractButton.model().html('Series: {0} (extracted)'.format(seriesName));
+			}
+		});
 
+	}};
+	INFSExtractButton.states[NEW_EXPERIMENT_STATE_SERIES_EXTRACTING] = {'fn':function (model, args) {
+		// check if the series is currently extracting
+		ajaxloop('series_extraction_status', args, function (data) {
+			// repeat
+			// 1. update label and progress background
+			var seriesName = data['series_name'];
+			INFSExtractButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
+		}, function (data) {
+			// completion condition
+			// 2. is "complete" true in the data
+			return ((data['source_extracted'] && data['processing_complete']) || currentState!==NEW_EXPERIMENT_STATE_SERIES_EXTRACTING)
+		}, function (data) {
+			// completion
+			// 3. change text to "completed", or something
+			var seriesName = data['series_name'];
+			var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
+			INFSExtractButton.model().html('Series: {0} (extracted)'.format(seriesName));
+		});
 	}};
 
 	///////////////////////////////////
@@ -1448,22 +1497,15 @@ $(document).ready(function() {
 		// get details from button
 		var experimentName = model.attr('experiment');
 		var seriesName = model.attr('series');
-
-		// element vars
-		var previewButton = SSSeriesPreviewButtonDictionary[seriesName];
-		// var ps = progressSidebar;
-		// PROGSButtonDictionary
-
-
-		// change text of series preview button
-		previewButton.model().html('Extracting series {0}...'.format(seriesName));
-
-		// change text of extract button
-		model.html('Extracting...');
-
-		// add extraction button to progress bar
+		var args = {'experiment_name':experimentName, 'series_name':seriesName};
 
 		// make ajax request starting extraction, should start loop
+		ajax('extract_series', args, function (data) {
+
+		});
+
+		// trigger extracting state
+		changeState(model.id, NEW_EXPERIMENT_STATE_SERIES_EXTRACTING, args);
 	});
 
 	// NEW EXPERIMENT SIDEBAR

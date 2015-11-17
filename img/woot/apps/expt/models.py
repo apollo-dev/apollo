@@ -17,7 +17,7 @@ import json
 from os.path import abspath, basename, dirname, join, normpath, exists
 from scipy.misc.pilutil import imread, imsave
 import numpy as np
-from subprocess import call
+from subprocess import call, Popen, PIPE
 
 ### Models
 class Experiment(models.Model):
@@ -85,6 +85,7 @@ class Series(models.Model):
 	preview_path = models.CharField(max_length=255)
 
 	# status flags
+	is_new = models.BooleanField(default=True)
 	metadata_set = models.BooleanField(default=False)
 	in_queue = models.BooleanField(default=False)
 	source_extracted = models.BooleanField(default=False)
@@ -100,6 +101,9 @@ class Series(models.Model):
 
 	def extraction_status(self):
 		status_dict = {
+			'experiment_name':self.experiment.name,
+			'series_name':self.name,
+			'new':self.is_new,
 			'in_queue':self.in_queue,
 			'source_extracted':self.source_extracted,
 			'processing_complete':self.processing_complete,
@@ -327,7 +331,7 @@ class LifFile(models.Model):
 
 	def extract_series(self, series_name):
 		# get series
-		series = experiment.series.get(name=series_name)
+		series = self.experiment.series.get(name=series_name)
 
 		# wait in queue
 		extraction_counter = self.experiment.extraction_counter
@@ -340,3 +344,21 @@ class LifFile(models.Model):
 			series.save()
 
 		# when out of queue
+		series.in_queue = False
+		series.save()
+
+		# extract
+		source_path = join(self.experiment.source_path, '{}_s{}_ch-%c_t%t_z%z.tiff'.format(self.experiment.name, series_name))
+		lif_path = self.experiment.lif_path
+		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
+		cmd = '{} -series {} {} {}'.format(bfconvert, series_name, lif_path, source_path)
+
+		with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True) as extract_stream:
+			ln_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
+			for ln in extract_stream.stderr:
+				if 'Converted' in ln:
+					ln_match = re.match(ln_template, ln)
+					percentage = int(ln_match.group('percentage'))
+
+					series.source_extraction_percentage = percentage
+					series.save()

@@ -123,4 +123,4 @@ def series_extraction_status(request):
 
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
 
-		
+		return JsonResponse(series.extraction_status())
