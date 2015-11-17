@@ -18,6 +18,8 @@ from os.path import abspath, basename, dirname, join, normpath, exists
 from scipy.misc.pilutil import imread, imsave
 import numpy as np
 from subprocess import call, Popen, PIPE
+from celery import current_app
+from celery.result import AsyncResult
 
 ### Models
 class Experiment(models.Model):
@@ -34,8 +36,8 @@ class Experiment(models.Model):
 	partial_inf_path = models.CharField(max_length=255)
 
 	# 2. status
-	extraction_cap = 4
-	extraction_counter = models.IntegerField(default=0)
+	extraction_process_cap = 4
+	extraction_process_counter = models.IntegerField(default=0)
 
 	# methods
 	def __str__(self):

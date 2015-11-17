@@ -102,7 +102,11 @@ def series_details(request):
 
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
 
-		return JsonResponse({'metadata':series.metadata()})
+		# CELERY
+		metadata = series.metadata()
+		# metadata = get_metadata.call() or something
+
+		return JsonResponse({'metadata':metadata})
 
 @csrf_exempt
 def extract_series(request):
@@ -111,16 +115,8 @@ def extract_series(request):
 		series_name = request.POST.get('series_name')
 
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
+
+		# THIS HAS TO BE A CELERY TASK
 		series.extract()
 
 		return JsonResponse({'status':'complete'})
-
-@csrf_exempt
-def series_extraction_status(request):
-	if request.method == 'POST':
-		experiment_name = request.POST.get('experiment_name')
-		series_name = request.POST.get('series_name')
-
-		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
-
-		return JsonResponse(series.extraction_status())

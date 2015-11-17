@@ -15,5 +15,4 @@ urlpatterns = [
 	url(r'^generate_series_preview/', generate_series_preview),
 	url(r'^series_details/', series_details),
 	url(r'^extract_series/', extract_series),
-	url(r'^series_extraction_status/', series_extraction_status),
 ]
