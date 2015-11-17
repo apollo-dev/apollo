@@ -186,7 +186,7 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-
+	'djcelery',
 )
 
 LOCAL_APPS = (
