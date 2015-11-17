@@ -22,7 +22,9 @@ from collections import defaultdict
 from warnings import warn
 
 from .abstract_channel import AbstractChannel
-from .exceptions import ChannelError, ConsumerCancelled, error_for_code
+from .exceptions import (
+    ChannelError, ConsumerCancelled, NotConfirmed, error_for_code,
+)
 from .five import Queue
 from .protocol import basic_return_t, queue_declare_ok_t
 from .serialization import AMQPWriter
@@ -1069,7 +1071,6 @@ class Channel(AbstractChannel):
         args.write_shortstr(queue)
         args.write_shortstr(exchange)
         args.write_shortstr(routing_key)
-        #args.write_bit(nowait)
         args.write_table(arguments)
         self._send_method((50, 50), args)
 
@@ -2127,7 +2128,8 @@ class Channel(AbstractChannel):
             self._confirm_selected = True
             self.confirm_select()
         ret = self._basic_publish(*args, **kwargs)
-        self.wait([(60, 80)])
+        # Basic.Ack / Basic.Nack
+        self.wait([(60, 80), (60, 120)])
         return ret
 
     def basic_qos(self, prefetch_size, prefetch_count, a_global):
@@ -2498,8 +2500,18 @@ class Channel(AbstractChannel):
     def _basic_ack_recv(self, args):
         delivery_tag = args.read_longlong()
         multiple = args.read_bit()
-        for callback in self.events['basic_ack']:
-            callback(delivery_tag, multiple)
+        self._apply_callbacks('basic_ack', delivery_tag, multiple)
+
+    def _apply_callbacks(self, event, *args):
+        return [callback(*args) for callback in self.events[event]]
+
+    def _basic_nack(self, args):
+        delivery_tag = args.read_longlong()
+        multiple = args.read_bit()
+        requeue = args.read_bit()
+        if not self._apply_callbacks(
+                'basic_nack', delivery_tag, multiple, requeue):
+            raise NotConfirmed(delivery_tag, (60, 120), 'basic.nack')
 
     _METHOD_MAP = {
         (20, 11): _open_ok,
@@ -2525,6 +2537,7 @@ class Channel(AbstractChannel):
         (60, 71): _basic_get_ok,
         (60, 72): _basic_get_empty,
         (60, 80): _basic_ack_recv,
+        (60, 120): _basic_nack,
         (60, 111): _basic_recover_ok,
         (85, 11): _confirm_select_ok,
         (90, 11): _tx_select_ok,

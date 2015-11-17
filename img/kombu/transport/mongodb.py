@@ -22,6 +22,12 @@ from kombu.utils.encoding import bytes_to_str
 
 from . import virtual
 
+try:
+    from pymongo.cursor import CursorType
+except ImportError:
+    class CursorType(object):  # noqa
+        pass
+
 DEFAULT_HOST = '127.0.0.1'
 DEFAULT_PORT = 27017
 
@@ -172,15 +178,26 @@ class Channel(virtual.Channel):
 
         return hostname, dbname, options
 
+    def _prepare_client_options(self, options):
+        if pymongo.version_tuple >= (3, ):
+            options.pop('auto_start_request', None)
+        return options
+
     def _open(self, scheme='mongodb://'):
         hostname, dbname, options = self._parse_uri(scheme=scheme)
 
-        mongoconn = MongoClient(
-            host=hostname, ssl=options['ssl'],
-            auto_start_request=options['auto_start_request'],
-            connectTimeoutMS=options['connectTimeoutMS'],
-            use_greenlets=_detect_environment() != 'default',
-        )
+        conf = self._prepare_client_options(options)
+        conf['host'] = hostname
+
+        env = _detect_environment()
+        if env == 'gevent':
+            from gevent import monkey
+            monkey.patch_all()
+        elif env == 'eventlet':
+            from eventlet import monkey_patch
+            monkey_patch()
+
+        mongoconn = MongoClient(**conf)
         database = mongoconn[dbname]
 
         version = mongoconn.server_info()['version']
@@ -284,11 +301,18 @@ class Channel(virtual.Channel):
             )
 
     def create_broadcast_cursor(self, exchange, routing_key, pattern, queue):
-        cursor = self.get_broadcast().find(
-            query={'queue': exchange},
-            sort=[('$natural', 1)],
-            tailable=True,
-        )
+        if pymongo.version_tuple >= (3, ):
+            query = dict(filter={'queue': exchange},
+                         sort=[('$natural', 1)],
+                         cursor_type=CursorType.TAILABLE
+                         )
+        else:
+            query = dict(query={'queue': exchange},
+                         sort=[('$natural', 1)],
+                         tailable=True
+                         )
+
+        cursor = self.get_broadcast().find(**query)
         ret = self._broadcast_cursors[queue] = BroadcastCursor(cursor)
         return ret
 

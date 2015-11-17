@@ -1,13 +1,17 @@
 """Messaging library for Python"""
 from __future__ import absolute_import
 
+import os
+import sys
+
 from collections import namedtuple
+from types import ModuleType
 
 version_info_t = namedtuple(
     'version_info_t', ('major', 'minor', 'micro', 'releaselevel', 'serial'),
 )
 
-VERSION = version_info_t(3, 0, 26, '', '')
+VERSION = version_info_t(3, 0, 29, '', '')
 __version__ = '{0.major}.{0.minor}.{0.micro}{0.releaselevel}'.format(VERSION)
 __author__ = 'Ask Solem'
 __contact__ = 'ask@celeryproject.org'
@@ -15,9 +19,6 @@ __homepage__ = 'http://kombu.readthedocs.org'
 __docformat__ = 'restructuredtext en'
 
 # -eof meta-
-
-import os
-import sys
 
 if sys.version_info < (2, 6):  # pragma: no cover
     raise Exception('Kombu 3.1 requires Python versions 2.6 or later.')
@@ -41,7 +42,6 @@ if STATICA_HACK:  # pragma: no cover
 
 # Lazy loading.
 # - See werkzeug/__init__.py for the rationale behind this.
-from types import ModuleType
 
 all_by_module = {
     'kombu.connection':    ['Connection', 'BrokerConnection'],

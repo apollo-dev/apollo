@@ -10,7 +10,7 @@
 """
 from __future__ import absolute_import
 
-############## py3k #########################################################
+# ############# py3k #########################################################
 import sys
 PY3 = sys.version_info[0] == 3
 
@@ -132,7 +132,7 @@ def with_metaclass(Type, skip_attrs=set(['__dict__', '__weakref__'])):
 
     return _clone_with_metaclass
 
-############## time.monotonic ################################################
+# ############# time.monotonic ################################################
 
 if sys.version_info < (3, 3):
 
@@ -142,7 +142,7 @@ if sys.version_info < (3, 3):
     if SYSTEM == 'Darwin':
         import ctypes
         from ctypes.util import find_library
-        libSystem = ctypes.CDLL('libSystem.dylib')
+        libSystem = ctypes.CDLL(find_library('libSystem.dylib'))
         CoreServices = ctypes.CDLL(find_library('CoreServices'),
                                    use_errno=True)
         mach_absolute_time = libSystem.mach_absolute_time

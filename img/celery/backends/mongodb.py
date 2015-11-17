@@ -10,6 +10,16 @@ from __future__ import absolute_import
 
 from datetime import datetime
 
+from kombu.syn import detect_environment
+from kombu.utils import cached_property
+
+from celery import states
+from celery.exceptions import ImproperlyConfigured
+from celery.five import items, string_t
+from celery.utils.timeutils import maybe_timedelta
+
+from .base import BaseBackend
+
 try:
     import pymongo
 except ImportError:  # pragma: no cover
@@ -22,16 +32,6 @@ if pymongo:
         from pymongo.binary import Binary   # noqa
 else:                                       # pragma: no cover
     Binary = None                           # noqa
-
-from kombu.syn import detect_environment
-from kombu.utils import cached_property
-
-from celery import states
-from celery.exceptions import ImproperlyConfigured
-from celery.five import string_t
-from celery.utils.timeutils import maybe_timedelta
-
-from .base import BaseBackend
 
 __all__ = ['MongoBackend']
 
@@ -92,16 +92,25 @@ class MongoBackend(BaseBackend):
             self.options = dict(config, **config.pop('options', None) or {})
 
             # Set option defaults
-            if pymongo.version_tuple >= (3, ):
-                self.options.setdefault('maxPoolSize', self.max_pool_size)
-            else:
-                self.options.setdefault('max_pool_size', self.max_pool_size)
-                self.options.setdefault('auto_start_request', False)
+            for key, value in items(self._prepare_client_options()):
+                self.options.setdefault(key, value)
 
         self.url = url
         if self.url:
             # Specifying backend as an URL
             self.host = self.url
+
+    def _prepare_client_options(self):
+            if pymongo.version_tuple >= (3, ):
+                return {'maxPoolSize': self.max_pool_size}
+            else:  # pragma: no cover
+                options = {
+                    'max_pool_size': self.max_pool_size,
+                    'auto_start_request': False
+                }
+                if detect_environment() != 'default':
+                    options['use_greenlets'] = True
+                return options
 
     def _get_connection(self):
         """Connect to the MongoDB server."""
@@ -120,8 +129,6 @@ class MongoBackend(BaseBackend):
                 url = 'mongodb://{0}:{1}'.format(url, self.port)
             if url == 'mongodb://':
                 url = url + 'localhost'
-            if detect_environment() != 'default':
-                self.options['use_greenlets'] = True
             self._connection = MongoClient(host=url, **self.options)
 
         return self._connection

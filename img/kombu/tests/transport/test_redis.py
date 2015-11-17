@@ -14,7 +14,7 @@ from kombu.transport import virtual
 from kombu.utils import eventio  # patch poll
 
 from kombu.tests.case import (
-    Case, Mock, call, module_exists, skip_if_not_module, patch,
+    Case, ContextMock, Mock, call, module_exists, skip_if_not_module, patch,
 )
 
 
@@ -33,7 +33,8 @@ class _poll(eventio._select):
 
 
 eventio.poll = _poll
-from kombu.transport import redis  # must import after poller patch
+# must import after poller patch
+from kombu.transport import redis  # noqa
 
 
 class ResponseError(Exception):
@@ -177,6 +178,12 @@ class Pipeline(object):
         self.client = client
         self.stack = []
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info):
+        pass
+
     def __getattr__(self, key):
         if key not in self.__dict__:
 
@@ -317,6 +324,7 @@ class test_Channel(Case):
         client.rpush.assert_has_calls([
             call('george', spl1), call('elaine', spl1),
         ])
+        client.rpush.reset_mock()
 
         pl2 = {'body': 'BODY2', 'headers': {'x-funny': 1}}
         headers_after = dict(pl2['headers'], redelivered=True)
@@ -340,11 +348,11 @@ class test_Channel(Case):
         with patch('kombu.transport.redis.loads') as loads:
             loads.return_value = 'M', 'EX', 'RK'
             client = self.channel.client = Mock(name='client')
+            client.pipeline = ContextMock()
             restore = self.channel._do_restore_message = Mock(
                 name='_do_restore_message',
             )
-            pipe = Mock(name='pipe')
-            client.pipeline.return_value = pipe
+            pipe = client.pipeline.return_value
             pipe_hget = Mock(name='pipe.hget')
             pipe.hget.return_value = pipe_hget
             pipe_hget_hdel = Mock(name='pipe.hget.hdel')
@@ -369,6 +377,10 @@ class test_Channel(Case):
 
     def test_qos_restore_visible(self):
         client = self.channel.client = Mock(name='client')
+
+        def pipe(*args, **kwargs):
+            return Pipeline(client)
+        client.pipeline = pipe
         client.zrevrangebyscore.return_value = [
             (1, 10),
             (2, 20),
@@ -578,16 +590,18 @@ class test_Channel(Case):
         srem = x.client.srem = Mock()
 
         x._delete('queue', 'exchange', 'routing_key', None)
-        delete.assert_has_call('queue')
-        srem.assert_has_call(x.keyprefix_queue % ('exchange', ),
-                             x.sep.join(['routing_key', '', 'queue']))
+        delete.assert_any_call('queue')
+        srem.assert_called_once_with(
+            x.keyprefix_queue % ('exchange', ),
+            x.sep.join(['routing_key', '', 'queue'])
+        )
 
     def test_has_queue(self):
         self.channel._in_poll = False
         exists = self.channel.client.exists = Mock()
         exists.return_value = True
         self.assertTrue(self.channel._has_queue('foo'))
-        exists.assert_has_call('foo')
+        exists.assert_any_call('foo')
 
         exists.return_value = False
         self.assertFalse(self.channel._has_queue('foo'))
@@ -1198,7 +1212,8 @@ class test_Mutex(Case):
             # Won
             uuid.return_value = lock_id
             client.setnx.return_value = True
-            pipe = client.pipeline.return_value = Mock(name='pipe')
+            client.pipeline = ContextMock()
+            pipe = client.pipeline.return_value
             pipe.get.return_value = lock_id
             held = False
             with redis.Mutex(client, 'foo1', 100):

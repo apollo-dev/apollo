@@ -5,7 +5,7 @@
 # util
 import scipy
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from scipy.ndimage.morphology import binary_erosion as erode
 
 def cut_to_black(array):

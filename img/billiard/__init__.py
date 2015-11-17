@@ -19,31 +19,6 @@
 
 from __future__ import absolute_import
 
-VERSION = (3, 3, 0, 20)
-__version__ = '.'.join(map(str, VERSION[0:4])) + "".join(VERSION[4:])
-__author__ = 'R Oudkerk / Python Software Foundation'
-__author_email__ = 'python-dev@python.org'
-__maintainer__ = 'Ask Solem',
-__contact__ = "ask@celeryproject.org"
-__homepage__ = "http://github.com/celery/billiard"
-__docformat__ = "restructuredtext"
-
-# -eof meta-
-
-__all__ = [
-    'Process', 'current_process', 'active_children', 'freeze_support',
-    'Manager', 'Pipe', 'cpu_count', 'log_to_stderr', 'get_logger',
-    'allow_connection_pickling', 'BufferTooShort', 'TimeoutError',
-    'Lock', 'RLock', 'Semaphore', 'BoundedSemaphore', 'Condition',
-    'Event', 'Queue', 'JoinableQueue', 'Pool', 'Value', 'Array',
-    'RawValue', 'RawArray', 'SUBDEBUG', 'SUBWARNING', 'set_executable',
-    'forking_enable', 'forking_is_enabled'
-]
-
-#
-# Imports
-#
-
 import os
 import sys
 import warnings
@@ -59,6 +34,27 @@ from .exceptions import (  # noqa
 )
 from .process import Process, current_process, active_children
 from .util import SUBDEBUG, SUBWARNING
+
+VERSION = (3, 3, 0, 21)
+__version__ = '.'.join(map(str, VERSION[0:4])) + "".join(VERSION[4:])
+__author__ = 'R Oudkerk / Python Software Foundation'
+__author_email__ = 'python-dev@python.org'
+__maintainer__ = 'Ask Solem'
+__contact__ = "ask@celeryproject.org"
+__homepage__ = "http://github.com/celery/billiard"
+__docformat__ = "restructuredtext"
+
+# -eof meta-
+
+__all__ = [
+    'Process', 'current_process', 'active_children', 'freeze_support',
+    'Manager', 'Pipe', 'cpu_count', 'log_to_stderr', 'get_logger',
+    'allow_connection_pickling', 'BufferTooShort', 'TimeoutError',
+    'Lock', 'RLock', 'Semaphore', 'BoundedSemaphore', 'Condition',
+    'Event', 'Queue', 'JoinableQueue', 'Pool', 'Value', 'Array',
+    'RawValue', 'RawArray', 'SUBDEBUG', 'SUBWARNING', 'set_executable',
+    'forking_enable', 'forking_is_enabled'
+]
 
 
 def ensure_multiprocessing():

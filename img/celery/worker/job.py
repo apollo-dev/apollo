@@ -186,7 +186,8 @@ class Request(object):
                 'delivery_info': {
                     'exchange': delivery_info.get('exchange'),
                     'routing_key': delivery_info.get('routing_key'),
-                    'priority': delivery_info.get('priority'),
+                    'priority': properties.get(
+                        'priority', delivery_info.get('priority')),
                     'redelivered': delivery_info.get('redelivered'),
                 }
 
@@ -562,8 +563,8 @@ class Request(object):
 
     @property
     def store_errors(self):
-        return (not self.task.ignore_result
-                or self.task.store_errors_even_if_ignored)
+        return (not self.task.ignore_result or
+                self.task.store_errors_even_if_ignored)
 
     @property
     def task_id(self):
