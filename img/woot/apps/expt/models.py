@@ -345,6 +345,7 @@ class LifFile(models.Model):
 
 		# when out of queue
 		series.in_queue = False
+		series.is_new = False
 		series.save()
 
 		# extract
@@ -362,3 +363,6 @@ class LifFile(models.Model):
 
 					series.source_extraction_percentage = percentage
 					series.save()
+
+		series.processing_complete = True
+		series.save()

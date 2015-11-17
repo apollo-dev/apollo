@@ -629,6 +629,31 @@ $(document).ready(function() {
 						seriesButton.postRenderFunction = fadeIn;
 						seriesButton.properties['experiment'] = args['experiment_name'];
 						seriesButton.properties['series'] = seriesName;
+						seriesButton.states[NEW_EXPERIMENT_STATE_SERIES_EXTRACTING] = {'fn':function (model, args) {
+							ajaxloop('series_extraction_status', args, function (data) {
+								// repeat
+								// 1. update label and progress background
+								var seriesName = data['series_name'];
+								var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
+								seriesButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
+							}, function (data) {
+								// completion condition
+								// 2. is "complete" true in the data
+								// states
+								var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATEPREVIEW;
+								var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
+								var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
+								var notStates = notGPstate && notSIstate && notSEstate;
+
+								return (data['new'] || (data['source_extracted'] && data['processing_complete']) || notStates)
+							}, function (data) {
+								// completion
+								// 3. change text to "completed", or something
+								var seriesName = data['series_name'];
+								var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
+								seriesButton.model().html('Series: {0} (extracted)'.format(seriesName));
+							});
+						}};
 						SSSeriesPreviewButtonDictionary[seriesName] = seriesButton;
 
 						// NEED TO CHECK HERE IF SERIES IS CURRENTLY EXTRACTING
@@ -1499,13 +1524,13 @@ $(document).ready(function() {
 		var seriesName = model.attr('series');
 		var args = {'experiment_name':experimentName, 'series_name':seriesName};
 
+		// trigger extracting state
+		changeState(model.id, NEW_EXPERIMENT_STATE_SERIES_EXTRACTING, args);
+
 		// make ajax request starting extraction, should start loop
 		ajax('extract_series', args, function (data) {
 
 		});
-
-		// trigger extracting state
-		changeState(model.id, NEW_EXPERIMENT_STATE_SERIES_EXTRACTING, args);
 	});
 
 	// NEW EXPERIMENT SIDEBAR
