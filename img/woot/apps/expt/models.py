@@ -8,7 +8,7 @@ from django.utils.dateparse import parse_datetime
 # local
 from apps.expt.data import *
 from apps.expt.util import generate_id_token, random_string, block
-from apps.expt.lif import LifFile
+from apps.expt.tasks import extract_partial_metadata
 
 # util
 import re
@@ -220,8 +220,7 @@ class LifFile(models.Model):
 		# omit the "-omexml" to only get some of the metadata
 		if not self.partial_metadata_extracted:
 			if not exists(self.experiment.partial_inf_path):
-				showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
-				call('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, self.experiment.lif_path, self.experiment.partial_inf_path), shell=True)
+				extract_partial_metadata.delay(self.experiment.lif_path, self.experiment.partial_inf_path)
 			self.partial_metadata_extracted = True
 			self.save()
 

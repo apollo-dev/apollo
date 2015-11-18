@@ -8,7 +8,7 @@ from woot.celery import apollo_celery_app
 from apps.expt import backend
 
 # util
-from celery import Task
+# from celery import Task
 from subprocess import Popen, PIPE
 
 # articles on tasks
@@ -16,7 +16,7 @@ from subprocess import Popen, PIPE
 # http://stackoverflow.com/questions/6393879/celery-task-and-customize-decorator
 
 ### TASKS
-@app.task(bind=True)
+@apollo_celery_app.task(bind=True)
 def extract_partial_metadata(self, lif_path, partial_inf_path):
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
@@ -33,13 +33,16 @@ def extract_partial_metadata(self, lif_path, partial_inf_path):
 			# update progress
 			backend.set_progress(self.request.id, current, status)
 
-	return 'partial-metadata-extracted'
+	return self.request.id
 
-@app.task(bind=True)
+@apollo_celery_app.task(bind=True)
 def extract_metadata(self):
+	pass
 
-@app.task(bind=True)
+@apollo_celery_app.task(bind=True)
 def extract_preview_images(self):
+	pass
 
-@app.task(bind=True)
+@apollo_celery_app.task(bind=True)
 def extract_series(self):
+	pass
