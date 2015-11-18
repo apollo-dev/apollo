@@ -66,7 +66,7 @@ tornado_proc.stdout.on('data',
 );
 
 // 4. spawn rabbitmq process
-var rabbitmq_proc = spawn('sh', [__dirname + '/run_rabbitmq.sh'], {env: env_duplicate})
+var rabbitmq_proc = spawn('sh', [__dirname + '/bin/rabbitmq_server-3.5.6/sbin/rabbitmq-server'], {env: env_duplicate})
 console.log('rabbitmq process id: ' + rabbitmq_proc.pid);
 
 rabbitmq_proc.stderr.on('data',
