@@ -55,6 +55,11 @@ def extract_partial_metadata(request):
 		return JsonResponse({'experiment_name':experiment_name, 'task_id':result.task_id})
 
 @csrf_exempt
+def extract_partial_metadata_monitor(request):
+	if request.method == 'POST':
+		
+
+@csrf_exempt
 def list_series(request):
 	if request.method == 'POST':
 		experiment_name = request.POST.get('experiment_name')

@@ -34,8 +34,9 @@ class Experiment(models.Model):
 	# 2. status
 	extraction_process_cap = 4
 	extraction_process_counter = models.IntegerField(default=0)
-	experiment.partial_metadata_extraction_in_progress = models.BooleanField(default=True)
-	experiment.metadata_extraction_in_progress = models.BooleanField(default=True)
+	partial_metadata_extraction_completed = models.BooleanField(default=False)
+	metadata_extraction_completed = models.BooleanField(default=False)
+	series_preview_images_extraction_completed = models.BooleanField(default=False)
 
 	# methods
 	def __str__(self):
@@ -62,6 +63,9 @@ class Experiment(models.Model):
 
 	# metadata requests
 	# these commands assume the metadata has already been extracted
+	def metadata(self):
+		pass
+
 	def series_list(self):
 		series_list = []
 		with open(self.partial_inf_path) as inf:
@@ -120,6 +124,8 @@ class Experiment(models.Model):
 			channel_names = re.findall(r'Channel:.+:(.+)" N', series_block)
 			series_metadata['channel_names'] = channel_names
 
+	def series_preview_image_paths():
+
 class Series(models.Model):
 	# connections
 	experiment = models.ForeignKey(Experiment, related_name='series')
@@ -140,21 +146,22 @@ class Series(models.Model):
 	preview_path = models.CharField(max_length=255)
 
 	# status flags
-	is_new = models.BooleanField(default=True)
 	metadata_set = models.BooleanField(default=False)
-	in_queue = models.BooleanField(default=False)
-	extraction_processing_id = models.IntegerField(default=0)
-	source_extracted = models.BooleanField(default=False)
+	source_extraction_in_queue = models.BooleanField(default=False)
+	source_extraction_complete = models.BooleanField(default=False)
+	composition_complete = models.BooleanField(default=False)
 	processing_complete = models.BooleanField(default=False)
 
 	# progress
 	source_extraction_percentage = models.IntegerField(default=0)
+	composition_percentage = models.IntegerField(default=0)
 	processing_percentage = models.IntegerField(default=0)
 
 	# methods
 	def __str__(self):
 		return '{}: series {}'.format(self.experiment, self.index)
 
+	# status methods
 	def extraction_status(self):
 		status_dict = {
 			'experiment_name':self.experiment.name,
@@ -169,6 +176,8 @@ class Series(models.Model):
 
 		return status_dict
 
+	# metadata requests
+	# methods assume metadata has been extracted
 	def metadata(self):
 		if not self.metadata_set:
 			self.metadata_set = True
@@ -203,8 +212,7 @@ class Series(models.Model):
 			'channels':json.dumps([channel.name for channel in self.channels.all()]),
 		}
 
-	def extract(self):
-		return self.experiment.lif.extract_series(self.name)
+	def
 
 	def mid_z(self):
 		return int(self.zs / 2.0)
