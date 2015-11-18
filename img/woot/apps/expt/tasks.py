@@ -83,10 +83,10 @@ def extract_preview_images_task(self, experiment_pk):
 			os.remove(join(experiment.preview_path, file_name))
 
 @apollo_celery_app.task(bind=True)
-def extract_series_task(self, experiment_pk, series_name):
+def extract_series_task(self, series_pk):
 	# get series
-	experiment = Experiment.objects.get(pk=experiment_pk)
-	series = experiment.series.get(name=series_name)
+	series = Series.objects.get(pk=series_pk)
+	experiment = series.experiment
 
 	# wait in queue
 	extraction_counter = experiment.extraction_counter

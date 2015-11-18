@@ -26,11 +26,11 @@ urlpatterns = [
 	# extract a small set of preview images from the archive
 	url(r'^extract_preview_images/', extract_preview_images),
 
-	# return the series metadata
-	url(r'^series_details/', series_details),
-
 	# return the experiment metadata
 	url(r'^experiment_details/', experiment_details),
+
+	# return the series metadata
+	url(r'^series_details/', series_details),
 
 	# extract a full set of series images from the archive
 	url(r'^extract_series/', extract_series),
