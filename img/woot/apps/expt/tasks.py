@@ -27,7 +27,8 @@ def extract_partial_metadata(self, lif_path, partial_inf_path):
 				# get progress from output
 				status = 'converting'
 
-				
+				line_match = re.match(line_template, line)
+				current = int(ln_match.group('percentage'))
 
 			# update progress
 			backend.set_progress(self.request.id, current, status)
