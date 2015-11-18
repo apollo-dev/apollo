@@ -33,6 +33,8 @@ def extract_partial_metadata(self, lif_path, partial_inf_path):
 			# update progress
 			backend.set_progress(self.request.id, current, status)
 
+	return 'partial-metadata-extracted'
+
 @app.task(bind=True)
 def extract_metadata(self):
 
