@@ -55,9 +55,21 @@ def extract_partial_metadata(request):
 		return JsonResponse({'experiment_name':experiment_name, 'task_id':result.task_id})
 
 @csrf_exempt
-def extract_partial_metadata_monitor(request):
+def experiment_monitor(request):
 	if request.method == 'POST':
-		
+		experiment_name = request.POST.get('experiment_name')
+		experiment = Experiment.objects.get(name=experiment_name)
+
+		return JsonResponse(experiment.extraction_status())
+
+@csrf_exempt
+def series_monitor(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+		series_name = request.POST.get('series_name')
+		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
+
+		return JsonResponse(series.extraction_status())
 
 @csrf_exempt
 def list_series(request):
@@ -94,7 +106,15 @@ def extract_preview_images(request):
 		return JsonResponse({'experiment_name':experiment_name, 'task_id':result.task_id})
 
 @csrf_exempt
-def experiment_details(request):
+def list_preview_images(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+		experiment = Experiment.objects.get(name=experiment_name)
+
+		return JsonResponse([series.preview_path for series in experiment.series.all()], safe=False)
+
+@csrf_exempt
+def experiment_metadata(request):
 	if request.method == 'POST':
 		experiment_name = request.POST.get('experiment_name')
 		experiment = Experiment.objects.get(name=experiment_name)
@@ -102,11 +122,10 @@ def experiment_details(request):
 		return JsonResponse(experiment.metadata())
 
 @csrf_exempt
-def series_details(request):
+def series_metadata(request):
 	if request.method == 'POST':
 		experiment_name = request.POST.get('experiment_name')
 		series_name = request.POST.get('series_name')
-
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
 
 		return JsonResponse(series.metadata())

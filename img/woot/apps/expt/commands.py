@@ -35,11 +35,14 @@ urlpatterns = [
 	# monitor preview images
 	url(r'^extract_preview_images_monitor/', extract_preview_images_monitor),
 
+	# get list of preview images
+	url(r'^list_preview_images/', list_preview_images),
+
 	# return the experiment metadata
-	url(r'^experiment_details/', experiment_details),
+	url(r'^experiment_metadata/', experiment_metadata),
 
 	# return the series metadata
-	url(r'^series_details/', series_details),
+	url(r'^series_metadata/', series_metadata),
 
 	# extract a full set of series images from the archive
 	url(r'^extract_series/', extract_series),

@@ -22,10 +22,10 @@ def extract_partial_metadata_task(self, experiment_pk):
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
 	with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path)) as extract_partial_metadata_proc:
-		experiment.partial_metadata_extraction_in_progress = True
+		experiment.partial_metadata_extraction_complete = False
 		experiment.save()
 
-	experiment.partial_metadata_extraction_in_progress = False
+	experiment.partial_metadata_extraction_complete = True
 	experiment.save()
 
 	return 'done'
@@ -37,10 +37,10 @@ def extract_metadata_task(self, experiment_pk):
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
 	with Popen('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, experiment.lif_path, experiment.inf_path)) as extract_metadata_proc:
-		experiment.metadata_extraction_in_progress = True
+		experiment.metadata_extraction_complete = False
 		experiment.save()
 
-	experiment.metadata_extraction_in_progress = False
+	experiment.metadata_extraction_complete = True
 	experiment.save()
 
 	return 'done'
@@ -64,7 +64,9 @@ def extract_preview_images_task(self, experiment_pk):
 
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(experiment.name))
-		call('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True)
+		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path)) as extract_preview_proc:
+			experiment.series_preview_images_extraction_complete = False
+			experiment.save()
 
 	# 2. convert tiff to png for browser
 	for series in experiment.series.all():
@@ -75,12 +77,18 @@ def extract_preview_images_task(self, experiment_pk):
 		if not exists(series.preview_path):
 			selected_path = join(experiment.preview_path, '{}_s{}_ch{}_t{}_z{}_preview.tiff'.format(experiment.name, series.name, series.max_channel(), 0, series.mid_z()))
 			convert = join(settings.BIN_ROOT, 'convert')
-			call('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True)
+			with Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path)) as convert_preview_proc:
+				experiment.series_preview_images_extraction_complete = False
+				experiment.save()
 
 	# delete everything that is not the selected paths
 	for file_name in os.listdir(experiment.preview_path):
 		if join(experiment.preview_path, file_name) not in [series.preview_path for series in experiment.series.all()]:
 			os.remove(join(experiment.preview_path, file_name))
+
+	# set complete
+	experiment.series_preview_images_extraction_complete = True
+	experiment.save()
 
 @apollo_celery_app.task(bind=True)
 def extract_series_task(self, series_pk):

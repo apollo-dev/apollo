@@ -34,9 +34,12 @@ class Experiment(models.Model):
 	# 2. status
 	extraction_process_cap = 4
 	extraction_process_counter = models.IntegerField(default=0)
-	partial_metadata_extraction_completed = models.BooleanField(default=False)
-	metadata_extraction_completed = models.BooleanField(default=False)
-	series_preview_images_extraction_completed = models.BooleanField(default=False)
+	partial_metadata_extraction_complete = models.BooleanField(default=False)
+	metadata_extraction_complete = models.BooleanField(default=False)
+	series_preview_images_extraction_complete = models.BooleanField(default=False)
+
+	# 3. progress
+	series_preview_images_extraction_percentage = models.IntegerField(default=0)
 
 	# methods
 	def __str__(self):
@@ -60,6 +63,18 @@ class Experiment(models.Model):
 		for name, template in templates.items():
 			self.templates.get_or_create(name=name, rx=template['rx'], rv=template['rv'])
 		self.save()
+
+	# status
+	def extraction_status(self):
+		status_dict = {
+			'experiment_name':self.name,
+			'extraction_process_cap':self.extraction_process_cap,
+			'extraction_process_counter':self.extraction_process_counter,
+			'partial_metadata_extraction_complete':self.partial_metadata_extraction_complete,
+			'metadata_extraction_complete':self.metadata_extraction_complete,
+			'series_preview_images_extraction_complete':self.series_preview_images_extraction_complete,
+			'series_preview_images_extraction_percentage':self.series_preview_images_extraction_percentage,
+		}
 
 	# metadata requests
 	# these commands assume the metadata has already been extracted
@@ -124,13 +139,14 @@ class Experiment(models.Model):
 			channel_names = re.findall(r'Channel:.+:(.+)" N', series_block)
 			series_metadata['channel_names'] = channel_names
 
-	def series_preview_image_paths():
+	def series_preview_image_paths(self):
+		return [join(self.preview_path, series.preview_path) for series in self.series.all()]
 
 class Series(models.Model):
 	# connections
 	experiment = models.ForeignKey(Experiment, related_name='series')
 
-	# properties
+	# 1. properties
 	name = models.CharField(max_length=255)
 	title = models.CharField(max_length=255)
 	acquisition_date = models.DateTimeField(null=True)
@@ -145,14 +161,14 @@ class Series(models.Model):
 	preview_image_index = models.IntegerField(default=0)
 	preview_path = models.CharField(max_length=255)
 
-	# status flags
+	# 2. status flags
 	metadata_set = models.BooleanField(default=False)
 	source_extraction_in_queue = models.BooleanField(default=False)
 	source_extraction_complete = models.BooleanField(default=False)
 	composition_complete = models.BooleanField(default=False)
 	processing_complete = models.BooleanField(default=False)
 
-	# progress
+	# 3. progress
 	source_extraction_percentage = models.IntegerField(default=0)
 	composition_percentage = models.IntegerField(default=0)
 	processing_percentage = models.IntegerField(default=0)
@@ -166,11 +182,13 @@ class Series(models.Model):
 		status_dict = {
 			'experiment_name':self.experiment.name,
 			'series_name':self.name,
-			'new':self.is_new,
-			'in_queue':self.in_queue,
-			'source_extracted':self.source_extracted,
+			'metadata_set':self.metadata_set,
+			'source_extraction_in_queue':self.source_extraction_in_queue,
+			'source_extraction_complete':self.source_extraction_complete,
+			'composition_complete':self.composition_complete,
 			'processing_complete':self.processing_complete,
 			'source_extraction_percentage':self.source_extraction_percentage,
+			'composition_percentage':self.composition_percentage,
 			'processing_percentage':self.processing_percentage,
 		}
 
@@ -211,8 +229,6 @@ class Series(models.Model):
 			'tpf':str(self.tpf),
 			'channels':json.dumps([channel.name for channel in self.channels.all()]),
 		}
-
-	def
 
 	def mid_z(self):
 		return int(self.zs / 2.0)
