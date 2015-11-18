@@ -635,3 +635,59 @@ Stopped RabbitMQ application
 
 =INFO REPORT==== 18-Nov-2015::00:04:49 ===
 Halting Erlang VM
+
+=INFO REPORT==== 18-Nov-2015::00:06:55 ===
+Starting RabbitMQ 3.5.6 on Erlang 17.5
+Copyright (C) 2007-2015 Pivotal Software, Inc.
+Licensed under the MPL.  See http://www.rabbitmq.com/
+
+=INFO REPORT==== 18-Nov-2015::00:06:55 ===
+node           : rabbit@Nicholass-MacBook-Air
+home dir       : /Users/nicholaspiano
+config file(s) : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../etc/rabbitmq/rabbitmq.config
+cookie hash    : +vJpqNrb0KU23DbaZYhWWA==
+log            : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air.log
+sasl log       : ./bin/rabbitmq_server-3.5.6/sbin/../var/log/rabbitmq/rabbit@Nicholass-MacBook-Air-sasl.log
+database dir   : /Users/nicholaspiano/code/apollo-dev/apollo/bin/rabbitmq_server-3.5.6/sbin/../var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+Memory limit set to 1288MB of 3220MB total.
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+Disk free limit set to 50MB
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+Limiting to approx 924 file handles (829 sockets)
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+FHC read buffering:  ON
+FHC write buffering: ON
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+Priority queues enabled, real BQ is rabbit_variable_queue
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+msg_store_transient: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+msg_store_persistent: using rabbit_msg_store_ets_index to provide index
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+started TCP Listener on [::]:5672
+
+=INFO REPORT==== 18-Nov-2015::00:06:56 ===
+Server startup complete; 0 plugins started.
+
+=INFO REPORT==== 18-Nov-2015::00:06:57 ===
+accepting AMQP connection <0.234.0> (127.0.0.1:56726 -> 127.0.0.1:5672)
+
+=INFO REPORT==== 18-Nov-2015::00:06:57 ===
+accepting AMQP connection <0.240.0> (127.0.0.1:56727 -> 127.0.0.1:5672)
+
+=WARNING REPORT==== 18-Nov-2015::00:07:01 ===
+closing AMQP connection <0.234.0> (127.0.0.1:56726 -> 127.0.0.1:5672):
+connection_closed_abruptly
+
+=WARNING REPORT==== 18-Nov-2015::00:07:01 ===
+closing AMQP connection <0.240.0> (127.0.0.1:56727 -> 127.0.0.1:5672):
+connection_closed_abruptly

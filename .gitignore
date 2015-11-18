@@ -4,3 +4,10 @@
 *.ets
 *.LOG
 *.pid
+*.pid
+
+*.LOG
+
+*.dot
+
+*.ets
