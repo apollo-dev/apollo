@@ -10,12 +10,42 @@ from django.template import Template
 from django.views.decorators.csrf import csrf_exempt
 
 # local
-from apps.expt.models import Experiment, LifFile, Series
+from apps.expt.models import Experiment, Series
+from apps.expt.tasks import extract_partial_metadata_task, extract_metadata_task, extract_preview_images_task, extract_series_task
 
 # util
 import json
 
 ### Views
+
+urlpatterns = [
+	# get a list of current experiment names
+	url(r'^list_experiments/', list_experiments),
+
+	# create an experiment given a name and a lif path
+	url(r'^create_experiment/', create_experiment),
+
+	# extract partial metadata with series names
+	url(r'^extract_partial_metadata/', extract_partial_metadata),
+
+	# list series of a given experiment. Create series if necessary.
+	url(r'^list_series/', list_series),
+
+	# extract full omexml metadata for series details
+	url(r'^extract_metadata/', extract_metadata),
+
+	# extract a small set of preview images from the archive
+	url(r'^extract_preview_images/', extract_preview_images),
+
+	# return the series metadata
+	url(r'^series_details/', series_details),
+
+	# return the experiment metadata
+	url(r'^experiment_details/', experiment_details),
+
+	# extract a full set of series images from the archive
+	url(r'^extract_series/', extract_series),
+]
 
 # methods
 @csrf_exempt
@@ -37,16 +67,31 @@ def create_experiment(request):
 
 		if experiment_created:
 			experiment.lif_path = lif_path
-			lif = LifFile.objects.create(experiment=experiment)
-			experiment.lif = lif
-			lif.save()
 			experiment.make_paths()
 			experiment.make_templates()
 			experiment.save()
-			return JsonResponse({'name': experiment.name, 'status':'created'})
+			return JsonResponse({'experiment_name': experiment.name, 'status':'created'})
 
 		else:
-			return JsonResponse({'name': experiment.name, 'status':'exists'})
+			return JsonResponse({'experiment_name': experiment.name, 'status':'exists'})
+
+@csrf_exempt
+def extract_partial_metadata(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+		experiment = Experiment.objects.get(name=experiment_name)
+
+		result = extract_partial_metadata_task.delay(experiment.pk)
+
+		return JsonResponse({'experiment_name':experiment_name, 'task_id':result.task_id})
+
+@csrf_exempt
+def list_series(request):
+	if request.method == 'POST':
+		experiment_name = request.POST.get('experiment_name')
+		experiment = Experiment.objects.get(name=experiment_name)
+
+		return JsonResponse([series.name for series in experiment.series.all()], safe=False)
 
 @csrf_exempt
 def extract_experiment_details(request):
@@ -55,28 +100,13 @@ def extract_experiment_details(request):
 
 		# get experiment image size, total duration, number of series
 		experiment = Experiment.objects.get(name=experiment_name)
-		series_list = experiment.list_series()
+		series_list = experiment.series_list()
 
 		# for each series make a series object
 		for series_name in series_list:
 			series, series_created = experiment.series.get_or_create(name=series_name)
 
 		return JsonResponse({'number_of_series':str(len(series_list))})
-
-@csrf_exempt
-def list_series(request):
-	if request.method == 'POST':
-		experiment_name = request.POST.get('experiment_name')
-
-		experiment = Experiment.objects.get(name=experiment_name)
-
-		# get series metadata from LifFile
-		# rs, cs, zs, ts, channel names
-		# rmop, cmop, zmop, tpf
-		for series in experiment.series.all():
-			series_metadata = series.metadata()
-
-		return JsonResponse([{'name':series.name, 'title':series.title} for series in experiment.series.all()], safe=False)
 
 @csrf_exempt
 def generate_series_preview(request):

@@ -2,10 +2,10 @@
 
 # django
 from django.conf import settings
-from django.apps import apps
 
 # local
 from woot.celery import apollo_celery_app
+from apps.expt.models import Experiment, Series
 
 # util
 from subprocess import Popen, PIPE
@@ -16,38 +16,41 @@ from subprocess import Popen, PIPE
 
 ### TASKS
 @apollo_celery_app.task(bind=True)
-def extract_partial_metadata(self, lif_path, partial_inf_path):
+def extract_partial_metadata_task(self, experiment_pk):
+	experiment = Experiment.objects.get(pk=experiment_pk)
+
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
-	with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, lif_path, partial_inf_path)) as extract_partial_metadata_proc:
-		status = 'extracting'
-		current = 0
+	with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path)) as extract_partial_metadata_proc:
+		experiment.partial_metadata_extraction_in_progress = True
+		experiment.save()
 
-		# update progress
-		backend.set_progress(self.request.id, current, status)
+	experiment.partial_metadata_extraction_in_progress = False
+	experiment.save()
 
 	return 'done'
 
 @apollo_celery_app.task(bind=True)
-def extract_metadata(self, lif_path, inf_path):
+def extract_metadata_task(self, experiment_pk):
+	experiment = Experiment.objects.get(pk=experiment_pk)
+
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
-	with Popen('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, lif_path, inf_path)) as extract_metadata_proc:
-		status = 'extracting'
-		current = 0
+	with Popen('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, experiment.lif_path, experiment.inf_path)) as extract_metadata_proc:
+		experiment.metadata_extraction_in_progress = True
+		experiment.save()
 
-		# update progress
-		backend.set_progress(self.request.id, current, status)
+	experiment.metadata_extraction_in_progress = False
+	experiment.save()
 
 	return 'done'
 
 @apollo_celery_app.task(bind=True)
-def extract_preview_images(self, experiment_pk):
+def extract_preview_images_task(self, experiment_pk):
 	# this unfortunately has to been done in one lump for speed and consistency purposes.
 	# The preview image for the processed series (composite) can be done later with more
 	# information.
 
-	Experiment = apps.get_model(app_label='apps.expt', model_name='Experiment')
 	experiment = Experiment.objects.get(pk=experiment_pk)
 
 	# 1. get range of images from each series
@@ -80,9 +83,8 @@ def extract_preview_images(self, experiment_pk):
 			os.remove(join(experiment.preview_path, file_name))
 
 @apollo_celery_app.task(bind=True)
-def extract_series(self, experiment_pk, series_name):
+def extract_series_task(self, experiment_pk, series_name):
 	# get series
-	Experiment = apps.get_model(app_label='apps.expt', model_name='Experiment')
 	experiment = Experiment.objects.get(pk=experiment_pk)
 	series = experiment.series.get(name=series_name)
 

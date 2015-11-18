@@ -8,7 +8,6 @@ from django.utils.dateparse import parse_datetime
 # local
 from apps.expt.data import *
 from apps.expt.util import generate_id_token, random_string, block
-from apps.expt.tasks import extract_partial_metadata, extract_metadata, extract_preview_images, extract_series
 
 # util
 import re
@@ -35,6 +34,8 @@ class Experiment(models.Model):
 	# 2. status
 	extraction_process_cap = 4
 	extraction_process_counter = models.IntegerField(default=0)
+	experiment.partial_metadata_extraction_in_progress = models.BooleanField(default=True)
+	experiment.metadata_extraction_in_progress = models.BooleanField(default=True)
 
 	# methods
 	def __str__(self):
