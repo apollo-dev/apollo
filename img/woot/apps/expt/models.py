@@ -8,7 +8,7 @@ from django.utils.dateparse import parse_datetime
 # local
 from apps.expt.data import *
 from apps.expt.util import generate_id_token, random_string, block
-from apps.expt.tasks import extract_partial_metadata
+from apps.expt.tasks import extract_partial_metadata, extract_metadata, extract_preview_images, extract_series
 
 # util
 import re
@@ -17,8 +17,6 @@ import json
 from os.path import abspath, basename, dirname, join, normpath, exists
 from scipy.misc.pilutil import imread, imsave
 import numpy as np
-from celery import current_app
-from celery.result import AsyncResult
 
 ### Models
 class Experiment(models.Model):

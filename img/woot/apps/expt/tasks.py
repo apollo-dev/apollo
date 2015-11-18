@@ -2,14 +2,12 @@
 
 # django
 from django.conf import settings
+from django.apps import apps
 
 # local
 from woot.celery import apollo_celery_app
-from apps.expt import backend
-from apps.expt.models import Experiment, Series
 
 # util
-# from celery import Task
 from subprocess import Popen, PIPE
 
 # articles on tasks
@@ -49,6 +47,7 @@ def extract_preview_images(self, experiment_pk):
 	# The preview image for the processed series (composite) can be done later with more
 	# information.
 
+	Experiment = apps.get_model(app_label='apps.expt', model_name='Experiment')
 	experiment = Experiment.objects.get(pk=experiment_pk)
 
 	# 1. get range of images from each series
@@ -83,6 +82,7 @@ def extract_preview_images(self, experiment_pk):
 @apollo_celery_app.task(bind=True)
 def extract_series(self, experiment_pk, series_name):
 	# get series
+	Experiment = apps.get_model(app_label='apps.expt', model_name='Experiment')
 	experiment = Experiment.objects.get(pk=experiment_pk)
 	series = experiment.series.get(name=series_name)
 
