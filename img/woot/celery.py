@@ -7,7 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'woot.settings')
 
 from django.conf import settings  # noqa
 
-app = Celery('woot')
+apollo_celery_app = Celery('woot')
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.

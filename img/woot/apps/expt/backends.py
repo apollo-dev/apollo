@@ -19,11 +19,11 @@ class CeleryBackend(object):
 
 		if result.state == self.progress_state:
 			meta = result.info
-			return float(meta['current']) / float(meta['total']) * 100
+			return int(float(meta['current']) / float(meta['total']) * 100)
 
 		return 0
 
-	def set_progress(self, task_id, current, total=100):
-		meta = {'current': current, 'total': total}
+	def set_progress(self, task_id, current, status, total=100):
+		meta = {'current':current, 'status':status, 'total':total}
 
 		self.app.backend.store_result(task_id, meta, self.progress_state)
