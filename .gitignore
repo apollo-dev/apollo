@@ -13,3 +13,9 @@
 *.ets
 
 *.pid
+
+*.DCL
+
+*.LOG
+
+*.pid
