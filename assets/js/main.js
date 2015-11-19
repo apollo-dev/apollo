@@ -10,12 +10,12 @@ $(document).ready(function() {
 	///////////////////////////////////
 	/////////////// STATES
 	var NEW_EXPERIMENT_STATE = 'NewExperimentState';
-	var NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN = 'NewExperimentStateExperimentChosen';
-	var NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED = 'NewExperimentStateExperimentRequested';
-	var NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED = 'NewExperimentStateExperimentReceived';
-	var NEW_EXPERIMENT_STATE_GENERATEPREVIEW = 'NewExperimentStateGeneratePreview';
+	var NEW_EXPERIMENT_STATE_EXPERIMENT_CHOSEN = 'NewExperimentStateExperimentChosen';
+	var NEW_EXPERIMENT_STATE_EXPERIMENT_REQUESTED = 'NewExperimentStateExperimentRequested';
+	var NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED = 'NewExperimentStateExperimentReceived';
+	var NEW_EXPERIMENT_STATE_GENERATE_PREVIEW = 'NewExperimentStateGeneratePreview';
 	var NEW_EXPERIMENT_STATE_SERIES_INFO = 'NewExperimentStateSeriesInfo';
-	var NEW_EXPERIMENT_STATE_SERIES_EXTRACTING = 'NewExperimentStateSeriesExtracting';
+	var NEW_EXPERIMENT_STATE_SERIES_EXTRACTING = 'a';
 	var EXPERIMENT_STATE = 'ExperimentState';
 	var PROGRESS_STATE = 'ProgressState';
 	var SETTINGS_STATE = 'SettingsState';
@@ -80,6 +80,9 @@ $(document).ready(function() {
 	var NESBottomSpacer;
 	var NESExperimentCreatedContentButton;
 	var NESExperimentNameContentButton;
+	var NESPartialMetadataExtractionProgressButton;
+	var NESMetadataExtractionProgressButton;
+	var NESPreviewImagesExtractionProgressButton;
 	var NESTrayContainer;
 	var NESExtractingExperimentDetailsButton;
 	var NESDetailSpacer;
@@ -452,7 +455,7 @@ $(document).ready(function() {
 	NESMiddleSpacer.specificStyle = {'display':'none'};
 	NESMiddleSpacer.states[HOME_STATE] = invisibleState;
 	NESMiddleSpacer.states[NEW_EXPERIMENT_STATE] = {'fn':fadeOut};
-	NESMiddleSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN] = {'fn':fadeIn};
+	NESMiddleSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENT_CHOSEN] = {'fn':fadeIn};
 
 	// NES Preview Button
 	NESPreviewButton = new Element('nes-preview-button', BUTTON_TEMPLATE);
@@ -461,14 +464,14 @@ $(document).ready(function() {
 	NESPreviewButton.specificStyle = {'display':'none'};
 	NESPreviewButton.states[HOME_STATE] = invisibleState;
 	NESPreviewButton.states[NEW_EXPERIMENT_STATE] = {'fn':fadeOut};
-	NESPreviewButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN] = {'fn':fadeIn};
+	NESPreviewButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_CHOSEN] = {'fn':fadeIn};
 
 	// NES Bottom Spacer
 	NESBottomSpacer = new Element('nes-bs', SPACER_TEMPLATE);
 	NESBottomSpacer.specificStyle = {'display':'none'};
 	NESBottomSpacer.states[HOME_STATE] = invisibleState;
 	NESBottomSpacer.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESBottomSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
+	NESBottomSpacer.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 
 	// NES Experiment Created Content Button
 	NESExperimentCreatedContentButton = new Element('nes-experiment-created-content-button', BUTTON_TEMPLATE);
@@ -476,7 +479,7 @@ $(document).ready(function() {
 	NESExperimentCreatedContentButton.specificStyle = {'display':'none'};
 	NESExperimentCreatedContentButton.states[HOME_STATE] = invisibleState;
 	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
+	NESExperimentCreatedContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 
 	// NES Experiment Name Content Button
 	NESExperimentNameContentButton = new Element('nes-experiment-name-content-button', BUTTON_TEMPLATE);
@@ -484,7 +487,7 @@ $(document).ready(function() {
 	NESExperimentNameContentButton.specificStyle = {'display':'none'};
 	NESExperimentNameContentButton.states[HOME_STATE] = invisibleState;
 	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESExperimentNameContentButton.local(NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED, NESPreviewButton, function (model, args) {
+	NESExperimentNameContentButton.local(NEW_EXPERIMENT_STATE_EXPERIMENT_REQUESTED, NESPreviewButton, function (model, args) {
 		// need to modify html of button with callback
 		var experimentCreatedButton = NESExperimentCreatedContentButton.model();
 
@@ -493,18 +496,27 @@ $(document).ready(function() {
 			experimentCreatedButton.html('Experiment: {0}'.format(data['status']));
 			model.html(data['name']);
 
-			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED, args);
+			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, args);
 		});
 	});
-	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
+	NESExperimentNameContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
+
+	// NES Partial Metadata Extraction Progress Button
+	NESPartialMetadataExtractionProgressButton = new Element('nes-partial-metadata-extraction-progress-button', BUTTON_TEMPLATE);
+
+	// NES Metadata Extraction Progress Button
+	NESMetadataExtractionProgressButton = new Element('nes-metadata-extraction-progress-button', BUTTON_TEMPLATE);
+
+	// NES Preview Images Extraction Progress Button
+	NESPreviewImagesExtractionProgressButton = new Element('nes-preview-images-extraction-progress-button', BUTTON_TEMPLATE);
 
 	// NES Tray Container
 	NESTrayContainer = new Element('nes-tray-container', CONTAINER_TEMPLATE);
 	NESTrayContainer.specificStyle = {'display':'none'};
 	NESTrayContainer.states[HOME_STATE] = invisibleState;
 	NESTrayContainer.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESTrayContainer.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
-	NESTrayContainer.local(NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED, NESExperimentNameContentButton, function (model, args) {
+	NESTrayContainer.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
+	NESTrayContainer.local(NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, NESExperimentNameContentButton, function (model, args) {
 		// other elements
 		var detailButton = NESExtractingExperimentDetailsContentButton.model();
 		var detailSpacer = NESDetailSpacer.model();
@@ -515,7 +527,7 @@ $(document).ready(function() {
 			detailSpacer.html('<p>Number of series: {0}</p>'.format(data['number_of_series']));
 
 			// changeState
-			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATEPREVIEW, args);
+			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, args);
 		});
 	});
 
@@ -525,7 +537,7 @@ $(document).ready(function() {
 	NESExtractingExperimentDetailsContentButton.html = 'Extracting details..';
 	NESExtractingExperimentDetailsContentButton.states[HOME_STATE] = invisibleState;
 	NESExtractingExperimentDetailsContentButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESExtractingExperimentDetailsContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENTRECEIVED] = {'fn':fadeIn};
+	NESExtractingExperimentDetailsContentButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 
 	// NES Detail Spacer
 	NESDetailSpacer = new Element('nes-detail-spacer', SPACER_TEMPLATE);
@@ -533,7 +545,7 @@ $(document).ready(function() {
 	NESDetailSpacer.specificStyle = {'display':'none'};
 	NESDetailSpacer.states[HOME_STATE] = invisibleState;
 	NESDetailSpacer.states[NEW_EXPERIMENT_STATE] = invisibleState;
-	NESDetailSpacer.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {'fn':function (model) {
+	NESDetailSpacer.states[NEW_EXPERIMENT_STATE_GENERATE_PREVIEW] = {'fn':function (model) {
 		var tray = NESTrayContainer.model().find('.tray');
 		var button = NESExtractingExperimentDetailsContentButton.model();
 
@@ -561,7 +573,7 @@ $(document).ready(function() {
 	seriesSidebar.specificStyle = defaultState['css'];
 	seriesSidebar.states[HOME_STATE] = defaultState;
 	seriesSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
-	seriesSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
+	seriesSidebar.states[NEW_EXPERIMENT_STATE_GENERATE_PREVIEW] = {
 		'css':{'left':'300px'},
 		'time':defaultAnimationTime,
 		'fn':function (model) {
@@ -601,12 +613,12 @@ $(document).ready(function() {
 
 	// SS Tray Container
 	SSTrayContainer = new Element('ss-tray-container', CONTAINER_TEMPLATE);
-	SSTrayContainer.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = {
+	SSTrayContainer.states[NEW_EXPERIMENT_STATE_GENERATE_PREVIEW] = {
 		'fn':function (model) {
 			model.find('.tray').fadeIn(defaultAnimationTime);
 		}
 	}
-	SSTrayContainer.local(NEW_EXPERIMENT_STATE_GENERATEPREVIEW, NESTrayContainer, function (model, args) {
+	SSTrayContainer.local(NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, NESTrayContainer, function (model, args) {
 		var button = SSPreviewLoadingButton.model();
 		var tray = model.find('.tray');
 		var middleSpacer = SSMiddleSpacer.model();
@@ -640,7 +652,7 @@ $(document).ready(function() {
 								// completion condition
 								// 2. is "complete" true in the data
 								// states
-								var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATEPREVIEW;
+								var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATE_PREVIEW;
 								var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
 								var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
 								var notStates = notGPstate && notSIstate && notSEstate;
@@ -668,7 +680,7 @@ $(document).ready(function() {
 							// completion condition
 							// 2. is "complete" true in the data
 							// states
-							var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATEPREVIEW;
+							var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATE_PREVIEW;
 							var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
 							var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
 							var notStates = notGPstate && notSIstate && notSEstate;
@@ -767,7 +779,7 @@ $(document).ready(function() {
 	infoSidebar.specificStyle = defaultState['css'];
 	infoSidebar.states[HOME_STATE] = defaultState;
 	infoSidebar.states[NEW_EXPERIMENT_STATE] = defaultState;
-	infoSidebar.states[NEW_EXPERIMENT_STATE_GENERATEPREVIEW] = defaultState;
+	infoSidebar.states[NEW_EXPERIMENT_STATE_GENERATE_PREVIEW] = defaultState;
 	infoSidebar.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'css':{'left':'550px'}}
 	infoSidebar.states[PROGRESS_STATE] = defaultState;
 	infoSidebar.states[SETTINGS_STATE] = defaultState;
@@ -1542,7 +1554,7 @@ $(document).ready(function() {
 					var filename = path.replace(/.*(\/|\\)/, '');
 					model.html("File: " + filename);
 					model.attr('path', path);
-					changeState(model.id, NEW_EXPERIMENT_STATE_EXPERIMENTCHOSEN, {});
+					changeState(model.id, NEW_EXPERIMENT_STATE_EXPERIMENT_CHOSEN, {});
 				}
 			}
 		})
@@ -1565,7 +1577,7 @@ $(document).ready(function() {
 
 			var experimentName = input.val();
 			var experimentPath = pathButton.attr('path');
-			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_EXPERIMENTREQUESTED, {'experiment_name':experimentName, 'lif_path':experimentPath});
+			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_EXPERIMENT_REQUESTED, {'experiment_name':experimentName, 'lif_path':experimentPath});
 		}
 	});
 
