@@ -503,6 +503,7 @@ $(document).ready(function() {
 
 	// NES Partial Metadata Extraction Progress Button
 	NESPartialMetadataExtractionProgressButton = new Element('nes-partial-metadata-extraction-progress-button', BUTTON_TEMPLATE);
+	
 
 	// NES Metadata Extraction Progress Button
 	NESMetadataExtractionProgressButton = new Element('nes-metadata-extraction-progress-button', BUTTON_TEMPLATE);
@@ -522,12 +523,26 @@ $(document).ready(function() {
 		var detailSpacer = NESDetailSpacer.model();
 
 		// ajax
-		ajax('extract_experiment_details', args, function (data) {
-			// set html
-			detailSpacer.html('<p>Number of series: {0}</p>'.format(data['number_of_series']));
+		ajaxloop('experiment_monitor', args, function (data) {
+			// repeat callback
+			// 1. set text of detail button to be "extracting metadata..."
+			//
 
-			// changeState
-			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, args);
+		}, function (data) {
+			// completion condition
+			// 1. data contains {metadata_extraction_complete: True}
+			return data['metadata_extraction_complete']
+
+		}, function (data) {
+			// completion callback
+			// 1. make another request for experiment metadata
+			ajax('experiment_metadata', args, function (data) {
+				// update detail spacer
+				// detailSpacer.html('<p>Number of series: {0}</p>'.format(data['number_of_series']));
+
+				// trigger generate preview
+				changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, args);
+			});
 		});
 	});
 
