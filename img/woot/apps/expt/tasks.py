@@ -8,6 +8,7 @@ from woot.celery import apollo_celery_app
 from apps.expt.models import Experiment, Series
 
 # util
+import os
 from os.path import exists, join
 from subprocess import Popen, PIPE
 
