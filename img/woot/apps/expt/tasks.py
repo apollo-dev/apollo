@@ -24,7 +24,7 @@ def extract_partial_metadata_task(self, experiment_pk):
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
 	if not exists(experiment.partial_inf_path):
-		with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path)) as extract_partial_metadata_proc:
+		with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path), shell=True) as extract_partial_metadata_proc:
 			experiment.partial_metadata_extraction_complete = False
 			experiment.save()
 
@@ -40,7 +40,7 @@ def extract_metadata_task(self, experiment_pk):
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
 	if not exists(experiment.inf_path):
-		with Popen('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, experiment.lif_path, experiment.inf_path)) as extract_metadata_proc:
+		with Popen('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, experiment.lif_path, experiment.inf_path), shell=True) as extract_metadata_proc:
 			experiment.metadata_extraction_complete = False
 			experiment.save()
 
@@ -68,7 +68,7 @@ def extract_preview_images_task(self, experiment_pk):
 
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(experiment.name))
-		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path)) as extract_preview_proc:
+		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True) as extract_preview_proc:
 			experiment.series_preview_images_extraction_complete = False
 			experiment.save()
 
@@ -81,7 +81,7 @@ def extract_preview_images_task(self, experiment_pk):
 		if not exists(series.preview_path):
 			selected_path = join(experiment.preview_path, '{}_s{}_ch{}_t{}_z{}_preview.tiff'.format(experiment.name, series.name, series.max_channel(), 0, series.mid_z()))
 			convert = join(settings.BIN_ROOT, 'convert')
-			with Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path)) as convert_preview_proc:
+			with Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True) as convert_preview_proc:
 				experiment.series_preview_images_extraction_complete = False
 				experiment.save()
 
