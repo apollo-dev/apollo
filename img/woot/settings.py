@@ -11,6 +11,7 @@ from sys import path
 import string
 import json
 import sys
+import djcelery
 
 ########## HOST CONFIGURATION
 ALLOWED_HOSTS = (
@@ -198,6 +199,11 @@ LOCAL_APPS = (
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 ########## END APP CONFIGURATION
+
+
+########## CELERY CONFIGURATION
+djcelery.setup_loader()
+########## END CELERY CONFIGURATION
 
 
 ########## LOGGING CONFIGURATION

@@ -1492,6 +1492,9 @@ $(document).ready(function() {
 	newExperimentSidebar.renderChild(NESBottomSpacer);
 	newExperimentSidebar.renderChild(NESExperimentCreatedContentButton);
 	newExperimentSidebar.renderChild(NESExperimentNameContentButton);
+	newExperimentSidebar.renderChild(NESPartialMetadataExtractionProgressButton);
+	newExperimentSidebar.renderChild(NESMetadataExtractionProgressButton);
+	newExperimentSidebar.renderChild(NESPreviewImagesExtractionProgressButton);
 	newExperimentSidebar.renderChild(NESTrayContainer);
 	NESTrayContainer.renderChild(NESExtractingExperimentDetailsContentButton);
 	NESTrayContainer.renderChild(NESDetailSpacer);
