@@ -507,6 +507,25 @@ $(document).ready(function() {
 	NESPartialMetadataExtractionProgressButton.states[HOME_STATE] = invisibleState;
 	NESPartialMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
 	NESPartialMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
+	NESPartialMetadataExtractionProgressButton.html = '<div class="streamer"></div>';
+	NESPartialMetadataExtractionProgressButton.local(NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, NESExperimentNameContentButton, function (model, args) {
+		var streamer = model.find('.streamer');
+
+		// ajax
+		ajax('extract_partial_metadata', args, function (data) {
+			ajaxloop('experiment_monitor', args, function (data) {
+				// repeat callback
+
+			}, function (data) {
+				// completion condition
+				return data['partial_metadata_extraction_complete']
+
+			}, function (data) {
+				// completion callback
+
+			});
+		});
+	});
 
 	// NES Metadata Extraction Progress Button
 	NESMetadataExtractionProgressButton = new Element('nes-metadata-extraction-progress-button', BUTTON_TEMPLATE);
@@ -514,6 +533,25 @@ $(document).ready(function() {
 	NESMetadataExtractionProgressButton.states[HOME_STATE] = invisibleState;
 	NESMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
 	NESMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
+	NESMetadataExtractionProgressButton.html = '<div class="streamer"></div>';
+	NESMetadataExtractionProgressButton.local(NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, NESExperimentNameContentButton, function (model, args) {
+		var streamer = model.find('.streamer');
+
+		// ajax
+		ajax('extract_metadata', args, function (data) {
+			ajaxloop('experiment_monitor', args, function (data) {
+				// repeat callback
+
+			}, function (data) {
+				// completion condition
+				return data['metadata_extraction_complete']
+
+			}, function (data) {
+				// completion callback
+
+			});
+		});
+	});
 
 	// NES Preview Images Extraction Progress Button
 	NESPreviewImagesExtractionProgressButton = new Element('nes-preview-images-extraction-progress-button', BUTTON_TEMPLATE);
@@ -521,6 +559,28 @@ $(document).ready(function() {
 	NESPreviewImagesExtractionProgressButton.states[HOME_STATE] = invisibleState;
 	NESPreviewImagesExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
 	NESPreviewImagesExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
+	NESPreviewImagesExtractionProgressButton.html = '<div class="streamer"></div>';
+	NESPreviewImagesExtractionProgressButton.local(NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, NESExperimentNameContentButton, function (model, args) {
+		var streamer = model.find('.streamer');
+
+		// ajax
+		ajax('extract_preview_images', args, function (data) {
+			ajaxloop('experiment_monitor', args, function (data) {
+				// repeat callback
+				var percentage = data['series_preview_images_extraction_percentage']; // returns an int
+				var left = 200 - 2*percentage; // fit button
+				streamer.animate({'left':'-{0}px'.format()}, 500);
+
+			}, function (data) {
+				// completion condition
+				return data['series_preview_images_extraction_complete']
+
+			}, function (data) {
+				// completion callback
+
+			});
+		});
+	});
 
 	// NES Tray Container
 	NESTrayContainer = new Element('nes-tray-container', CONTAINER_TEMPLATE);
