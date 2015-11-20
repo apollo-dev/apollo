@@ -510,9 +510,17 @@ $(document).ready(function() {
 
 	// NES Metadata Extraction Progress Button
 	NESMetadataExtractionProgressButton = new Element('nes-metadata-extraction-progress-button', BUTTON_TEMPLATE);
+	NESMetadataExtractionProgressButton.specificStyle = {'display':'none'};
+	NESMetadataExtractionProgressButton.states[HOME_STATE] = invisibleState;
+	NESMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 
 	// NES Preview Images Extraction Progress Button
 	NESPreviewImagesExtractionProgressButton = new Element('nes-preview-images-extraction-progress-button', BUTTON_TEMPLATE);
+	NESPreviewImagesExtractionProgressButton.specificStyle = {'display':'none'};
+	NESPreviewImagesExtractionProgressButton.states[HOME_STATE] = invisibleState;
+	NESPreviewImagesExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESPreviewImagesExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 
 	// NES Tray Container
 	NESTrayContainer = new Element('nes-tray-container', CONTAINER_TEMPLATE);
