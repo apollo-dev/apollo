@@ -29,6 +29,7 @@ def extract_partial_metadata_task(self, experiment_pk):
 			experiment.save()
 
 	experiment.partial_metadata_extraction_complete = True
+	experiment.partial_metadata_actions()
 	experiment.save()
 
 	return 'done'
@@ -45,6 +46,7 @@ def extract_metadata_task(self, experiment_pk):
 			experiment.save()
 
 	experiment.metadata_extraction_complete = True
+	experiment.metadata_actions()
 	experiment.save()
 
 	return 'done'
@@ -64,13 +66,23 @@ def extract_preview_images_task(self, experiment_pk):
 	# it will not throw an error if the range is larger. So, I have decided to use half the maximum z of any
 	# series for the upper limit. Then, each series will be in a separate tiff and can be separated again.
 	if len(os.listdir(experiment.preview_path)) < experiment.series.count():
+
 		max_z = max([series.zs for series in experiment.series.all()]) + 1
 
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(experiment.name))
+		line_template = r'Series (?P<index>.+): converted 2/2 planes \((?P<local>.+)%\)'
 		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True) as extract_preview_proc:
-			experiment.series_preview_images_extraction_complete = False
-			experiment.save()
+			for line in extract_preview_proc.stderr:
+
+				# get progress percentage from output
+				series_index = int(re.match(line_template, line).group('index'))
+				local_percentage = int(re.match(line_template, line).group('local'))
+
+				# update progress
+				experiment.series_preview_images_extraction_complete = False
+				experiment.series_preview_images_extraction_percentage = 90 * ((series_index + local_percentage / 100.0) / float(experiment.series.count()))
+				experiment.save()
 
 	# 2. convert tiff to png for browser
 	for series in experiment.series.all():
@@ -83,6 +95,7 @@ def extract_preview_images_task(self, experiment_pk):
 			convert = join(settings.BIN_ROOT, 'convert')
 			with Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True) as convert_preview_proc:
 				experiment.series_preview_images_extraction_complete = False
+				experiment.series_preview_images_extraction_percentage = 100
 				experiment.save()
 
 	# delete everything that is not the selected paths

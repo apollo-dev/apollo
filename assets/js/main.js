@@ -439,7 +439,7 @@ $(document).ready(function() {
 
 	// NES Experiment Name Button
 	NESExperimentNameButton = new Element('nes-experiment-name-button', BUTTON_TEMPLATE);
-	NESExperimentNameButton.classes = ['progress-inset'];
+	NESExperimentNameButton.classes = ['input'];
 
 	// NES Experiment Name Input
 	NESExperimentNameInput = new Element('nes-experiment-name-input', INPUT_TEMPLATE);
@@ -494,7 +494,7 @@ $(document).ready(function() {
 		// ajax
 		ajax('create_experiment', args, function (data) {
 			experimentCreatedButton.html('Experiment: {0}'.format(data['status']));
-			model.html(data['name']);
+			model.html(data['experiment_name']);
 
 			changeState(model.attr('id'), NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, args);
 		});
@@ -504,12 +504,14 @@ $(document).ready(function() {
 	// NES Partial Metadata Extraction Progress Button
 	NESPartialMetadataExtractionProgressButton = new Element('nes-partial-metadata-extraction-progress-button', BUTTON_TEMPLATE);
 	NESPartialMetadataExtractionProgressButton.specificStyle = {'display':'none'};
+	NESPartialMetadataExtractionProgressButton.classes = ['streamer-container'];
 	NESPartialMetadataExtractionProgressButton.states[HOME_STATE] = invisibleState;
 	NESPartialMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
 	NESPartialMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 	NESPartialMetadataExtractionProgressButton.html = '<div class="streamer"></div>';
 	NESPartialMetadataExtractionProgressButton.local(NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, NESExperimentNameContentButton, function (model, args) {
 		var streamer = model.find('.streamer');
+		streamer.animate({'left':'-160px'}, 500); // set to 20% from the start (mind games)
 
 		// ajax
 		ajax('extract_partial_metadata', args, function (data) {
@@ -522,7 +524,7 @@ $(document).ready(function() {
 
 			}, function (data) {
 				// completion callback
-				streamer.animate({'left':'-0px'}, 500);
+				streamer.animate({'left':'-0px'}, 500); //set to 100%
 			});
 		});
 	});
@@ -530,12 +532,14 @@ $(document).ready(function() {
 	// NES Metadata Extraction Progress Button
 	NESMetadataExtractionProgressButton = new Element('nes-metadata-extraction-progress-button', BUTTON_TEMPLATE);
 	NESMetadataExtractionProgressButton.specificStyle = {'display':'none'};
+	NESMetadataExtractionProgressButton.classes = ['streamer-container'];
 	NESMetadataExtractionProgressButton.states[HOME_STATE] = invisibleState;
 	NESMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
 	NESMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 	NESMetadataExtractionProgressButton.html = '<div class="streamer"></div>';
 	NESMetadataExtractionProgressButton.local(NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, NESExperimentNameContentButton, function (model, args) {
 		var streamer = model.find('.streamer');
+		streamer.animate({'left':'-160px'}, 500); // set to 20% from the start
 
 		// ajax
 		ajax('extract_metadata', args, function (data) {
@@ -548,7 +552,7 @@ $(document).ready(function() {
 
 			}, function (data) {
 				// completion callback
-				streamer.animate({'left':'-0px'}, 500);
+				streamer.animate({'left':'-0px'}, 500); // 100%
 
 			});
 		});
@@ -557,6 +561,7 @@ $(document).ready(function() {
 	// NES Preview Images Extraction Progress Button
 	NESPreviewImagesExtractionProgressButton = new Element('nes-preview-images-extraction-progress-button', BUTTON_TEMPLATE);
 	NESPreviewImagesExtractionProgressButton.specificStyle = {'display':'none'};
+	NESPreviewImagesExtractionProgressButton.classes = ['streamer-container'];
 	NESPreviewImagesExtractionProgressButton.states[HOME_STATE] = invisibleState;
 	NESPreviewImagesExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
 	NESPreviewImagesExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
@@ -565,21 +570,29 @@ $(document).ready(function() {
 		var streamer = model.find('.streamer');
 
 		// ajax
-		ajax('extract_preview_images', args, function (data) {
-			ajaxloop('experiment_monitor', args, function (data) {
-				// repeat callback
-				var percentage = data['series_preview_images_extraction_percentage']; // returns an int
-				var left = 200 - 2*percentage; // fit button
-				streamer.animate({'left':'-{0}px'.format()}, 500);
+		ajaxloop('experiment_monitor', args, function (data) {
+			//repeat callback
+		}, function (data) {
+			// completion condition
+			return data['metadata_extraction_complete']
+		}, function (data) {
+			// completion callback
+			ajax('extract_preview_images', args, function (data) {
+				ajaxloop('experiment_monitor', args, function (data) {
+					// repeat callback
+					var percentage = data['series_preview_images_extraction_percentage']; // returns an int
+					var left = 200 - 2*percentage; // fit button
+					streamer.animate({'left':'-{0}px'.format()}, 500);
 
-			}, function (data) {
-				// completion condition
-				return data['series_preview_images_extraction_complete']
+				}, function (data) {
+					// completion condition
+					return data['series_preview_images_extraction_complete']
 
-			}, function (data) {
-				// completion callback
-				streamer.animate({'left':'-0px'}, 500);
+				}, function (data) {
+					// completion callback
+					streamer.animate({'left':'-0px'}, 500);
 
+				});
 			});
 		});
 	});

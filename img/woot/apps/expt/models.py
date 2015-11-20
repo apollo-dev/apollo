@@ -78,6 +78,17 @@ class Experiment(models.Model):
 
 		return status_dict
 
+	def partial_metadata_actions(self):
+		# 1. create series
+		series_list = self.series_list()
+		for series_name in series_list:
+			series, series_created = self.series.get_or_create(name=series_name)
+
+	def metadata_actions(self):
+		# 1. set series metadata
+		for series in self.series.all():
+			series.metadata()
+
 	# metadata requests
 	# these commands assume the metadata has already been extracted
 	def metadata(self):

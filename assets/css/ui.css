@@ -112,22 +112,18 @@ button:focus {
 	box-shadow: none;
 }
 
-.btn.progress-inset {
+.btn .input {
 	padding: 0px;
 }
 
-div.progress-inset {
-	position: relative;
-	top: 0px;
-	left: 0px;
-	height: 100%;
-	width: 0%;
-	background-color: #00BA8A;
-}
-
-.btn.progress-inset input {
+.btn input {
 	border: 0px;
 	outline: none;
+}
+
+.btn.streamer-container {
+	padding:0;
+	overflow: hidden;
 }
 
 /*
@@ -182,7 +178,7 @@ A loading icon contains an image: spinner.
 	position: relative;
 	height: 100%;
 	width: 100%;
-	left: -0px;
+	left: -200px;
 	/*background: url("./assets/img/loading_streamer.gif");*/
-	background-color: #00BA8A;
+	background-color: #5cb85c;
 }

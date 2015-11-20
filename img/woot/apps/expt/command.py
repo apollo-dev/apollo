@@ -77,11 +77,6 @@ def list_series(request):
 		experiment_name = request.POST.get('experiment_name')
 		experiment = Experiment.objects.get(name=experiment_name)
 
-		# create series
-		series_list = experiment.series_list()
-		for series_name in series_list:
-			series, series_created = experiment.series.get_or_create(name=series_name)
-
 		return JsonResponse([series.name for series in experiment.series.all()], safe=False)
 
 @csrf_exempt
