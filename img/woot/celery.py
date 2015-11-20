@@ -20,4 +20,5 @@ apollo_celery_app.conf.update(
 	CELERY_TASK_SERIALIZER='json',
 	CELERY_RESULT_SERIALIZER='json',
 	CELERY_IMPORTS=['apps.expt.tasks'],
+  CELERY_REDIRECT_STDOUTS=False,
 )

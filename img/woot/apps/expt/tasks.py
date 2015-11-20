@@ -72,7 +72,7 @@ def extract_preview_images_task(self, experiment_pk):
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(experiment.name))
 		line_template = r'Series (?P<index>.+): converted 2/2 planes \((?P<local>.+)%\)'
-		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True) as extract_preview_proc:
+		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True, stderr=PIPE, stdout=PIPE) as extract_preview_proc:
 			for line in extract_preview_proc.stderr:
 
 				# get progress percentage from output
@@ -95,7 +95,7 @@ def extract_preview_images_task(self, experiment_pk):
 			convert = join(settings.BIN_ROOT, 'convert')
 			with Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True) as convert_preview_proc:
 				experiment.series_preview_images_extraction_complete = False
-				experiment.series_preview_images_extraction_percentage = 100
+				experiment.series_preview_images_extraction_percentage = 95
 				experiment.save()
 
 	# delete everything that is not the selected paths
@@ -104,6 +104,7 @@ def extract_preview_images_task(self, experiment_pk):
 			os.remove(join(experiment.preview_path, file_name))
 
 	# set complete
+	experiment.series_preview_images_extraction_percentage = 100
 	experiment.series_preview_images_extraction_complete = True
 	experiment.save()
 
