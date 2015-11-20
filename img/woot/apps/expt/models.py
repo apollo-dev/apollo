@@ -154,6 +154,8 @@ class Experiment(models.Model):
 			channel_names = re.findall(r'Channel:.+:(.+)" N', series_block)
 			series_metadata['channel_names'] = channel_names
 
+		return series_metadata
+
 	def series_preview_image_paths(self):
 		return [join(self.preview_path, series.preview_path) for series in self.series.all()]
 

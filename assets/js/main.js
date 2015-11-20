@@ -539,7 +539,7 @@ $(document).ready(function() {
 	NESMetadataExtractionProgressButton.html = '<div class="streamer"></div>';
 	NESMetadataExtractionProgressButton.local(NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED, NESExperimentNameContentButton, function (model, args) {
 		var streamer = model.find('.streamer');
-		streamer.animate({'left':'-160px'}, 500); // set to 20% from the start
+		streamer.animate({'left':'-120px'}, 500); // set to 20% from the start
 
 		// ajax
 		ajax('extract_metadata', args, function (data) {
