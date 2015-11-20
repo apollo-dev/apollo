@@ -614,7 +614,7 @@ $(document).ready(function() {
 				// detailSpacer.html('<p>Number of series: {0}</p>'.format(data['number_of_series']));
 
 				// trigger generate preview
-				changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, args);
+				// changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, args);
 			});
 		});
 	});

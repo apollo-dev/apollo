@@ -94,6 +94,8 @@ def extract_preview_images_task(self, experiment_pk):
 	experiment.series_preview_images_extraction_complete = True
 	experiment.save()
 
+	return 'done'
+
 @apollo_celery_app.task(bind=True)
 def extract_series_task(self, series_pk):
 	# get series
@@ -133,3 +135,5 @@ def extract_series_task(self, series_pk):
 
 	series.processing_complete = True
 	series.save()
+
+	return 'done'

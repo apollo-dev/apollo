@@ -81,7 +81,9 @@ class Experiment(models.Model):
 	# metadata requests
 	# these commands assume the metadata has already been extracted
 	def metadata(self):
-		pass
+		experiment_metadata = {}
+
+		return experiment_metadata
 
 	def series_list(self):
 		series_list = []
