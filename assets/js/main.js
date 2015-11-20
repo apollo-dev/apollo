@@ -522,7 +522,7 @@ $(document).ready(function() {
 
 			}, function (data) {
 				// completion callback
-
+				streamer.animate({'left':'-0px'}, 500);
 			});
 		});
 	});
@@ -548,6 +548,7 @@ $(document).ready(function() {
 
 			}, function (data) {
 				// completion callback
+				streamer.animate({'left':'-0px'}, 500);
 
 			});
 		});
@@ -577,6 +578,7 @@ $(document).ready(function() {
 
 			}, function (data) {
 				// completion callback
+				streamer.animate({'left':'-0px'}, 500);
 
 			});
 		});

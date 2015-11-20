@@ -8,6 +8,7 @@ from woot.celery import apollo_celery_app
 from apps.expt.models import Experiment, Series
 
 # util
+from os.path import exists, join
 from subprocess import Popen, PIPE
 
 # articles on tasks
@@ -21,9 +22,10 @@ def extract_partial_metadata_task(self, experiment_pk):
 
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
-	with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path)) as extract_partial_metadata_proc:
-		experiment.partial_metadata_extraction_complete = False
-		experiment.save()
+	if not exists(experiment.partial_inf_path):
+		with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path)) as extract_partial_metadata_proc:
+			experiment.partial_metadata_extraction_complete = False
+			experiment.save()
 
 	experiment.partial_metadata_extraction_complete = True
 	experiment.save()
@@ -36,9 +38,10 @@ def extract_metadata_task(self, experiment_pk):
 
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
-	with Popen('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, experiment.lif_path, experiment.inf_path)) as extract_metadata_proc:
-		experiment.metadata_extraction_complete = False
-		experiment.save()
+	if not exists(experiment.inf_path):
+		with Popen('{} -no-upgrade -novalid -nopix -omexml {} > {}'.format(showinf, experiment.lif_path, experiment.inf_path)) as extract_metadata_proc:
+			experiment.metadata_extraction_complete = False
+			experiment.save()
 
 	experiment.metadata_extraction_complete = True
 	experiment.save()
