@@ -503,7 +503,10 @@ $(document).ready(function() {
 
 	// NES Partial Metadata Extraction Progress Button
 	NESPartialMetadataExtractionProgressButton = new Element('nes-partial-metadata-extraction-progress-button', BUTTON_TEMPLATE);
-	
+	NESPartialMetadataExtractionProgressButton.specificStyle = {'display':'none'};
+	NESPartialMetadataExtractionProgressButton.states[HOME_STATE] = invisibleState;
+	NESPartialMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE] = invisibleState;
+	NESPartialMetadataExtractionProgressButton.states[NEW_EXPERIMENT_STATE_EXPERIMENT_RECEIVED] = {'fn':fadeIn};
 
 	// NES Metadata Extraction Progress Button
 	NESMetadataExtractionProgressButton = new Element('nes-metadata-extraction-progress-button', BUTTON_TEMPLATE);
