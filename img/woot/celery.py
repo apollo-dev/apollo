@@ -16,4 +16,7 @@ apollo_celery_app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 apollo_celery_app.conf.update(
 	CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
+	CELERY_ACCEPT_CONTENT=['json'],
+	CELERY_TASK_SERIALIZER='json',
+	CELERY_RESULT_SERIALIZER='json',
 )

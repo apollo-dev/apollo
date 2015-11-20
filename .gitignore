@@ -27,3 +27,5 @@
 bin/rabbitmq_server-3.5.6/var/lib/rabbitmq/mnesia/rabbit@Nicholass-MacBook-Air/rabbit_serial
 
 *.dets
+
+*.jif

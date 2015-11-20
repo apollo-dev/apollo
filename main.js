@@ -82,7 +82,7 @@ rabbitmq_proc.stdout.on('data',
 );
 
 // 5. spawn celery process
-var celery_proc = spawn(__dirname + '/bin/python3.4', [__dirname + '/img/manage.py', 'celery', 'worker', '--loglevel=info'], {env: env_duplicate});
+var celery_proc = spawn(__dirname + '/bin/python3.4', [__dirname + '/img/manage.py', 'celery', 'worker', '--loglevel=debug'], {env: env_duplicate});
 console.log('celery process id: ' + celery_proc.pid);
 
 celery_proc.stderr.on('data',

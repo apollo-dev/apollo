@@ -76,6 +76,8 @@ class Experiment(models.Model):
 			'series_preview_images_extraction_percentage':self.series_preview_images_extraction_percentage,
 		}
 
+		return status_dict
+
 	# metadata requests
 	# these commands assume the metadata has already been extracted
 	def metadata(self):
