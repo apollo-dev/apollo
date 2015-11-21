@@ -9,6 +9,7 @@ from apps.expt.models import Experiment, Series
 
 # util
 import os
+import re
 from celery.app.log import Logging
 from os.path import exists, join
 from subprocess import Popen, PIPE
@@ -65,8 +66,10 @@ def extract_preview_images_task(self, experiment_pk):
 
 	experiment = Experiment.objects.get(pk=experiment_pk)
 
+	output_2 = 'temp2.log'
 	output_name = 'temp.log'
-	output_stream = open(output_name, 'w+')
+	with open(output_name, 'w+') as output_stream:
+		pass
 
 	# 1. get range of images from each series
 	# - I have to get all preview images from the series in the same call because the JVM starts and stops every time
@@ -80,18 +83,29 @@ def extract_preview_images_task(self, experiment_pk):
 
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(experiment.name))
-		line_template = r'Series (?P<index>.+): converted 2/2 planes \((?P<local>.+)%\)'
-		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True) as extract_preview_proc:
-			for line in extract_preview_proc.stderr:
+		line_template = r'.+Series (?P<index>.+): converted .+/.+ planes \((?P<local>.+)%\)'
+		extract_preview_proc = Popen('{bf} -range 0 {max_z} {path} {out} > {stream}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path, stream=output_name), shell=True)
 
-				# get progress percentage from output
-				series_index = int(re.match(line_template, line).group('index'))
-				local_percentage = int(re.match(line_template, line).group('local'))
+		while extract_preview_proc.poll() is None:
+			with open(output_name, 'a+') as output_stream:
+				lines = output_stream.readlines()
+				if len(lines) > 0:
+					line = lines[len(lines)-1].rstrip()
 
-				# update progress
-				experiment.series_preview_images_extraction_complete = False
-				experiment.series_preview_images_extraction_percentage = 90 * ((series_index + local_percentage / 100.0) / float(experiment.series.count()))
-				experiment.save()
+					# get progress percentage from output
+					# with open(output_2, 'a+') as a:
+					# 	a.write('{} -- {} -- {}\n'.format(re.match(line_template, line) is not None, line_template, line))
+					if re.match(line_template, line) is not None:
+						series_index = int(re.match(line_template, line).group('index'))
+						local_percentage = int(re.match(line_template, line).group('local'))
+
+						# with open(output_2, 'a+') as a:
+						# 	a.write('{}, {}\n'.format(series_index, local_percentage))
+
+						# update progress
+						experiment.series_preview_images_extraction_complete = False
+						experiment.series_preview_images_extraction_percentage = int(90 * ((series_index + local_percentage / 100.0) / float(experiment.series.count())))
+						experiment.save()
 
 	# 2. convert tiff to png for browser
 	for series in experiment.series.all():

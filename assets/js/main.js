@@ -582,7 +582,7 @@ $(document).ready(function() {
 					// repeat callback
 					var percentage = data['series_preview_images_extraction_percentage']; // returns an int
 					var left = 200 - 2*percentage; // fit button
-					streamer.animate({'left':'-{0}px'.format()}, 500);
+					streamer.animate({'left':'-{0}px'.format(left)}, 500);
 
 				}, function (data) {
 					// completion condition
