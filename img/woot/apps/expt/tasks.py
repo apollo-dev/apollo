@@ -9,8 +9,14 @@ from apps.expt.models import Experiment, Series
 
 # util
 import os
+from celery.app.log import Logging
 from os.path import exists, join
 from subprocess import Popen, PIPE
+
+# celery logging
+logging = Logging(apollo_celery_app)
+default_logger = logging.get_default_logger()
+logging.redirect_stdouts_to_logger(default_logger, stdout=False, stderr=False)
 
 # articles on tasks
 # http://jsatt.com/blog/class-based-celery-tasks/
@@ -24,7 +30,7 @@ def extract_partial_metadata_task(self, experiment_pk):
 	showinf = join(settings.BIN_ROOT, 'bftools', 'showinf')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
 	if not exists(experiment.partial_inf_path):
-		with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path), shell=True) as extract_partial_metadata_proc:
+		with Popen('{} -no-upgrade -novalid -nopix {} > {}'.format(showinf, experiment.lif_path, experiment.partial_inf_path), shell=True, stderr=PIPE) as extract_partial_metadata_proc:
 			experiment.partial_metadata_extraction_complete = False
 			experiment.save()
 
@@ -59,6 +65,9 @@ def extract_preview_images_task(self, experiment_pk):
 
 	experiment = Experiment.objects.get(pk=experiment_pk)
 
+	output_name = 'temp.log'
+	output_stream = open(output_name, 'w+')
+
 	# 1. get range of images from each series
 	# - I have to get all preview images from the series in the same call because the JVM starts and stops every time
 	# it is run, which is annoying. This means I have extract using a call that will not throw an error with any
@@ -72,7 +81,7 @@ def extract_preview_images_task(self, experiment_pk):
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(experiment.name))
 		line_template = r'Series (?P<index>.+): converted 2/2 planes \((?P<local>.+)%\)'
-		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True, stderr=PIPE, stdout=PIPE) as extract_preview_proc:
+		with Popen('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path), shell=True) as extract_preview_proc:
 			for line in extract_preview_proc.stderr:
 
 				# get progress percentage from output
