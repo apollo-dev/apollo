@@ -2,11 +2,14 @@
 
 # django
 from django.db import models
+from django.conf import settings
 
 # util
 import random
 import string
 import re
+import os
+from os.path import join, exists
 
 # vars
 chars = string.ascii_uppercase + string.digits
@@ -40,3 +43,40 @@ def block(whole, start, end):
 	block = start_block[:start_block.index(end)]
 
 	return block
+
+class Stream(object):
+	def __init__(self, task_name):
+		# task name
+		self.task_name = task_name
+
+		# create stream folder if it does not exist
+		stream_dir = join(settings.DJANGO_ROOT, 'stream')
+		if not exists(stream_dir):
+			os.mkdir(stream_dir)
+
+		# use random string to name file
+		rs = random_string()
+
+		# create file
+		self.path = join(stream_dir, '{}-{}.log'.format(task_name, rs))
+		with self.open() as stream: # empty file
+			pass
+
+	def cmd(self, cmd):
+		return '{} > {}'.format(cmd, self.path)
+
+	def open(self):
+		return open(self.path, 'w+')
+
+	def last_line(self):
+		with self.open() as stream:
+			lines = stream.readlines()
+			if len(lines) > 0:
+				line = lines[len(lines)-1].rstrip()
+				return line
+			else:
+				return '' # should just fail the match
+
+	def delete(self):
+		# remove file
+		os.remove(self.path)

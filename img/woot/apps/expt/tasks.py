@@ -6,6 +6,7 @@ from django.conf import settings
 # local
 from woot.celery import apollo_celery_app
 from apps.expt.models import Experiment, Series
+from apps.expt.util import Stream
 
 # util
 import os
@@ -65,11 +66,7 @@ def extract_preview_images_task(self, experiment_pk):
 	# information.
 
 	experiment = Experiment.objects.get(pk=experiment_pk)
-
-	output_2 = 'temp2.log'
-	output_name = 'temp.log'
-	with open(output_name, 'w+') as output_stream:
-		pass
+	stream = Stream('extract_preview_images_task')
 
 	# 1. get range of images from each series
 	# - I have to get all preview images from the series in the same call because the JVM starts and stops every time
@@ -84,28 +81,22 @@ def extract_preview_images_task(self, experiment_pk):
 		bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 		fake_preview_path = join(experiment.preview_path, '{}_s%s_ch%c_t%t_z%z_preview.tiff'.format(experiment.name))
 		line_template = r'.+Series (?P<index>.+): converted .+/.+ planes \((?P<local>.+)%\)'
-		extract_preview_proc = Popen('{bf} -range 0 {max_z} {path} {out} > {stream}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path, stream=output_name), shell=True)
+		extract_preview_proc = Popen(stream.cmd('{bf} -range 0 {max_z} {path} {out}'.format(bf=bfconvert, max_z=max_z, path=experiment.lif_path, out=fake_preview_path)), shell=True)
 
 		while extract_preview_proc.poll() is None:
-			with open(output_name, 'a+') as output_stream:
-				lines = output_stream.readlines()
-				if len(lines) > 0:
-					line = lines[len(lines)-1].rstrip()
+			line = stream.last_line()
 
-					# get progress percentage from output
-					# with open(output_2, 'a+') as a:
-					# 	a.write('{} -- {} -- {}\n'.format(re.match(line_template, line) is not None, line_template, line))
-					if re.match(line_template, line) is not None:
-						series_index = int(re.match(line_template, line).group('index'))
-						local_percentage = int(re.match(line_template, line).group('local'))
+			# get progress percentage from output
+			if re.match(line_template, line) is not None:
+				series_index = int(re.match(line_template, line).group('index'))
+				local_percentage = int(re.match(line_template, line).group('local'))
 
-						# with open(output_2, 'a+') as a:
-						# 	a.write('{}, {}\n'.format(series_index, local_percentage))
+				# update progress
+				experiment.series_preview_images_extraction_complete = False
+				experiment.series_preview_images_extraction_percentage = int(90 * ((series_index + local_percentage / 100.0) / float(experiment.series.count())))
+				experiment.save()
 
-						# update progress
-						experiment.series_preview_images_extraction_complete = False
-						experiment.series_preview_images_extraction_percentage = int(90 * ((series_index + local_percentage / 100.0) / float(experiment.series.count())))
-						experiment.save()
+		stream.delete()
 
 	# 2. convert tiff to png for browser
 	for series in experiment.series.all():
@@ -160,17 +151,22 @@ def extract_series_task(self, series_pk):
 	bfconvert = join(settings.BIN_ROOT, 'bftools', 'bfconvert')
 	cmd = '{} -series {} {} {}'.format(bfconvert, series_name, lif_path, source_path)
 
-	with Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True) as extract_stream:
-		ln_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
-		for ln in extract_stream.stderr:
-			if 'Converted' in ln:
-				ln_match = re.match(ln_template, ln)
-				percentage = int(ln_match.group('percentage'))
+	stream = Stream('extract_series_task')
+	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
 
-				series.source_extraction_percentage = percentage
-				series.save()
+	with Popen(stream.cmd(cmd), shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True) as extract_series_proc:
+		line = stream.last_line()
+
+		if 'Converted' in line:
+			line_match = re.match(line_template, line)
+			percentage = int(line_match.group('percentage'))
+
+			series.source_extraction_percentage = percentage
+			series.save()
 
 	series.processing_complete = True
 	series.save()
+
+	stream.delete()
 
 	return 'done'
