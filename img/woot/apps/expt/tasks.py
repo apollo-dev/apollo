@@ -107,7 +107,9 @@ def extract_preview_images_task(self, experiment_pk):
 		if not exists(series.preview_path):
 			selected_path = join(experiment.preview_path, '{}_s{}_ch{}_t{}_z{}_preview.tiff'.format(experiment.name, series.name, series.max_channel(), 0, series.mid_z()))
 			convert = join(settings.BIN_ROOT, 'convert')
-			with Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True) as convert_preview_proc:
+			convert_preview_proc = Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True)
+
+      while convert_preview_proc.poll() is None:
 				experiment.series_preview_images_extraction_complete = False
 				experiment.series_preview_images_extraction_percentage = 95
 				experiment.save()
@@ -154,7 +156,9 @@ def extract_series_task(self, series_pk):
 	stream = Stream('extract_series_task')
 	line_template = r'.+Converted .+/.+ planes \((?P<percentage>.+)%\)'
 
-	with Popen(stream.cmd(cmd), shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True) as extract_series_proc:
+	extract_series_proc = Popen(stream.cmd(cmd), shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
+
+  while extract_series_proc.poll() is None:
 		line = stream.last_line()
 
 		if 'Converted' in line:
