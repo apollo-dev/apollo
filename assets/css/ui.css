@@ -179,6 +179,7 @@ A loading icon contains an image: spinner.
 	height: 100%;
 	width: 100%;
 	left: -200px;
-	/*background: url("./assets/img/loading_streamer.gif");*/
-	background-color: #5cb85c;
+	/*background: url("../img/loading_streamer.gif");*/
+	background: url("../img/loading_streamer_long_test_blur_green.gif");
+	/*background-color: #5cb85c;*/
 }

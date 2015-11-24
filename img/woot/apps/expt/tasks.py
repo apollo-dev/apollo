@@ -109,7 +109,7 @@ def extract_preview_images_task(self, experiment_pk):
 			convert = join(settings.BIN_ROOT, 'convert')
 			convert_preview_proc = Popen('{} -contrast-stretch 0 {} {}'.format(convert, selected_path, series.preview_path), shell=True)
 
-      while convert_preview_proc.poll() is None:
+			while convert_preview_proc.poll() is None:
 				experiment.series_preview_images_extraction_complete = False
 				experiment.series_preview_images_extraction_percentage = 95
 				experiment.save()
@@ -158,7 +158,7 @@ def extract_series_task(self, series_pk):
 
 	extract_series_proc = Popen(stream.cmd(cmd), shell=True, stdout=PIPE, stderr=PIPE, bufsize=1, universal_newlines=True)
 
-  while extract_series_proc.poll() is None:
+	while extract_series_proc.poll() is None:
 		line = stream.last_line()
 
 		if 'Converted' in line:
