@@ -65,7 +65,7 @@ class Experiment(models.Model):
 		self.save()
 
 	# status
-	def extraction_status(self):
+	def monitor(self):
 		status_dict = {
 			'experiment_name':self.name,
 			'extraction_process_cap':self.extraction_process_cap,
@@ -192,10 +192,10 @@ class Series(models.Model):
 
 	# methods
 	def __str__(self):
-		return '{}: series {}'.format(self.experiment, self.index)
+		return '{}: series {}'.format(self.experiment, self.name)
 
 	# status methods
-	def extraction_status(self):
+	def monitor(self):
 		status_dict = {
 			'experiment_name':self.experiment.name,
 			'series_name':self.name,

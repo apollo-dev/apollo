@@ -40,6 +40,10 @@ def extract_partial_metadata_task(self, experiment_pk):
 	experiment.partial_metadata_actions()
 	experiment.save()
 
+	# create series
+	for series_name in experiment.series_list():
+		experiment.series.get_or_create(name=series_name)
+
 	return 'done'
 
 @apollo_celery_app.task(bind=True)

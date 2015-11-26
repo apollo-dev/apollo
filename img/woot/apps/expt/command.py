@@ -60,16 +60,17 @@ def experiment_monitor(request):
 		experiment_name = request.POST.get('experiment_name')
 		experiment = Experiment.objects.get(name=experiment_name)
 
-		return JsonResponse(experiment.extraction_status())
+		return JsonResponse(experiment.monitor())
 
 @csrf_exempt
 def series_monitor(request):
 	if request.method == 'POST':
 		experiment_name = request.POST.get('experiment_name')
 		series_name = request.POST.get('series_name')
+		raise ValueError('{} {}'.format(experiment_name, series_name))
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
 
-		return JsonResponse(series.extraction_status())
+		return JsonResponse(series.monitor())
 
 @csrf_exempt
 def list_series(request):
