@@ -624,10 +624,14 @@ $(document).ready(function() {
 			// 1. make another request for experiment metadata
 			ajax('experiment_metadata', args, function (data) {
 				// update detail spacer
-				// detailSpacer.html('<p>Number of series: {0}</p>'.format(data['number_of_series']));
+				var detailSpacerHtml = '';
+				for (key in data) {
+					detailSpacerHtml += '<p>{0}: {1}</p>'.format(key, data[key])
+				}
+				detailSpacer.html(detailSpacerHtml);
 
 				// trigger generate preview
-				// changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, args);
+				changeState(model.attr('id'), NEW_EXPERIMENT_STATE_GENERATE_PREVIEW, args);
 			});
 		});
 	});
@@ -733,7 +737,7 @@ $(document).ready(function() {
 					middleSpacer.animate({'opacity':'1'}, defaultAnimationTime);
 					// create tray for each series
 					for (s in data) {
-						var seriesName = data[s]['name'];
+						var seriesName = data[s];
 
 						var seriesContainer = new Element('ss-series-preview-container-{0}'.format(seriesName), CONTAINER_TEMPLATE);
 						seriesContainer.postRenderFunction = fadeIn;
@@ -743,7 +747,7 @@ $(document).ready(function() {
 						seriesButton.properties['experiment'] = args['experiment_name'];
 						seriesButton.properties['series'] = seriesName;
 						seriesButton.states[NEW_EXPERIMENT_STATE_SERIES_EXTRACTING] = {'fn':function (model, args) {
-							ajaxloop('series_extraction_status', args, function (data) {
+							ajaxloop('series_monitor', args, function (data) {
 								// repeat
 								// 1. update label and progress background
 								var seriesName = data['series_name'];
@@ -751,8 +755,6 @@ $(document).ready(function() {
 								seriesButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
 							}, function (data) {
 								// completion condition
-								// 2. is "complete" true in the data
-								// states
 								var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATE_PREVIEW;
 								var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
 								var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
@@ -771,12 +773,16 @@ $(document).ready(function() {
 
 						// NEED TO CHECK HERE IF SERIES IS CURRENTLY EXTRACTING
 						// GET PERCENTAGE
-						ajaxloop('series_extraction_status', {'experiment_name':args['experiment_name'], 'series_name':seriesName}, function (data) {
+						ajaxloop('series_monitor', {'experiment_name':args['experiment_name'], 'series_name':seriesName}, function (data) {
 							// repeat
 							// 1. update label and progress background
 							var seriesName = data['series_name'];
 							var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
-							seriesButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
+							if (data['source_extraction_in_queue']) {
+								seriesButton.model().html('Series: {0} (in queue)'.format(seriesName));
+							} else {
+								seriesButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
+							}
 						}, function (data) {
 							// completion condition
 							// 2. is "complete" true in the data
@@ -792,10 +798,10 @@ $(document).ready(function() {
 							// 3. change text to "completed", or something
 							var seriesName = data['series_name'];
 							var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
-							if (data['new']) {
-								seriesButton.model().html('Series: {0}'.format(seriesName));
-							} else {
+							if (data['source_extraction_complete']) {
 								seriesButton.model().html('Series: {0} (extracted)'.format(seriesName));
+							} else {
+								seriesButton.model().html('Series: {0}'.format(seriesName));
 							}
 						});
 
@@ -815,44 +821,6 @@ $(document).ready(function() {
 							});
 						}(args, seriesName);
 					}
-
-					// make ajax request for previews
-					ajax('generate_series_preview', args, function (data) {
-
-						// extract data
-						var experimentName = data['experiment_name'];
-						var seriesList = data['series_list'];
-						var seriesPathDictionary = data['series_paths'];
-
-						// loop through series
-						for (s in seriesList) {
-							// get series details
-							var seriesName = seriesList[s];
-							var seriesPath = seriesPathDictionary[seriesName]['path'];
-							var imageHalfHeight = seriesPathDictionary[seriesName]['half'];
-
-							// fade spinner
-							+function (seriesName, seriesPath) {
-								var seriesContainer = SSSeriesPreviewContainerDictionary[seriesName];
-
-								seriesContainer.model().find('.tray').fadeOut(defaultAnimationTime, function () {
-									seriesContainer.model().find('.spinner').fadeOut(0, function () {
-										if (!imageHalfHeight) {
-											seriesContainer.model().animate({'height':'100px'}, defaultAnimationTime);
-										}
-										var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{id}" />');
-										previewImage.properties['src'] = seriesPath;
-										previewImage.specificStyle = {'position':'relative', 'width':'200px', 'left':'25px'};
-										previewImage.postRenderFunction = function (model) {
-											model.css({'opacity':'0'});
-											model.animate({'opacity':'1'}, defaultAnimationTime);
-										};
-										seriesContainer.renderChild(previewImage);
-									});
-								});
-							}(seriesName, seriesPath);
-						}
-					});
 				});
 			});
 		});
