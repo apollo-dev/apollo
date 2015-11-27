@@ -67,7 +67,6 @@ def series_monitor(request):
 	if request.method == 'POST':
 		experiment_name = request.POST.get('experiment_name')
 		series_name = request.POST.get('series_name')
-		raise ValueError('{} {}'.format(experiment_name, series_name))
 		series = Series.objects.get(experiment__name=experiment_name, name=series_name)
 
 		return JsonResponse(series.monitor())

@@ -773,7 +773,6 @@ $(document).ready(function() {
 
 						// NEED TO CHECK HERE IF SERIES IS CURRENTLY EXTRACTING
 						// GET PERCENTAGE
-						console.log(seriesName);
 						+function (args) {
 							ajaxloop('series_monitor', args, function (data) {
 								// repeat
@@ -794,7 +793,7 @@ $(document).ready(function() {
 								var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
 								var notStates = notGPstate && notSIstate && notSEstate;
 
-								return (data['new'] || (data['source_extracted'] && data['processing_complete']) || notStates)
+								return ((data['source_extracted'] && data['processing_complete']) || notStates)
 							}, function (data) {
 								// completion
 								// 3. change text to "completed", or something
@@ -825,45 +824,47 @@ $(document).ready(function() {
 						}(args, seriesName);
 
 						// request preview
-						ajaxloop('series_monitor', args, function (data) {
-							// repeat
+						+function (args) {
+							ajaxloop('series_monitor', args, function (data) {
+								// repeat
 
-						}, function (data) {
-							// completion condition
-							// states
-							var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATE_PREVIEW;
-							var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
-							var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
-							var notStates = notGPstate && notSIstate && notSEstate;
+							}, function (data) {
+								// completion condition
+								// states
+								var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATE_PREVIEW;
+								var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
+								var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
+								var notStates = notGPstate && notSIstate && notSEstate;
 
-							return (data['new'] || (data['source_extracted'] && data['processing_complete']) || notStates)
-						}, function (data) {
-							// complete
-							// 1. request series metadata
-							// need half height or image ratio
-							var imageRS, imageCS;
-							ajax('series_metadata', args, function (data) {
-								imageRS = data['rs'];
-								imageCS = data['cs'];
-							});
+								return ((data['source_extracted'] && data['processing_complete']) || notStates)
+							}, function (data) {
+								// complete
+								// 1. request series metadata
+								// need half height or image ratio
+								var imageRS, imageCS;
+								ajax('series_metadata', args, function (data) {
+									imageRS = data['rs'];
+									imageCS = data['cs'];
+								});
 
-							var imageRatio = imageRS / imageCS;
+								var imageRatio = imageRS / imageCS;
 
-							// 2. fade stuff and place image
-							seriesContainer.model().find('.tray').fadeOut(defaultAnimationTime, function () {
-								seriesContainer.model().find('.spinner').fadeOut(0, function () {
-									seriesContainer.model().animate({'height':'{0}px'.format(imageRatio * 200)}, defaultAnimationTime);
-									var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{id}" />');
-									previewImage.properties['src'] = seriesPath;
-									previewImage.specificStyle = {'position':'relative', 'width':'200px', 'left':'25px'};
-									previewImage.postRenderFunction = function (model) {
-										model.css({'opacity':'0'});
-										model.animate({'opacity':'1'}, defaultAnimationTime);
-									};
-									seriesContainer.renderChild(previewImage);
+								// 2. fade stuff and place image
+								seriesContainer.model().find('.tray').fadeOut(defaultAnimationTime, function () {
+									seriesContainer.model().find('.spinner').fadeOut(0, function () {
+										seriesContainer.model().animate({'height':'{0}px'.format(imageRatio * 200)}, defaultAnimationTime);
+										var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{id}" />');
+										previewImage.properties['src'] = seriesPath;
+										previewImage.specificStyle = {'position':'relative', 'width':'200px', 'left':'25px'};
+										previewImage.postRenderFunction = function (model) {
+											model.css({'opacity':'0'});
+											model.animate({'opacity':'1'}, defaultAnimationTime);
+										};
+										seriesContainer.renderChild(previewImage);
+									});
 								});
 							});
-						});
+						}({'experiment_name':args['experiment_name'], 'series_name':seriesName});
 					} // ->> end for each series
 				});
 			});
