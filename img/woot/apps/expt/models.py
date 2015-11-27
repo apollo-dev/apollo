@@ -200,6 +200,7 @@ class Series(models.Model):
 			'experiment_name':self.experiment.name,
 			'series_name':self.name,
 			'metadata_set':self.metadata_set,
+			'preview_extracted':self.preview_path!='',
 			'source_extraction_in_queue':self.source_extraction_in_queue,
 			'source_extraction_complete':self.source_extraction_complete,
 			'composition_complete':self.composition_complete,
@@ -245,6 +246,7 @@ class Series(models.Model):
 			'zmop':str(self.zmop),
 			'tpf':str(self.tpf),
 			'channels':json.dumps([channel.name for channel in self.channels.all()]),
+			'preview_path':self.preview_path,
 		}
 
 	def mid_z(self):

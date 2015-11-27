@@ -836,32 +836,35 @@ $(document).ready(function() {
 								var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
 								var notStates = notGPstate && notSIstate && notSEstate;
 
-								return ((data['source_extracted'] && data['processing_complete']) || notStates)
+								return (data['preview_extracted'] || notStates)
 							}, function (data) {
 								// complete
 								// 1. request series metadata
 								// need half height or image ratio
-								var imageRS, imageCS;
 								ajax('series_metadata', args, function (data) {
-									imageRS = data['rs'];
-									imageCS = data['cs'];
-								});
+									var imageRS = data['rs'];
+									var imageCS = data['cs'];
+									var seriesPath = data['preview_path'];
 
-								var imageRatio = imageRS / imageCS;
+									var imageRatio = imageRS / imageCS;
 
-								// 2. fade stuff and place image
-								seriesContainer.model().find('.tray').fadeOut(defaultAnimationTime, function () {
-									seriesContainer.model().find('.spinner').fadeOut(0, function () {
-										seriesContainer.model().animate({'height':'{0}px'.format(imageRatio * 200)}, defaultAnimationTime);
-										var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{id}" />');
-										previewImage.properties['src'] = seriesPath;
-										previewImage.specificStyle = {'position':'relative', 'width':'200px', 'left':'25px'};
-										previewImage.postRenderFunction = function (model) {
-											model.css({'opacity':'0'});
-											model.animate({'opacity':'1'}, defaultAnimationTime);
-										};
-										seriesContainer.renderChild(previewImage);
-									});
+									// 2. fade stuff and place image
+									+function (seriesName, seriesPath, imageRatio) {
+										var seriesContainer = SSSeriesPreviewContainerDictionary[seriesName];
+										seriesContainer.model().find('.tray').fadeOut(defaultAnimationTime, function () {
+											seriesContainer.model().find('.spinner').fadeOut(0, function () {
+												seriesContainer.model().animate({'height':'{0}px'.format(imageRatio * 200)}, defaultAnimationTime);
+												var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{id}" />');
+												previewImage.properties['src'] = seriesPath;
+												previewImage.specificStyle = {'position':'relative', 'width':'200px', 'left':'25px'};
+												previewImage.postRenderFunction = function (model) {
+													model.css({'opacity':'0'});
+													model.animate({'opacity':'1'}, defaultAnimationTime);
+												};
+												seriesContainer.renderChild(previewImage);
+											});
+										});
+									}(args['series_name'], seriesPath, imageRatio);
 								});
 							});
 						}({'experiment_name':args['experiment_name'], 'series_name':seriesName});
@@ -870,44 +873,6 @@ $(document).ready(function() {
 			});
 		});
 	});
-
-	// make ajax request for previews
-	// ajax('generate_series_preview', args, function (data) {
-	//
-	// 	// extract data
-	// 	var experimentName = data['experiment_name'];
-	// 	var seriesList = data['series_list'];
-	// 	var seriesPathDictionary = data['series_paths'];
-	//
-	// 	// loop through series
-	// 	for (s in seriesList) {
-	// 		// get series details
-	// 		var seriesName = seriesList[s];
-	// 		var seriesPath = seriesPathDictionary[seriesName]['path'];
-	// 		var imageHalfHeight = seriesPathDictionary[seriesName]['half'];
-	//
-	// 		// fade spinner
-	// 		+function (seriesName, seriesPath) {
-	// 			var seriesContainer = SSSeriesPreviewContainerDictionary[seriesName];
-	//
-	// 			seriesContainer.model().find('.tray').fadeOut(defaultAnimationTime, function () {
-	// 				seriesContainer.model().find('.spinner').fadeOut(0, function () {
-	// 					if (!imageHalfHeight) {
-	// 						seriesContainer.model().animate({'height':'100px'}, defaultAnimationTime);
-	// 					}
-	// 					var previewImage = new Element('ss-series-preview-image-{0}'.format(seriesName), '<img id="{id}" />');
-	// 					previewImage.properties['src'] = seriesPath;
-	// 					previewImage.specificStyle = {'position':'relative', 'width':'200px', 'left':'25px'};
-	// 					previewImage.postRenderFunction = function (model) {
-	// 						model.css({'opacity':'0'});
-	// 						model.animate({'opacity':'1'}, defaultAnimationTime);
-	// 					};
-	// 					seriesContainer.renderChild(previewImage);
-	// 				});
-	// 			});
-	// 		}(seriesName, seriesPath);
-	// 	}
-	// });
 
 	// SS Preview Loading Button
 	SSPreviewLoadingButton = new Element('ss-preview-loading-button', BUTTON_TEMPLATE);
@@ -953,7 +918,7 @@ $(document).ready(function() {
 	INFSInfoSpacer.classes = ['content'];
 	INFSInfoSpacer.states[NEW_EXPERIMENT_STATE] = {'fn':fadeOut};
 	INFSInfoSpacer.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
-		ajax('series_details', args, function (data) {
+		ajax('series_metadata', args, function (data) {
 			var keys = ['title','acquisition_date','rs','cs','zs','ts','rmop','cmop','zmop','tpf','channels'];
 			var metadata = data['metadata'];
 			var titles = {
