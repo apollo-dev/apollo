@@ -920,7 +920,7 @@ $(document).ready(function() {
 	INFSInfoSpacer.states[NEW_EXPERIMENT_STATE_SERIES_INFO] = {'fn':function (model, args) {
 		ajax('series_metadata', args, function (data) {
 			var keys = ['title','acquisition_date','rs','cs','zs','ts','rmop','cmop','zmop','tpf','channels'];
-			var metadata = data['metadata'];
+			var metadata = data;
 			var titles = {
 				'title':'Series title:',
 				'acquisition_date':'Aquisition date:',
@@ -962,24 +962,33 @@ $(document).ready(function() {
 		model.attr('series', args['series_name']);
 
 		// check if the series is currently extracting
-		ajaxloop('series_extraction_status', args, function (data) {
+		ajaxloop('series_monitor', args, function (data) {
 			// repeat
 			// 1. update label and progress background
 			var seriesName = data['series_name'];
-			INFSExtractButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
+			if (data['source_extraction_in_queue']) {
+				INFSExtractButton.model().html('Series: {0} (in queue)'.format(seriesName));
+			} else {
+				INFSExtractButton.model().html('Series: {0} (E{1}%,P{2}%)'.format(data['series_name'], data['source_extraction_percentage'], data['processing_percentage']));
+			}
 		}, function (data) {
 			// completion condition
 			// 2. is "complete" true in the data
-			return (data['new'] || (data['source_extracted'] && data['processing_complete']) || currentState!==NEW_EXPERIMENT_STATE_SERIES_INFO)
+			// states
+			var notGPstate = currentState !== NEW_EXPERIMENT_STATE_GENERATE_PREVIEW;
+			var notSIstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_INFO;
+			var notSEstate = currentState !== NEW_EXPERIMENT_STATE_SERIES_EXTRACTING;
+			var notStates = notGPstate && notSIstate && notSEstate;
+
+			return ((data['source_extracted'] && data['processing_complete']) || notStates)
 		}, function (data) {
 			// completion
 			// 3. change text to "completed", or something
 			var seriesName = data['series_name'];
-			var seriesButton = SSSeriesPreviewButtonDictionary[seriesName];
-			if (data['new']) {
-				INFSExtractButton.model().html('Extract...');
-			} else {
+			if (data['source_extraction_complete']) {
 				INFSExtractButton.model().html('Series: {0} (extracted)'.format(seriesName));
+			} else {
+				INFSExtractButton.model().html('Extract...');
 			}
 		});
 
