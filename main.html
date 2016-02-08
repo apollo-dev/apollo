@@ -8,19 +8,11 @@
 		<link rel='stylesheet' href='./assets/css/bootstrap.icon-large.min.css'>
 		<link rel='stylesheet' href='./assets/css/main.css'>
 		<link rel='stylesheet' href='./assets/css/ui.css'>
-		<style type='text/css'>
-			#state {
-				position: fixed;
-				bottom: 0px;
-				right: 12px;
-			}
-		</style>
 	</head>
 	<body>
 		<!-- Titles -->
 		<h2 id='title'>Apollo</h2>
 		<h4 id='subtitle'>Segmentation</h4>
-		<h5 id='state'>State</h5>
 
 		<!-- REACT hook -->
 		<div id='content'></div>
@@ -28,7 +20,7 @@
 
 	<!-- load jQuery and main content into '#main' -->
 	<!-- <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' onload='window.$ = window.jQuery = module.exports;'></script> -->
-	<script src='./assets/js/jquery/jquery-1.11.3.min.js' onload='window.$ = window.jQuery = module.exports;'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" onload='window.$ = window.jQuery = module.exports;'></script>
 
 	<!-- general utility stuff comes before everything. -->
 	<script src='./assets/js/util/preventzoom.js'></script>
@@ -38,14 +30,15 @@
 	<script src='./assets/js/util/shortcuts.js'></script>
 	<script src='./assets/js/vendor/bootstrap.min.js'></script>
 
-	<!-- globals - important for controlling paper canvases -->
-	<script src='./assets/js/globals.js'></script>
-
-	<!-- react shenanigans -->
-
-
 	<!-- paper shenanigans -->
 	<script type='text/javascript' src='./assets/js/paper/paper.js'></script> <!-- sort of necessary -->
+	<script src='./assets/js/globals.js'></script> <!-- globals - important for controlling paper -->
+
+	<!-- react shenanigans -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
 
 	<!-- main content definitions -->
 	<script src='./assets/js/main.js'></script>
