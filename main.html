@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta charset='utf-8'>
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
 		<meta content='True' name='HandheldFriendly' />
-		<link rel="stylesheet" href="./assets/css/bootstrap.min.css">
-		<link rel="stylesheet" href="./assets/css/bootstrap.icon-large.min.css">
-		<link rel="stylesheet" href="./assets/css/main.css">
-		<link rel="stylesheet" href="./assets/css/ui.css">
-		<style type="text/css">
+		<link rel='stylesheet' href='./assets/css/bootstrap.min.css'>
+		<link rel='stylesheet' href='./assets/css/bootstrap.icon-large.min.css'>
+		<link rel='stylesheet' href='./assets/css/main.css'>
+		<link rel='stylesheet' href='./assets/css/ui.css'>
+		<style type='text/css'>
 			#state {
 				position: fixed;
 				bottom: 0px;
@@ -18,33 +18,35 @@
 	</head>
 	<body>
 		<!-- Titles -->
-		<h2 id="title">Apollo</h2>
-		<h4 id="subtitle">Segmentation</h4>
-		<h5 id="state">State</h5>
+		<h2 id='title'>Apollo</h2>
+		<h4 id='subtitle'>Segmentation</h4>
+		<h5 id='state'>State</h5>
+
+		<!-- REACT hook -->
+		<div id='content'></div>
 	</body>
 
-	<!-- load jQuery and main content into "#main" -->
-	<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script> -->
-	<script src="./assets/js/jquery/jquery-1.11.3.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+	<!-- load jQuery and main content into '#main' -->
+	<!-- <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' onload='window.$ = window.jQuery = module.exports;'></script> -->
+	<script src='./assets/js/jquery/jquery-1.11.3.min.js' onload='window.$ = window.jQuery = module.exports;'></script>
 
 	<!-- general utility stuff comes before everything. -->
-	<script src="./assets/js/util/preventzoom.js"></script>
-	<script src="./assets/js/util/util.js"></script>
-	<script src="./assets/js/util/string-format.js" onload="window.format = module.exports; format.extend(String.prototype);"></script>
-	<script src="./assets/js/util/mousetrap.js"></script> <!-- keyboard shortcuts -->
-	<script src="./assets/js/util/shortcuts.js"></script>
-	<script src="./assets/js/vendor/bootstrap.min.js"></script>
+	<script src='./assets/js/util/preventzoom.js'></script>
+	<script src='./assets/js/util/util.js'></script>
+	<script src='./assets/js/util/string-format.js' onload='window.format = module.exports; format.extend(String.prototype);'></script>
+	<script src='./assets/js/util/mousetrap.js'></script> <!-- keyboard shortcuts -->
+	<script src='./assets/js/util/shortcuts.js'></script>
+	<script src='./assets/js/vendor/bootstrap.min.js'></script>
 
 	<!-- globals - important for controlling paper canvases -->
-	<script src="./assets/js/globals.js"></script>
+	<script src='./assets/js/globals.js'></script>
+
+	<!-- react shenanigans -->
+
 
 	<!-- paper shenanigans -->
-	<script type="text/javascript" src="./assets/js/paper/paper.js"></script> <!-- sort of necessary -->
-	<!-- <script type="text/paperscript" src="./assets/js/paper/marker.js"></script>
-	<script type="text/paperscript" src="./assets/js/paper/region.js"></script>
-	<script type="text/paperscript" src="./assets/js/paper/slice.js"></script>
-	<script type="text/paperscript" src="./assets/js/paper/lasso.js"></script> -->
+	<script type='text/javascript' src='./assets/js/paper/paper.js'></script> <!-- sort of necessary -->
 
 	<!-- main content definitions -->
-	<script src="./assets/js/main.js"></script>
+	<script src='./assets/js/main.js'></script>
 </html>
