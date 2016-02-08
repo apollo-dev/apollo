@@ -75,6 +75,8 @@ spanning the sidebar or in groups of two, three, or four.
 	border-right: 1px solid #CCC;
 	border-left: 1px solid #CCC;
 	height: 50px;
+	padding-top: 12px;
+	padding-bottom: 12px; 
 }
 
 button:focus {

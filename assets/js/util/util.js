@@ -37,6 +37,6 @@ function ajaxloop (url, data, repeatCallback, completionCondition, completionCal
 }
 
 // state transition functions
-function postRenderFadeIn (model) {
 
-}
+
+// util functions
