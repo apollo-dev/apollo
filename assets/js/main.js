@@ -90,7 +90,7 @@ var structure = {
 					key:1,
 					className:'btn btn-default',
 					id:'es-in-progress-button',
-					content:'In Progress',
+					content:'In progress',
 				},
 				{
 					key:2,
