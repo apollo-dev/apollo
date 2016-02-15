@@ -99,7 +99,7 @@ var structure = {
 					content:'New experiment',
 				},
 			],
-		}
+		},
 	],
 };
 

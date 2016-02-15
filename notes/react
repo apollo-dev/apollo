@@ -1,0 +1,7 @@
+Here's what I want React to do:
+
+1. When I press a button, something happens:
+	a. an ajax thing gets sent that asks for data from the server. This data is displayed in React components that are created.
+	b. The global state of the interface changes and everything moves to where it should be.
+
+That's about it actually. It would also be nice if components could react in different ways depending on the state, e.g. different colours on hover.
